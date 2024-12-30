@@ -1,0 +1,700 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot that visualizes the relationship between Net Income and Revenue. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Financial Data Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    /* Add some basic styling to our embed */
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Revenue"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""},
+        ""tooltip"": [
+          {""field"": ""Company"", ""type"": ""nominal""},
+          {""field"": ""Revenue"", ""type"": ""quantitative""},
+          {""field"": ""Net Income"", ""type"": ""quantitative""}
+        ]
+      },
+      ""config"": {
+        ""axis"": {
+          ""labelFontSize"": 14,
+          ""titleFontSize"": 16
+        }
+      }
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot that visualizes the relationship between Net Income and Revenue. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Net Income vs Revenue Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Revenue"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""},
+        ""tooltip"": [
+          {""field"": ""Company"", ""type"": ""nominal""},
+          {""field"": ""Quarter"", ""type"": ""nominal""},
+          {""field"": ""Industry"", ""type"": ""nominal""},
+          {""field"": ""Employee Count"", ""type"": ""quantitative""},
+          {""field"": ""Stock Price"", ""type"": ""quantitative""}
+        ]
+      },
+      ""selection"": {
+        ""brush"": {""type"": ""interval"", ""encodings"": [""x"", ""y""]}
+      }
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot that visualizes the relationship between Net Income and Revenue. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Net Income vs Revenue Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Revenue"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""},
+        ""tooltip"": [
+          {""field"": ""Company"", ""type"": ""nominal""},
+          {""field"": ""Revenue"", ""type"": ""quantitative""},
+          {""field"": ""Net Income"", ""type"": ""quantitative""}
+        ]
+      },
+      ""config"": {
+        ""view"": {""continuousWidth"": 400, ""continuousHeight"": 300},
+        ""axis"": {""labelFontSize"": 16, ""titleFontSize"": 16},
+        ""legend"": {""labelFontSize"": 16, ""titleFontSize"": 16}
+      }
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Net Income and Revenue. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Financial Data Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    /* Add some basic styling to our embed */
+    #vis {
+      width: 800px;
+      height: 600px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Revenue"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""},
+        ""tooltip"": [
+          {""field"": ""Company"", ""type"": ""nominal""},
+          {""field"": ""Revenue"", ""type"": ""quantitative""},
+          {""field"": ""Net Income"", ""type"": ""quantitative""}
+        ]
+      },
+      ""config"": {
+        ""view"": {""width"": 800, ""height"": 600}
+      }
+    };
+
+    const runtime = vega.parse(spec);
+    const view = new vega.View(runtime)
+      .initialize(""#vis"")
+      .hover()
+      .run();
+
+    document.addEventListener(""click"", function(event) {
+      if (event.target.classList.contains(""mark"")) {
+        const company = event.target.__datum__.Company;
+        const url = `https://www.google.com/search?q=${company}`;
+        window.open(url, ""_blank"");
+      }
+    });
+  </script>
+</body>
+</html>
+```"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot with query widgets showing the Net Income and Revenue of the given dataset. Add a slider to represent the Quarter.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatterplot with Query Widgets</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {
+          ""field"": ""Revenue"",
+          ""type"": ""quantitative"",
+          ""scale"": {""domain"": [0, 1000000]}
+        },
+        ""y"": {
+          ""field"": ""Net Income"",
+          ""type"": ""quantitative"",
+          ""scale"": {""domain"": [-100000, 500000]}
+        },
+        ""color"": {
+          ""field"": ""Industry"",
+          ""type"": ""nominal""
+        },
+        ""tooltip"": [
+          {""field"": ""Company"", ""type"": ""nominal""},
+          {""field"": ""Quarter"", ""type"": ""nominal""},
+          {""field"": ""Employee Count"", ""type"": ""quantitative""},
+          {""field"": ""Stock Price"", ""type"": ""quantitative""}
+        ]
+      },
+      ""params"": [
+        {
+          ""name"": ""quarter"",
+          ""value"": 1,
+          ""bind"": {""input"": ""range"", ""min"": 1, ""max"": 4, ""step"": 1}
+        }
+      ],
+      ""transform"": [
+        {""filter"": ""datum.Quarter == quarter""}
+      ]
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot showing the Net Income of Alpha Inc. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Alpha Inc. Net Income Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""transform"": [
+        {""filter"": ""datum.Company === 'Alpha Inc.'""}
+      ],
+      ""mark"": {
+        ""type"": ""line"",
+        ""point"": true,
+        ""tooltip"": true
+      },
+      ""encoding"": {
+        ""x"": {""field"": ""Quarter"", ""type"": ""nominal"", ""sort"": null},
+        ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""},
+        ""order"": {""field"": ""Quarter"", ""type"": ""nominal""}
+      },
+      ""config"": {
+        ""view"": {""stroke"": ""transparent""},
+        ""range"": {""category"": {""scheme"": ""category20""}}
+      }
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Net Income of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Multi-Series Line Chart with Interactive Line Highlight</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    /* Add some basic styling to our chart */
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""mark"": {
+        ""type"": ""line"",
+        ""tooltip"": true
+      },
+      ""encoding"": {
+        ""x"": {""field"": ""Quarter"", ""type"": ""nominal""},
+        ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""},
+        ""color"": {""field"": ""Company"", ""type"": ""nominal""},
+        ""detail"": {""field"": ""Company"", ""type"": ""nominal""}
+      },
+      ""config"": {
+        ""view"": {""stroke"": ""transparent""},
+        ""range"": {""category"": {""scheme"": ""category20""}}
+      },
+      ""selection"": {
+        ""highlight"": {""type"": ""single"", ""on"": ""mouseover"", ""fields"": [""Company""], ""nearest"": true}
+      }
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Bar Chart that visualizes the Net Income for each Company in Q1-2021. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Net Income for each Company in Q1-2021</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""transform"": [
+        {""filter"": ""datum.Quarter === 'Q1-2021'""},
+        {""calculate"": ""datum.Net Income"", ""as"": ""Net Income""}
+      ],
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {""field"": ""Company"", ""type"": ""nominal""},
+        ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""},
+        ""tooltip"": [
+          {""field"": ""Company"", ""type"": ""nominal""},
+          {""field"": ""Net Income"", ""type"": ""quantitative""}
+        ]
+      },
+      ""config"": {
+        ""view"": {""continuousWidth"": 400, ""continuousHeight"": 300},
+        ""axis"": {""labelFontSize"": 16, ""titleFontSize"": 16},
+        ""legend"": {""labelFontSize"": 16, ""titleFontSize"": 16}
+      }
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Bar Chart that visualizes the Net Income for each Company in Q1-2021. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Net Income Bar Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""transform"": [
+        {""filter"": ""datum.Quarter === 'Q1-2021'""},
+        {""sort"": [{""field"": ""Net Income"", ""order"": ""descending""}]}
+      ],
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {""field"": ""Company"", ""type"": ""nominal"", ""sort"": null},
+        ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""},
+        ""tooltip"": [{""field"": ""Company""}, {""field"": ""Net Income"", ""type"": ""quantitative""}]
+      },
+      ""config"": {
+        ""view"": {""width"": 800, ""height"": 600},
+        ""mark"": {""tooltip"": {""content"": ""encoding""}}
+      }
+    };
+
+    vegaEmbed(""#vis"", spec, { ""actions"": false });
+  </script>
+</body>
+</html>
+```
+
+**Note:** The above code does not support drag and drop functionality directly as Vega-Lite does not support this feature natively. However, you can achieve this by using Vega-Lite with Vega and Vega-Embed libraries along with some custom JavaScript code to handle the drag and drop functionality.
+
+Here's an updated version of the code that includes a basic drag and drop functionality:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Net Income Bar Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+    .bar {
+      cursor: move;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""transform"": [
+        {""filter"": ""datum.Quarter === 'Q1-2021'""},
+        {""sort"": [{""field"": ""Net Income"", ""order"": ""descending""}]}
+      ],
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {""field"": ""Company"", ""type"": ""nominal"", ""sort"": null},
+        ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""},
+        ""tooltip"": [{""field"": ""Company""}, {""field"": ""Net Income"", ""type"": ""quantitative""}]
+      },
+      ""config"": {
+        ""view"": {""width"": 800, ""height"": 600},
+        ""mark"": {""tooltip"": {""content"": ""encoding""}}
+      }
+    };
+
+    vegaEmbed(""#vis"", spec, { ""actions"": false }).then(function(result) {
+      const view = result.view;
+      const bars = document.querySelectorAll('.bar');
+
+      let dragIndex = null;
+      let dragRect = null;
+
+      view.addEventListener('mousedown', function(event) {
+        if (event.target.classList.contains('bar')) {
+          dragIndex = Array.prototype.indexOf.call(bars, event.target);
+          dragRect = event.target.getBoundingClientRect();
+        }
+      });
+
+      document.addEventListener('mousemove', function(event) {
+        if (dragIndex !== null) {
+          const rect = event.target.getBoundingClientRect();
+          const x = event.clientX - rect.left;
+          const y = event.clientY - rect.top;
+          const index = Math.floor(y / dragRect.height);
+
+          if (index >= 0 && index < bars.length) {
+            const temp = bars[dragIndex].style.transform;
+            bars[dragIndex].style.transform = `translateY(${(index - dragIndex) * dragRect.height}px)`;
+            bars[index].style.transform = temp;
+            dragIndex = index;
+          }
+        }
+      });
+
+      document.addEventListener('mouseup', function() {
+        dragIndex = null;
+        dragRect = null;
+      });
+    });
+  </script>
+</body>
+</html>
+```
+
+This updated code adds a basic drag and drop functionality to the bars in the chart. However, this is a simplified example and does not handle all edge cases. You may need to modify and extend this code to fit your specific requirements."
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Bar Chart that visualizes the Net Income for each Company in Q1-2021. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Net Income.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Net Income Bar Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    /* Add some basic styling to our chart */
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <select id=""sort-order"">
+    <option value=""descending"">Descending</option>
+    <option value=""ascending"">Ascending</option>
+  </select>
+
+  <script>
+    const opts = {
+      mode: ""vega-lite"",
+      renderer: ""canvas"",
+    };
+
+    vegaEmbed(""#vis"", {
+      $schema: ""https://vega.github.io/schema/vega-lite/v5.json"",
+      data: {
+        url: ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+        format: { type: ""csv"" },
+      },
+      transform: [
+        {
+          filter: ""datum.Quarter === 'Q1-2021'"",
+        },
+      ],
+      mark: ""bar"",
+      encoding: {
+        x: {
+          field: ""Company"",
+          type: ""nominal"",
+          sort: { field: ""Net Income"", order: ""descending"" },
+        },
+        y: {
+          field: ""Net Income"",
+          type: ""quantitative"",
+        },
+        tooltip: [
+          { field: ""Company"", type: ""nominal"" },
+          { field: ""Net Income"", type: ""quantitative"" },
+        ],
+      },
+      config: {
+        view: { stroke: null },
+        axis: { domainWidth: 1 },
+      },
+      width: 800,
+      height: 600,
+    }, opts);
+
+    document.getElementById(""sort-order"").addEventListener(""change"", (e) => {
+      const sortOrder = e.target.value;
+      const view = document.querySelector(""#vis"").querySelector("".vega-embed"");
+      const vlSpec = view.querySelector("".vega-embed"").querySelector(""script"").innerHTML;
+      const vlJson = JSON.parse(vlSpec);
+      vlJson.encoding.x.sort.order = sortOrder;
+      vegaEmbed(""#vis"", vlJson, opts);
+    });
+  </script>
+</body>
+</html>
+```"

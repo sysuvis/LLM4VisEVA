@@ -1,0 +1,1207 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a Scatterplot that visualizes the relationship between Domestic Consumption and Exports. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Coffee Consumption Scatterplot</title>
+    <style>
+        /* set the CSS */
+        body { font: 12px Arial;}
+
+        /* style the lines */
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 1.5px;
+        }
+
+        /* style the circles */
+        .dot {
+            fill: steelblue;
+            stroke: #fff;
+        }
+
+        /* style the text */
+        .text {
+            font-size: 12px;
+        }
+
+        /* style the tooltip */
+        .tooltip {
+            position: absolute;
+            pointer-events: none;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        // set the dimensions and margins of the graph
+        var margin = {top: 20, right: 20, bottom: 30, left: 40},
+            width = 800 - margin.left - margin.right,
+            height = 600 - margin.top - margin.bottom;
+
+        // append the svg object to the body of the page
+        var svg = d3.select(""body"")
+            .select(""svg"")
+            .attr(""width"", width + margin.left + margin.right)
+            .attr(""height"", height + margin.top + margin.bottom)
+            .append(""g"")
+            .attr(""transform"", ""translate("" + margin.left + "","" + margin.top + "")"");
+
+        // read the data
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv"").then(function(data) {
+
+            // convert data types
+            data.forEach(function(d) {
+                d[""Domestic Consumption""] = +d[""Domestic Consumption""];
+                d.Exports = +d.Exports;
+            });
+
+            // create scales
+            var xScale = d3.scaleLinear()
+                .domain([0, d3.max(data, function(d) { return d[""Domestic Consumption""]; })])
+                .range([0, width]);
+
+            var yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, function(d) { return d.Exports; })])
+                .range([height, 0]);
+
+            // create axes
+            var xAxis = d3.axisBottom(xScale);
+            var yAxis = d3.axisLeft(yScale);
+
+            // add the x-axis
+            svg.append(""g"")
+                .attr(""transform"", ""translate(0,"" + height + "")"")
+                .call(xAxis);
+
+            // add the y-axis
+            svg.append(""g"")
+                .call(yAxis);
+
+            // add the x-axis label
+            svg.append(""text"")
+                .attr(""transform"", ""translate("" + (width / 2) + "" ,"" + (height + margin.bottom - 5) + "")"")
+                .style(""text-anchor"", ""middle"")
+                .text(""Domestic Consumption"");
+
+            // add the y-axis label
+            svg.append(""text"")
+                .attr(""transform"", ""rotate(-90)"")
+                .attr(""y"", 6)
+                .attr(""dy"", "".71em"")
+                .style(""text-anchor"", ""end"")
+                .text(""Exports"");
+
+            // add the dots
+            svg.selectAll(""dot"")
+                .data(data)
+                .enter().append(""circle"")
+                .attr(""class"", ""dot"")
+                .attr(""r"", 5)
+                .attr(""cx"", function(d) { return xScale(d[""Domestic Consumption""]); })
+                .attr(""cy"", function(d) { return yScale(d.Exports); })
+                .on(""mouseover"", function(event, d) {
+                    var xPosition = xScale(d[""Domestic Consumption""]);
+                    var yPosition = yScale(d.Exports);
+
+                    // add the tooltip
+                    var tooltip = svg.append(""g"")
+                        .attr(""class"", ""tooltip"")
+                        .style(""opacity"", 1);
+
+                    tooltip.append(""rect"")
+                        .attr(""x"", xPosition - 50)
+                        .attr(""y"", yPosition - 25)
+                        .attr(""width"", 100)
+                        .attr(""height"", 50)
+                        .attr(""fill"", ""white"")
+                        .attr(""rx"", 5)
+                        .attr(""ry"", 5);
+
+                    tooltip.append(""text"")
+                        .attr(""x"", xPosition - 45)
+                        .attr(""y"", yPosition - 10)
+                        .text(""Domestic Consumption: "" + d[""Domestic Consumption""]);
+
+                    tooltip.append(""text"")
+                        .attr(""x"", xPosition - 45)
+                        .attr(""y"", yPosition)
+                        .text(""Exports: "" + d.Exports);
+                })
+                .on(""mouseout"", function() {
+                    // remove the tooltip
+                    d3.select("".tooltip"").remove();
+                });
+        });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a Scatterplot that visualizes the relationship between Domestic Consumption and Exports. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Coffee Consumption Scatterplot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .axis text {
+      font-size: 12px;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+    }
+    .brush .extent {
+      fill-opacity: .3;
+      stroke: #fff;
+      shape-rendering: crispEdges;
+    }
+  </style>
+</head>
+<body>
+  <svg width=""800"" height=""600""></svg>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 800 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+    const svg = d3.select(""svg"")
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+    const xScale = d3.scaleLinear().range([0, width]);
+    const yScale = d3.scaleLinear().range([height, 0]);
+    const xAxis = d3.axisBottom(xScale);
+    const yAxis = d3.axisLeft(yScale);
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv"")
+      .then(data => {
+        data.forEach(d => {
+          d[""Domestic Consumption""] = +d[""Domestic Consumption""];
+          d.Exports = +d.Exports;
+        });
+        xScale.domain(d3.extent(data, d => d[""Domestic Consumption""]));
+        yScale.domain(d3.extent(data, d => d.Exports));
+        svg.append(""g"")
+          .attr(""transform"", `translate(0, ${height})`)
+          .call(xAxis);
+        svg.append(""g"")
+          .call(yAxis);
+        const brush = d3.brush()
+          .extent([[0, 0], [width, height]])
+          .on(""brush end"", brushed);
+        svg.append(""g"")
+          .call(brush);
+        svg.selectAll(""circle"")
+          .data(data)
+          .enter()
+          .append(""circle"")
+          .attr(""cx"", d => xScale(d[""Domestic Consumption""]))
+          .attr(""cy"", d => yScale(d.Exports))
+          .attr(""r"", 4);
+        function brushed(event) {
+          const selection = event.selection;
+          if (selection) {
+            svg.selectAll(""circle"")
+              .classed(""selected"", d => {
+                const x = xScale(d[""Domestic Consumption""]);
+                const y = yScale(d.Exports);
+                return x >= selection[0][0] && x <= selection[1][0] && y >= selection[0][1] && y <= selection[1][1];
+              });
+          } else {
+            svg.selectAll(""circle"")
+              .classed(""selected"", false);
+          }
+        }
+      });
+  </script>
+</body>
+</html>
+```"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a Scatterplot that visualizes the relationship between Domestic Consumption and Exports. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Coffee Consumption Scatterplot</title>
+    <style>
+        /* set the CSS */
+        body { 
+            font: 12px Arial;
+        }
+        
+        path { 
+            stroke: steelblue;
+            stroke-opacity: .6;
+            fill: none;
+        }
+        
+        .brush .extent {
+            fill-opacity: .3;
+            stroke: #fff;
+            shape-rendering: crispEdges;
+        }
+        
+        circle {
+            fill: steelblue;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        // set the dimensions and margins of the graph
+        var margin = {top: 20, right: 20, bottom: 30, left: 40},
+            width = 800 - margin.left - margin.right,
+            height = 600 - margin.top - margin.bottom;
+
+        // append the svg object to the body of the page
+        var svg = d3.select(""svg"")
+            .attr(""width"", width + margin.left + margin.right)
+            .attr(""height"", height + margin.top + margin.bottom)
+            .append(""g"")
+            .attr(""transform"", ""translate("" + margin.left + "","" + margin.top + "")"");
+
+        // Read the data
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv"").then(function(data) {
+            // Convert data types
+            data.forEach(function(d) {
+                d[""Domestic Consumption""] = +d[""Domestic Consumption""];
+                d.Exports = +d.Exports;
+            });
+
+            // Add zooming functionality
+            var zoom = d3.zoom()
+                .scaleExtent([1, 10])
+                .extent([[-Infinity, -Infinity], [Infinity, Infinity]])
+                .on(""zoom"", zoomed);
+
+            svg.call(zoom);
+
+            // Add X axis
+            var x = d3.scaleLinear()
+                .domain([0, d3.max(data, function(d) { return d[""Domestic Consumption""]; })])
+                .range([ 0, width ]);
+
+            svg.append(""g"")
+                .attr(""transform"", ""translate(0,"" + height + "")"")
+                .call(d3.axisBottom(x));
+
+            // Add Y axis
+            var y = d3.scaleLinear()
+                .domain([0, d3.max(data, function(d) { return d.Exports; })])
+                .range([ height, 0]);
+
+            svg.append(""g"")
+                .call(d3.axisLeft(y));
+
+            // Add dots
+            svg.selectAll(""circle"")
+                .data(data)
+                .enter()
+                .append(""circle"")
+                .attr(""cx"", function (d) { return x(d[""Domestic Consumption""]); } )
+                .attr(""cy"", function (d) { return y(d.Exports); } )
+                .attr(""r"", 4);
+
+            // Add title
+            svg.append(""text"")
+                .attr(""x"", (width / 2))             
+                .attr(""y"", 0 - (margin.top / 2))
+                .attr(""text-anchor"", ""middle"")  
+                .style(""font-size"", ""16px"") 
+                .text(""Relationship between Domestic Consumption and Exports"");
+
+            // Add labels
+            svg.append(""text"")
+                .attr(""x"", (width / 2))             
+                .attr(""y"", height + (margin.bottom / 2))
+                .attr(""text-anchor"", ""middle"")  
+                .style(""font-size"", ""12px"") 
+                .text(""Domestic Consumption"");
+
+            svg.append(""text"")
+                .attr(""transform"", ""rotate(-90)"")
+                .attr(""x"", -(height / 2))             
+                .attr(""y"", 0 - (margin.left / 2))
+                .attr(""text-anchor"", ""middle"")  
+                .style(""font-size"", ""12px"") 
+                .text(""Exports"");
+
+            // zooming function
+            function zoomed() {
+                svg.selectAll(""circle"")
+                    .attr(""cx"", function (d) { return x(d[""Domestic Consumption""]) * d3.event.transform.k + d3.event.transform.x; } )
+                    .attr(""cy"", function (d) { return y(d.Exports) * d3.event.transform.k + d3.event.transform.y; } );
+
+                svg.selectAll(""g"")
+                    .attr(""transform"", d3.event.transform);
+            }
+        });
+    </script>
+</body>
+</html>
+```"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Domestic Consumption and Exports. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Coffee Consumption Scatterplot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .tooltip {
+      position: absolute;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 5px;
+      visibility: hidden;
+    }
+  </style>
+</head>
+<body>
+  <svg width=""800"" height=""600""></svg>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+    const width = 800 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+
+    const svg = d3.select(""svg"")
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv"")
+      .then(data => {
+        data.forEach(d => {
+          d[""Domestic Consumption""] = +d[""Domestic Consumption""];
+          d.Exports = +d.Exports;
+        });
+
+        const xScale = d3.scaleLinear()
+          .domain([0, d3.max(data, d => d[""Domestic Consumption""])])
+          .range([0, width]);
+
+        const yScale = d3.scaleLinear()
+          .domain([0, d3.max(data, d => d.Exports)])
+          .range([height, 0]);
+
+        const xAxis = d3.axisBottom(xScale);
+        const yAxis = d3.axisLeft(yScale);
+
+        svg.append(""g"")
+          .attr(""transform"", `translate(0, ${height})`)
+          .call(xAxis);
+
+        svg.append(""g"")
+          .call(yAxis);
+
+        svg.append(""text"")
+          .attr(""x"", width / 2)
+          .attr(""y"", height + 30)
+          .attr(""text-anchor"", ""middle"")
+          .text(""Domestic Consumption"");
+
+        svg.append(""text"")
+          .attr(""x"", -30)
+          .attr(""y"", height / 2)
+          .attr(""text-anchor"", ""middle"")
+          .attr(""transform"", ""rotate(-90)"")
+          .text(""Exports"");
+
+        const tooltip = d3.select(""body"")
+          .append(""div"")
+          .attr(""class"", ""tooltip"")
+          .style(""opacity"", 0);
+
+        svg.selectAll(""circle"")
+          .data(data)
+          .enter()
+          .append(""circle"")
+          .attr(""cx"", d => xScale(d[""Domestic Consumption""]))
+          .attr(""cy"", d => yScale(d.Exports))
+          .attr(""r"", 5)
+          .on(""mouseover"", (event, d) => {
+            tooltip.transition()
+              .duration(200)
+              .style(""opacity"", 0.9);
+            tooltip.html(`Country: ${d.Country}<br>Domestic Consumption: ${d[""Domestic Consumption""]}<br>Exports: ${d.Exports}`)
+              .style(""left"", (event.pageX) + ""px"")
+              .style(""top"", (event.pageY - 28) + ""px"");
+          })
+          .on(""mouseout"", () => {
+            tooltip.transition()
+              .duration(500)
+              .style(""opacity"", 0);
+          })
+          .on(""click"", (event, d) => {
+            const url = `https://www.google.com/search?q=${d.Country}+coffee+consumption`;
+            window.open(url, ""_blank"");
+          });
+      });
+  </script>
+</body>
+</html>
+```"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a Scatterplot with query widgets showing the Domestic Consumption and Exports of the given dataset. Add a slider to represent the Year.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Coffee Consumption Scatterplot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .axis text {
+      font-size: 12px;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+    }
+  </style>
+</head>
+<body>
+  <div id=""chart""></div>
+  <div id=""slider""></div>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 500 - margin.left - margin.right;
+    const height = 400 - margin.top - margin.bottom;
+
+    const svg = d3.select(""#chart"")
+      .append(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    const slider = d3.select(""#slider"")
+      .append(""input"")
+      .attr(""type"", ""range"")
+      .attr(""min"", 0)
+      .attr(""max"", 0)
+      .attr(""value"", 0);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv"").then(data => {
+      data.forEach(d => {
+        d.Year = +d.Year;
+        d[""Domestic Consumption""] = +d[""Domestic Consumption""];
+        d.Exports = +d.Exports;
+      });
+
+      const years = Array.from(new Set(data.map(d => d.Year)));
+      slider.attr(""min"", 0)
+        .attr(""max"", years.length - 1)
+        .attr(""value"", 0);
+
+      const xScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d[""Domestic Consumption""])])
+        .range([0, width]);
+
+      const yScale = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d.Exports)])
+        .range([height, 0]);
+
+      const xAxis = d3.axisBottom(xScale)
+        .ticks(5);
+
+      const yAxis = d3.axisLeft(yScale)
+        .ticks(5);
+
+      svg.append(""g"")
+        .attr(""transform"", `translate(0, ${height})`)
+        .call(xAxis);
+
+      svg.append(""g"")
+        .call(yAxis);
+
+      svg.append(""text"")
+        .attr(""transform"", `translate(${width / 2}, ${height + margin.bottom - 5})`)
+        .style(""text-anchor"", ""middle"")
+        .text(""Domestic Consumption"");
+
+      svg.append(""text"")
+        .attr(""transform"", `rotate(-90) translate(${-height / 2}, ${-margin.left + 15})`)
+        .style(""text-anchor"", ""middle"")
+        .text(""Exports"");
+
+      const points = svg.selectAll(""circle"")
+        .data(data.filter(d => d.Year === years[0]))
+        .enter()
+        .append(""circle"")
+        .attr(""cx"", d => xScale(d[""Domestic Consumption""]))
+        .attr(""cy"", d => yScale(d.Exports))
+        .attr(""r"", 5);
+
+      slider.on(""input"", () => {
+        const yearIndex = +slider.property(""value"");
+        const year = years[yearIndex];
+        points.data(data.filter(d => d.Year === year))
+          .transition()
+          .duration(500)
+          .attr(""cx"", d => xScale(d[""Domestic Consumption""]))
+          .attr(""cy"", d => yScale(d.Exports));
+      });
+    });
+  </script>
+</body>
+</html>
+```"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a Scatterplot showing the Domestic Consumption of USA. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Coffee Consumption Scatterplot</title>
+  <style>
+    /* Add some basic styling to our chart */
+    .chart {
+      width: 800px;
+      height: 600px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <svg class=""chart""></svg>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    // Set up the dimensions of our chart
+    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+    const width = 800 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+
+    // Create the SVG element
+    const svg = d3.select('.chart')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+    // Load the data
+    d3.csv('https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv')
+      .then(data => {
+        // Filter the data for USA
+        const usaData = data.filter(d => d.Country === 'USA');
+
+        // Convert the data types
+        usaData.forEach(d => {
+          d['Year'] = +d['Year'];
+          d['Domestic Consumption'] = +d['Domestic Consumption'];
+        });
+
+        // Create the scales
+        const xScale = d3.scaleLinear()
+          .domain(d3.extent(usaData, d => d['Year']))
+          .range([0, width]);
+
+        const yScale = d3.scaleLinear()
+          .domain(d3.extent(usaData, d => d['Domestic Consumption']))
+          .range([height, 0]);
+
+        // Create the line generator
+        const line = d3.line()
+          .x(d => xScale(d['Year']))
+          .y(d => yScale(d['Domestic Consumption']));
+
+        // Create the scatterplot
+        const points = svg.selectAll('circle')
+          .data(usaData)
+          .enter()
+          .append('circle')
+          .attr('cx', d => xScale(d['Year']))
+          .attr('cy', d => yScale(d['Domestic Consumption']))
+          .attr('r', 5)
+          .attr('fill', 'blue');
+
+        // Create the line
+        const path = svg.append('path')
+          .datum(usaData)
+          .attr('d', line)
+          .attr('stroke', 'blue')
+          .attr('stroke-width', 2)
+          .attr('fill', 'none');
+
+        // Add transitions
+        let index = 0;
+        const transition = () => {
+          points.transition()
+            .duration(1000)
+            .attr('cx', d => xScale(d['Year']))
+            .attr('cy', d => yScale(d['Domestic Consumption']));
+
+          path.transition()
+            .duration(1000)
+            .attrTween('d', () => {
+              const interpolate = d3.interpolateNumber(0, 1);
+              return t => {
+                const interpolatedData = usaData.slice(0, Math.floor(interpolate(t) * usaData.length));
+                return line(interpolatedData);
+              };
+            });
+
+          index++;
+          if (index < usaData.length) {
+            setTimeout(transition, 1000);
+          }
+        };
+
+        transition();
+
+        // Add axes
+        const xAxis = d3.axisBottom(xScale);
+        const yAxis = d3.axisLeft(yScale);
+
+        svg.append('g')
+          .attr('transform', `translate(0, ${height})`)
+          .call(xAxis);
+
+        svg.append('g')
+          .call(yAxis);
+      });
+  </script>
+</body>
+</html>
+```"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Domestic Consumption of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Coffee Consumption Line Chart</title>
+    <style>
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 2px;
+        }
+
+        .line:hover {
+            stroke-width: 4px;
+        }
+
+        .axis text {
+            font-size: 12px;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #777;
+            stroke-width: 1;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv"")
+            .then(data => {
+                data.forEach(d => {
+                    d.Year = +d.Year;
+                    d[""Domestic Consumption""] = +d[""Domestic Consumption""];
+                });
+
+                const countries = [...new Set(data.map(d => d.Country))];
+
+                const xScale = d3.scaleLinear()
+                    .domain(d3.extent(data, d => d.Year))
+                    .range([0, width]);
+
+                const yScale = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d[""Domestic Consumption""])])
+                    .range([height, 0]);
+
+                const line = d3.line()
+                    .x(d => xScale(d.Year))
+                    .y(d => yScale(d[""Domestic Consumption""]));
+
+                svg.selectAll(""path"")
+                    .data(countries)
+                    .enter()
+                    .append(""path"")
+                    .datum(d => data.filter(f => f.Country === d))
+                    .attr(""class"", ""line"")
+                    .attr(""d"", line)
+                    .attr(""stroke"", (d, i) => d3.schemeCategory10[i])
+                    .on(""mouseover"", function(event, d) {
+                        d3.select(this)
+                            .attr(""stroke-width"", 4);
+                    })
+                    .on(""mouseout"", function(event, d) {
+                        d3.select(this)
+                            .attr(""stroke-width"", 2);
+                    });
+
+                svg.append(""g"")
+                    .attr(""transform"", `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScale));
+
+                svg.append(""g"")
+                    .call(d3.axisLeft(yScale));
+
+                svg.append(""text"")
+                    .attr(""transform"", `translate(${width / 2}, ${height + 30})`)
+                    .attr(""text-anchor"", ""middle"")
+                    .text(""Year"");
+
+                svg.append(""text"")
+                    .attr(""transform"", `rotate(-90) translate(${-height / 2}, ${-30})`)
+                    .attr(""text-anchor"", ""middle"")
+                    .text(""Domestic Consumption"");
+            });
+    </script>
+</body>
+</html>
+```"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a Bar Chart that visualizes the Domestic Consumption for each Country in 2017. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Coffee Consumption Bar Chart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .chart {
+            margin: 50px auto;
+        }
+        
+        .axis text {
+            font-size: 12px;
+        }
+        
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #777;
+            stroke-width: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class=""chart"" id=""chart""></div>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = 800 - margin.left - margin.right;
+        const height = 500 - margin.top - margin.bottom;
+        
+        const svg = d3.select(""#chart"")
+            .append(""svg"")
+            .attr(""width"", width + margin.left + margin.right)
+            .attr(""height"", height + margin.top + margin.bottom)
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+        
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv"").then(data => {
+            data.forEach(d => {
+                d[""Year""] = +d[""Year""];
+                d[""Domestic Consumption""] = +d[""Domestic Consumption""];
+            });
+            
+            const filteredData = data.filter(d => d[""Year""] === 2017);
+            
+            const x = d3.scaleBand()
+                .domain(filteredData.map(d => d[""Country""]))
+                .range([0, width])
+                .padding(0.2);
+            
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(filteredData, d => d[""Domestic Consumption""])])
+                .range([height, 0]);
+            
+            svg.append(""g"")
+                .attr(""transform"", `translate(0, ${height})`)
+                .call(d3.axisBottom(x));
+            
+            svg.append(""g"")
+                .call(d3.axisLeft(y));
+            
+            svg.selectAll(""bar"")
+                .data(filteredData)
+                .enter()
+                .append(""rect"")
+                .attr(""x"", d => x(d[""Country""]))
+                .attr(""y"", d => y(d[""Domestic Consumption""]))
+                .attr(""width"", x.bandwidth())
+                .attr(""height"", d => height - y(d[""Domestic Consumption""]));
+            
+            const zoom = d3.zoom()
+                .scaleExtent([1, 10])
+                .extent([[-Infinity, -Infinity], [Infinity, Infinity]])
+                .on(""zoom"", zoomed);
+            
+            svg.call(zoom);
+            
+            function zoomed() {
+                svg.selectAll(""rect"")
+                    .attr(""transform"", d3.event.transform);
+                
+                svg.select("".x-axis"")
+                    .attr(""transform"", d3.event.transform);
+                
+                svg.select("".y-axis"")
+                    .attr(""transform"", d3.event.transform);
+            }
+        });
+    </script>
+</body>
+</html>
+```"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a Bar Chart that visualizes the Domestic Consumption for each Country in 2017. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Coffee Consumption Bar Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .chart {
+      width: 800px;
+      height: 600px;
+      border: 1px solid black;
+    }
+    .bar {
+      fill: steelblue;
+    }
+    .bar:hover {
+      fill: brown;
+    }
+    .axis text {
+      font-size: 12px;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+    }
+  </style>
+</head>
+<body>
+  <svg class=""chart""></svg>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 800 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+    const svg = d3.select(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv"")
+      .then(data => {
+        data.forEach(d => {
+          d[""Year""] = +d[""Year""];
+          d[""Domestic Consumption""] = +d[""Domestic Consumption""];
+        });
+
+        const filteredData = data.filter(d => d[""Year""] === 2017);
+
+        const x = d3.scaleBand()
+          .domain(filteredData.map(d => d[""Country""]))
+          .range([0, width])
+          .padding(0.2);
+
+        const y = d3.scaleLinear()
+          .domain([0, d3.max(filteredData, d => d[""Domestic Consumption""])])
+          .range([height, 0]);
+
+        svg.append(""g"")
+          .attr(""transform"", `translate(0, ${height})`)
+          .call(d3.axisBottom(x));
+
+        svg.append(""g"")
+          .call(d3.axisLeft(y));
+
+        const bars = svg.selectAll(""rect"")
+          .data(filteredData)
+          .enter()
+          .append(""rect"")
+          .attr(""class"", ""bar"")
+          .attr(""x"", d => x(d[""Country""]))
+          .attr(""y"", d => y(d[""Domestic Consumption""]))
+          .attr(""width"", x.bandwidth())
+          .attr(""height"", d => height - y(d[""Domestic Consumption""]));
+
+        let drag = d3.drag()
+          .on(""start"", dragstarted)
+          .on(""drag"", dragged)
+          .on(""end"", dragended);
+
+        bars.call(drag);
+
+        function dragstarted(event, d) {
+          d3.select(this).raise();
+        }
+
+        function dragged(event, d) {
+          const newX = event.x - x.bandwidth() / 2;
+          const newY = event.y;
+          d3.select(this)
+            .attr(""x"", newX)
+            .attr(""y"", newY);
+        }
+
+        function dragended(event, d) {
+          const country = d[""Country""];
+          const newX = event.x - x.bandwidth() / 2;
+          const index = filteredData.findIndex(d => d[""Country""] === country);
+          filteredData.splice(index, 1);
+          filteredData.splice(Math.floor(newX / x.bandwidth()), 0, d);
+          x.domain(filteredData.map(d => d[""Country""]));
+          svg.selectAll(""rect"")
+            .transition()
+            .duration(500)
+            .attr(""x"", d => x(d[""Country""]));
+          svg.selectAll(""g"")
+            .transition()
+            .duration(500)
+            .call(d3.axisBottom(x));
+        }
+      });
+  </script>
+</body>
+</html>
+```"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a Bar Chart that visualizes the Domestic Consumption for each Country in 2017. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Domestic Consumption.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Coffee Consumption Bar Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .chart {
+      margin: 40px auto;
+    }
+    .axis text {
+      font-size: 12px;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+    }
+    .bar {
+      fill: steelblue;
+    }
+    .bar:hover {
+      fill: brown;
+    }
+    .sort-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class=""chart""></div>
+  <button class=""sort-button"" id=""sort-ascending"">Sort Ascending</button>
+  <button class=""sort-button"" id=""sort-descending"">Sort Descending</button>
+
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 500 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
+
+    const svg = d3.select("".chart"")
+      .append(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv"")
+      .then(data => {
+        data.forEach(d => {
+          d[""Year""] = +d[""Year""];
+          d[""Domestic Consumption""] = +d[""Domestic Consumption""];
+        });
+
+        const filteredData = data.filter(d => d[""Year""] === 2017);
+
+        const xScale = d3.scaleBand()
+          .domain(filteredData.map(d => d[""Country""]))
+          .range([0, width])
+          .padding(0.2);
+
+        const yScale = d3.scaleLinear()
+          .domain([0, d3.max(filteredData, d => d[""Domestic Consumption""])])
+          .range([height, 0]);
+
+        svg.append(""g"")
+          .attr(""transform"", `translate(0, ${height})`)
+          .call(d3.axisBottom(xScale));
+
+        svg.append(""g"")
+          .call(d3.axisLeft(yScale));
+
+        const bars = svg.selectAll(""rect"")
+          .data(filteredData)
+          .enter()
+          .append(""rect"")
+          .attr(""x"", d => xScale(d[""Country""]))
+          .attr(""y"", d => yScale(d[""Domestic Consumption""]))
+          .attr(""width"", xScale.bandwidth())
+          .attr(""height"", d => height - yScale(d[""Domestic Consumption""]));
+
+        d3.select(""#sort-ascending"")
+          .on(""click"", () => {
+            filteredData.sort((a, b) => a[""Domestic Consumption""] - b[""Domestic Consumption""]);
+            xScale.domain(filteredData.map(d => d[""Country""]));
+            bars.transition()
+              .duration(1000)
+              .attr(""x"", d => xScale(d[""Country""]));
+          });
+
+        d3.select(""#sort-descending"")
+          .on(""click"", () => {
+            filteredData.sort((a, b) => b[""Domestic Consumption""] - a[""Domestic Consumption""]);
+            xScale.domain(filteredData.map(d => d[""Country""]));
+            bars.transition()
+              .duration(1000)
+              .attr(""x"", d => xScale(d[""Country""]));
+          });
+      });
+  </script>
+</body>
+</html>
+```"

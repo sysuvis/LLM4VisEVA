@@ -1,0 +1,550 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Enrollment Number and Revenue, and a Bar Chart on the right that displays Education Level versus Enrollment Number.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Educational Enrollment Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: row;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis"">
+    <div id=""scatterplot""></div>
+    <div id=""barchart""></div>
+  </div>
+
+  <script>
+    const scatterplotSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"" },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Revenue"", ""type"": ""quantitative""}
+      }
+    };
+
+    const barchartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"" },
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {""field"": ""Education Level"", ""type"": ""nominal"", ""sort"": ""-y""},
+        ""y"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""}
+      }
+    };
+
+    vegaEmbed(""#scatterplot"", scatterplotSpec);
+    vegaEmbed(""#barchart"", barchartSpec);
+  </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Enrollment Number and Revenue, and a Bar Chart on the right that displays Education Level versus Enrollment Number. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enrollment and Revenue Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: row;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis"">
+    <div id=""scatterplot""></div>
+    <div id=""barchart""></div>
+  </div>
+
+  <script>
+    const scatterplotSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"" },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Revenue"", ""type"": ""quantitative""},
+        ""color"": {""field"": ""Education Level"", ""type"": ""nominal""}
+      },
+      ""selection"": {
+        ""brush"": {""type"": ""interval"", ""encodings"": [""x""]}
+      }
+    };
+
+    const barchartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"" },
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {""field"": ""Education Level"", ""type"": ""nominal"", ""axis"": {""labelAngle"": 0}},
+        ""y"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+        ""color"": {""condition"": {""test"": ""datum.Enrollment_Number_brush"", ""value"": ""steelblue""}, ""value"": ""lightgray""}
+      },
+      ""params"": [
+        {""name"": ""brush"", ""select"": ""brush"", ""value"": []}
+      ]
+    };
+
+    vegaEmbed(""#scatterplot"", scatterplotSpec, { ""actions"": false });
+    vegaEmbed(""#barchart"", barchartSpec, { ""actions"": false });
+
+    const scatterplotView = document.querySelector(""#scatterplot"").vegaView;
+    const barchartView = document.querySelector(""#barchart"").vegaView;
+
+    scatterplotView.addSignalListener(""brush"", (name, value) => {
+      barchartView.signal(""brush"", value);
+      barchartView.run();
+    });
+  </script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Enrollment Number , while the pie chart represents the distribution of Revenue.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Educational Enrollment Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const lineChartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"" },
+      ""mark"": ""line"",
+      ""encoding"": {
+        ""x"": {""field"": ""Quarter"", ""type"": ""nominal""},
+        ""y"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""}
+      }
+    };
+
+    const pieChartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"" },
+      ""mark"": ""arc"",
+      ""encoding"": {
+        ""theta"": {""field"": ""Revenue"", ""type"": ""quantitative"", ""stack"": true},
+        ""color"": {""field"": ""Education Level"", ""type"": ""nominal""}
+      }
+    };
+
+    vegaEmbed(""#vis"", lineChartSpec, { ""actions"": false });
+    vegaEmbed(""#vis"", pieChartSpec, { ""actions"": false });
+  </script>
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Enrollment Number , while the pie chart represents the distribution of Revenue. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Revenue for the selected group.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enrollment and Revenue Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const vlSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""vconcat"": [
+        {
+          ""mark"": ""line"",
+          ""encoding"": {
+            ""x"": {""field"": ""Quarter"", ""type"": ""nominal""},
+            ""y"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+            ""tooltip"": [
+              {""field"": ""Quarter"", ""type"": ""nominal""},
+              {""field"": ""Enrollment Number"", ""type"": ""quantitative""}
+            ]
+          },
+          ""selection"": {
+            ""brush"": {""type"": ""interval"", ""encodings"": [""x""]}
+          }
+        },
+        {
+          ""mark"": ""arc"",
+          ""encoding"": {
+            ""theta"": {""field"": ""Revenue"", ""type"": ""quantitative"", ""stack"": true},
+            ""color"": {""field"": ""Education Level"", ""type"": ""nominal""}
+          },
+          ""transform"": [
+            {""filter"": {""selection"": ""brush""}}
+          ]
+        }
+      ]
+    };
+
+    vegaEmbed(""#vis"", vlSpec);
+  </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Enrollment Number, Revenue, and Profit. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatterplot Matrix</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    /* Add some basic styling to our embed */
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""transform"": [
+        {""filter"": ""isValid(datum['Enrollment Number'])""}
+      ],
+      ""spacing"": 50,
+      ""vconcat"": [
+        {
+          ""mark"": ""point"",
+          ""selection"": {
+            ""brush"": {
+              ""type"": ""interval"",
+              ""encodings"": [""x"", ""y""],
+              ""on"": ""[mousedown[!event.shiftKey], mouseup] > mousemove"",
+              ""translate"": ""[mousedown[!event.shiftKey], mouseup] > mousemove!"",
+              ""zoom"": ""![event.shiftKey]""
+            }
+          },
+          ""encoding"": {
+            ""x"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Revenue"", ""type"": ""quantitative""},
+            ""color"": {
+              ""condition"": {
+                ""test"": ""brush"",
+                ""field"": ""Enrollment Number"",
+                ""type"": ""nominal""
+              },
+              ""value"": ""grey""
+            }
+          }
+        },
+        {
+          ""mark"": ""point"",
+          ""selection"": {
+            ""brush"": {
+              ""type"": ""interval"",
+              ""encodings"": [""x"", ""y""],
+              ""on"": ""[mousedown[!event.shiftKey], mouseup] > mousemove"",
+              ""translate"": ""[mousedown[!event.shiftKey], mouseup] > mousemove!"",
+              ""zoom"": ""![event.shiftKey]""
+            }
+          },
+          ""encoding"": {
+            ""x"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Profit"", ""type"": ""quantitative""},
+            ""color"": {
+              ""condition"": {
+                ""test"": ""brush"",
+                ""field"": ""Enrollment Number"",
+                ""type"": ""nominal""
+              },
+              ""value"": ""grey""
+            }
+          }
+        },
+        {
+          ""mark"": ""point"",
+          ""selection"": {
+            ""brush"": {
+              ""type"": ""interval"",
+              ""encodings"": [""x"", ""y""],
+              ""on"": ""[mousedown[!event.shiftKey], mouseup] > mousemove"",
+              ""translate"": ""[mousedown[!event.shiftKey], mouseup] > mousemove!"",
+              ""zoom"": ""![event.shiftKey]""
+            }
+          },
+          ""encoding"": {
+            ""x"": {""field"": ""Revenue"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Profit"", ""type"": ""quantitative""},
+            ""color"": {
+              ""condition"": {
+                ""test"": ""brush"",
+                ""field"": ""Enrollment Number"",
+                ""type"": ""nominal""
+              },
+              ""value"": ""grey""
+            }
+          }
+        }
+      ]
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a brushable Scatterplot that visualizes the relationship between Enrollment Number and Revenue. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Brushable Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""width"": 600,
+      ""height"": 600,
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Revenue"", ""type"": ""quantitative""},
+        ""tooltip"": [
+          {""field"": ""Quarter"", ""type"": ""nominal""},
+          {""field"": ""Education Level"", ""type"": ""nominal""},
+          {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+          {""field"": ""Revenue"", ""type"": ""quantitative""},
+          {""field"": ""Operating Costs"", ""type"": ""quantitative""},
+          {""field"": ""Profit"", ""type"": ""quantitative""},
+          {""field"": ""Average Tuition"", ""type"": ""quantitative""},
+          {""field"": ""Number of Staff"", ""type"": ""quantitative""},
+          {""field"": ""Graduation Rate"", ""type"": ""quantitative""}
+        ]
+      },
+      ""selection"": {
+        ""brush"": {""type"": ""interval"", ""encodings"": [""x"", ""y""]}
+      }
+    };
+
+    const spec2 = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""width"": 200,
+      ""height"": 600,
+      ""data"": {
+        ""name"": ""brushed_data""
+      },
+      ""mark"": ""table"",
+      ""encoding"": {
+        ""x"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Revenue"", ""type"": ""quantitative""},
+        ""tooltip"": [
+          {""field"": ""Quarter"", ""type"": ""nominal""},
+          {""field"": ""Education Level"", ""type"": ""nominal""},
+          {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+          {""field"": ""Revenue"", ""type"": ""quantitative""},
+          {""field"": ""Operating Costs"", ""type"": ""quantitative""},
+          {""field"": ""Profit"", ""type"": ""quantitative""},
+          {""field"": ""Average Tuition"", ""type"": ""quantitative""},
+          {""field"": ""Number of Staff"", ""type"": ""quantitative""},
+          {""field"": ""Graduation Rate"", ""type"": ""quantitative""}
+        ]
+      }
+    };
+
+    vegaEmbed(""#vis"", spec, {actions: false})
+      .then(function(result) {
+        const view = result.view;
+        const runtime = result.runtime;
+
+        const tableSpec = vega.View.create({
+          renderer: 'svg',
+          container: '#vis',
+          width: 200,
+          height: 600,
+          padding: 0
+        }, spec2);
+
+        view.addEventListener('run', function(event) {
+          const brushData = event.data['brushed_data'];
+          tableSpec.change('data', vega.changeset().remove(vega.truthy).insert(brushData.slice(0, 20)));
+          tableSpec.run();
+        });
+      });
+  </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a horizontal Bar Chart that shows all the data concerning Enrollment Number, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enrollment Number Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""hconcat"": [
+        {
+          ""mark"": ""bar"",
+          ""encoding"": {
+            ""x"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Education Level"", ""type"": ""nominal"", ""sort"": ""-x""},
+            ""tooltip"": [
+              {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+              {""field"": ""Education Level"", ""type"": ""nominal""}
+            ]
+          },
+          ""width"": 600,
+          ""height"": 600
+        },
+        {
+          ""mark"": ""bar"",
+          ""encoding"": {
+            ""x"": {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Education Level"", ""type"": ""nominal"", ""sort"": ""-x""},
+            ""tooltip"": [
+              {""field"": ""Enrollment Number"", ""type"": ""quantitative""},
+              {""field"": ""Education Level"", ""type"": ""nominal""}
+            ]
+          },
+          ""width"": 200,
+          ""height"": 600
+        }
+      ]
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"

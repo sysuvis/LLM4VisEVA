@@ -1,0 +1,1181 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Scatterplot that visualizes the relationship between Sales Figures and Hours Worked.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Sales Figures vs Hours Worked</title>
+  <style>
+    /* set the dimensions and margins of the graph */
+    #chart {
+      width: 800px;
+      height: 600px;
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <svg id=""chart""></svg>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    // set the dimensions and margins of the graph
+    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+    const width = 700 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
+
+    // append the svg object to the body of the page
+    const svg = d3.select(""#chart"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    // Read the data
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"").then(data => {
+      // Convert data types
+      data.forEach(d => {
+        d['Sales Figures'] = +d['Sales Figures'];
+        d['Hours Worked'] = +d['Hours Worked'];
+      });
+
+      // Add X axis
+      const x = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d['Hours Worked'])])
+        .range([0, width]);
+      svg.append(""g"")
+        .attr(""transform"", `translate(0, ${height})`)
+        .call(d3.axisBottom(x))
+        .append(""text"")
+        .attr(""y"", 30)
+        .attr(""x"", width / 2)
+        .attr(""text-anchor"", ""middle"")
+        .text(""Hours Worked"");
+
+      // Add Y axis
+      const y = d3.scaleLinear()
+        .domain([0, d3.max(data, d => d['Sales Figures'])])
+        .range([height, 0]);
+      svg.append(""g"")
+        .call(d3.axisLeft(y))
+        .append(""text"")
+        .attr(""transform"", ""rotate(-90)"")
+        .attr(""y"", -40)
+        .attr(""x"", -height / 2)
+        .attr(""text-anchor"", ""middle"")
+        .text(""Sales Figures"");
+
+      // Add dots
+      svg.selectAll(""circle"")
+        .data(data)
+        .enter()
+        .append(""circle"")
+        .attr(""cx"", d => x(d['Hours Worked']))
+        .attr(""cy"", d => y(d['Sales Figures']))
+        .attr(""r"", 5)
+        .style(""fill"", ""blue"");
+    });
+  </script>
+</body>
+</html>
+```"
+2,line chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Line Chart that visualizes the trend of Sales Figures over the Year for each Department.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Sales Figures Trend</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .chart {
+      margin: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class=""chart"" id=""chart""></div>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 800 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
+
+    const svg = d3.select(""#chart"")
+      .append(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/12da6a9d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"")
+      .then(data => {
+        data.forEach(d => {
+          d[""Year""] = +d[""Year""];
+          d[""Sales Figures""] = +d[""Sales Figures""];
+        });
+
+        const departments = [...new Set(data.map(d => d.Department))];
+
+        const xScale = d3.scaleLinear()
+          .domain(d3.extent(data, d => d[""Year""]))
+          .range([0, width]);
+
+        const yScale = d3.scaleLinear()
+          .domain([0, d3.max(data, d => d[""Sales Figures""])])
+          .range([height, 0]);
+
+        const line = d3.line()
+          .x(d => xScale(d[""Year""]))
+          .y(d => yScale(d[""Sales Figures""]));
+
+        departments.forEach(department => {
+          const departmentData = data.filter(d => d.Department === department);
+
+          svg.append(""path"")
+            .datum(departmentData)
+            .attr(""fill"", ""none"")
+            .attr(""stroke"", ""steelblue"")
+            .attr(""stroke-width"", 1.5)
+            .attr(""d"", line)
+            .attr(""opacity"", 0.7);
+        });
+
+        svg.append(""g"")
+          .attr(""transform"", `translate(0, ${height})`)
+          .call(d3.axisBottom(xScale));
+
+        svg.append(""g"")
+          .call(d3.axisLeft(yScale));
+
+        svg.append(""text"")
+          .attr(""transform"", `translate(${width / 2}, ${height + margin.bottom - 5})`)
+          .attr(""text-anchor"", ""middle"")
+          .text(""Year"");
+
+        svg.append(""text"")
+          .attr(""transform"", `rotate(-90) translate(${-height / 2}, ${-margin.left + 15})`)
+          .attr(""text-anchor"", ""middle"")
+          .text(""Sales Figures"");
+      });
+  </script>
+</body>
+</html>
+```"
+3,bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Bar Chart that visualizes the Sales Figures for each Department in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Sales Figures by Department in 2020</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .bar {
+      fill: steelblue;
+    }
+    .bar:hover {
+      fill: brown;
+    }
+    .axis text {
+      font-size: 12px;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+    }
+  </style>
+</head>
+<body>
+  <svg width=""800"" height=""600""></svg>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 800 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+
+    const svg = d3.select(""svg"")
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"")
+      .then(data => {
+        data.forEach(d => {
+          d[""Year""] = +d[""Year""];
+          d[""Sales Figures""] = +d[""Sales Figures""];
+        });
+
+        const data2020 = data.filter(d => d[""Year""] === 2020);
+
+        const departments = [...new Set(data2020.map(d => d[""Department""]))];
+
+        const xScale = d3.scaleBand()
+          .domain(departments)
+          .range([0, width])
+          .padding(0.2);
+
+        const yScale = d3.scaleLinear()
+          .domain([0, d3.max(data2020, d => d[""Sales Figures""])])
+          .range([height, 0]);
+
+        svg.selectAll(""rect"")
+          .data(data2020)
+          .enter()
+          .append(""rect"")
+          .attr(""class"", ""bar"")
+          .attr(""x"", d => xScale(d[""Department""]))
+          .attr(""y"", d => yScale(d[""Sales Figures""]))
+          .attr(""width"", xScale.bandwidth())
+          .attr(""height"", d => height - yScale(d[""Sales Figures""]));
+
+        const xAxis = d3.axisBottom(xScale);
+        svg.append(""g"")
+          .attr(""transform"", `translate(0, ${height})`)
+          .call(xAxis);
+
+        const yAxis = d3.axisLeft(yScale);
+        svg.append(""g"")
+          .call(yAxis);
+      });
+  </script>
+</body>
+</html>
+```"
+4,pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Pie Chart that visualizes the proportion of Sales Figures contributed by each Department in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Sales Figures by Department in 2020</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #chart {
+      width: 500px;
+      height: 500px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div id=""chart""></div>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+    const width = 500 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
+
+    const svg = d3.select(""#chart"")
+      .append(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"")
+      .then(data => {
+        data.forEach(d => {
+          d[""Year""] = +d[""Year""];
+          d[""Sales Figures""] = +d[""Sales Figures""];
+        });
+
+        const filteredData = data.filter(d => d[""Year""] === 2020);
+
+        const departments = Array.from(new Set(filteredData.map(d => d[""Department""])));
+
+        const pie = d3.pie()
+          .value(d => d[""Sales Figures""]);
+
+        const arcs = svg.selectAll(""arc"")
+          .data(pie(filteredData))
+          .enter()
+          .append(""g"")
+          .attr(""transform"", `translate(${width / 2}, ${height / 2})`);
+
+        arcs.append(""path"")
+          .attr(""d"", d3.arc()
+            .innerRadius(0)
+            .outerRadius(Math.min(width, height) / 2 - 20)
+          )
+          .attr(""fill"", (d, i) => d3.schemeCategory10[i % 10]);
+
+        arcs.append(""text"")
+          .attr(""transform"", d => `translate(${d3.arc().innerRadius(0).outerRadius(Math.min(width, height) / 2 - 20).centroid(d)})`)
+          .attr(""text-anchor"", ""middle"")
+          .text(d => departments.find(department => filteredData.find(fd => fd[""Department""] === department)[""Sales Figures""] === d.value));
+
+        svg.append(""text"")
+          .attr(""x"", width / 2)
+          .attr(""y"", -20)
+          .attr(""text-anchor"", ""middle"")
+          .text(""Sales Figures by Department in 2020"");
+      });
+  </script>
+</body>
+</html>
+```"
+5,donut chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Donut Chart that visualizes the distribution of Sales Figures among Department in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Donut Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .chart {
+      width: 500px;
+      height: 500px;
+      margin: 50px auto;
+    }
+  </style>
+</head>
+<body>
+  <div class=""chart"" id=""chart""></div>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+    const width = 500 - margin.left - margin.right;
+    const height = 500 - margin.top - margin.bottom;
+    const radius = Math.min(width, height) / 2;
+
+    const svg = d3.select(""#chart"")
+      .append(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${width / 2 + margin.left}, ${height / 2 + margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"")
+      .then(data => {
+        data.forEach(d => {
+          d[""Year""] = +d[""Year""];
+          d[""Sales Figures""] = +d[""Sales Figures""];
+        });
+
+        const filteredData = data.filter(d => d[""Year""] === 2020);
+
+        const pie = d3.pie()
+          .value(d => d[""Sales Figures""]);
+
+        const arc = d3.arc()
+          .outerRadius(radius - 10)
+          .innerRadius(radius - 100);
+
+        const arcs = svg.selectAll(""arc"")
+          .data(pie(filteredData))
+          .enter()
+          .append(""g"")
+          .attr(""class"", ""arc"");
+
+        arcs.append(""path"")
+          .attr(""d"", arc)
+          .attr(""fill"", (d, i) => d3.schemeCategory10[i]);
+
+        arcs.append(""text"")
+          .attr(""transform"", d => `translate(${arc.centroid(d)})`)
+          .attr(""dy"", ""0.35em"")
+          .text(d => d.data[""Department""]);
+      });
+  </script>
+</body>
+</html>
+```"
+6,coxcomb chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Coxcomb Chart(polar area chart) to compare the Sales Figures of different Department in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Coxcomb Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .chart {
+      width: 600px;
+      height: 600px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class=""chart""></div>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 20, right: 20, bottom: 20, left: 20 };
+    const width = 600 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+
+    const svg = d3.select('.chart')
+      .append('svg')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+      .then(data => {
+        data = data.filter(d => d.Year === '2020');
+
+        const departments = [...new Set(data.map(d => d.Department))];
+
+        const angles = departments.map((_, i) => i * (360 / departments.length));
+
+        const radiusScale = d3.scaleLinear()
+          .domain([0, d3.max(data, d => +d['Sales Figures'])])
+          .range([0, Math.min(width, height) / 2]);
+
+        const line = d3.lineRadial()
+          .radius(d => radiusScale(d.value))
+          .angle((d, i) => angles[i]);
+
+        const arcs = svg.selectAll('path')
+          .data(data.filter(d => d.Department === departments[0]))
+          .enter()
+          .append('path')
+          .datum(data.filter(d => d.Department === departments[0]))
+          .attr('d', line)
+          .attr('fill', 'none')
+          .attr('stroke', 'black')
+          .attr('stroke-width', 1);
+
+        departments.forEach((department, i) => {
+          const departmentData = data.filter(d => d.Department === department);
+          const departmentAngles = angles.map((angle, j) => angle + (360 / departments.length) * j);
+
+          const departmentLine = d3.lineRadial()
+            .radius(d => radiusScale(d.value))
+            .angle((d, j) => departmentAngles[j]);
+
+          svg.append('path')
+            .datum(departmentData)
+            .attr('d', departmentLine)
+            .attr('fill', 'none')
+            .attr('stroke', 'black')
+            .attr('stroke-width', 1)
+            .attr('transform', `rotate(${angles[i]})`);
+        });
+
+        const labels = svg.selectAll('text')
+          .data(departments)
+          .enter()
+          .append('text')
+          .attr('x', (d, i) => Math.cos(angles[i] * Math.PI / 180) * (width / 2 + 20))
+          .attr('y', (d, i) => Math.sin(angles[i] * Math.PI / 180) * (height / 2 + 20))
+          .attr('text-anchor', 'middle')
+          .attr('dominant-baseline', 'middle')
+          .text(d => d);
+      });
+  </script>
+</body>
+</html>
+```"
+7,radar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Radar Chart to compare the Sales Figures of different Department in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Radar Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .axis text {
+      font-size: 12px;
+    }
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+    }
+  </style>
+</head>
+<body>
+  <svg width=""600"" height=""600""></svg>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+    const width = 600 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+    const svg = d3.select(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"")
+      .then(data => {
+        data.forEach(d => {
+          d[""Year""] = +d[""Year""];
+          d[""Sales Figures""] = +d[""Sales Figures""];
+        });
+
+        const departments = [...new Set(data.filter(d => d[""Year""] === 2020).map(d => d[""Department""]))];
+
+        const angles = departments.map((d, i) => i * (2 * Math.PI / departments.length));
+
+        const radius = Math.min(width, height) / 2 - 50;
+
+        const radarLine = d3.lineRadial()
+          .angle(d => d.angle)
+          .radius(d => d.radius)
+          .curve(d3.curveLinearClosed);
+
+        const maxSales = d3.max(data.filter(d => d[""Year""] === 2020), d => d[""Sales Figures""]);
+
+        const salesData = departments.map(d => {
+          const sales = data.find(department => department[""Department""] === d && department[""Year""] === 2020)[""Sales Figures""];
+          return {
+            angle: angles[departments.indexOf(d)],
+            radius: radius * sales / maxSales
+          };
+        });
+
+        svg.append(""path"")
+          .datum(salesData)
+          .attr(""d"", radarLine)
+          .attr(""stroke"", ""steelblue"")
+          .attr(""stroke-width"", 2)
+          .attr(""fill"", ""steelblue"")
+          .attr(""fill-opacity"", 0.2);
+
+        svg.selectAll(""circle"")
+          .data(salesData)
+          .enter()
+          .append(""circle"")
+          .attr(""cx"", d => d.radius * Math.cos(d.angle))
+          .attr(""cy"", d => d.radius * Math.sin(d.angle))
+          .attr(""r"", 5)
+          .attr(""fill"", ""steelblue"");
+
+        svg.selectAll(""text"")
+          .data(departments)
+          .enter()
+          .append(""text"")
+          .attr(""x"", (d, i) => radius * 1.1 * Math.cos(angles[i]))
+          .attr(""y"", (d, i) => radius * 1.1 * Math.sin(angles[i]))
+          .text(d => d)
+          .attr(""text-anchor"", (d, i) => angles[i] > Math.PI ? ""end"" : ""start"")
+          .attr(""dominant-baseline"", ""middle"")
+          .attr(""font-size"", 12);
+
+        svg.append(""circle"")
+          .attr(""cx"", 0)
+          .attr(""cy"", 0)
+          .attr(""r"", radius)
+          .attr(""stroke"", ""lightgray"")
+          .attr(""stroke-width"", 1)
+          .attr(""fill"", ""none"");
+
+        svg.append(""circle"")
+          .attr(""cx"", 0)
+          .attr(""cy"", 0)
+          .attr(""r"", radius * 0.5)
+          .attr(""stroke"", ""lightgray"")
+          .attr(""stroke-width"", 1)
+          .attr(""fill"", ""none"");
+
+        svg.append(""circle"")
+          .attr(""cx"", 0)
+          .attr(""cy"", 0)
+          .attr(""r"", radius * 0.25)
+          .attr(""stroke"", ""lightgray"")
+          .attr(""stroke-width"", 1)
+          .attr(""fill"", ""none"");
+      });
+  </script>
+</body>
+</html>
+```"
+8,streamgraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Streamgraph that visualizes the changes of Sales Figures over the Year for each Department.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Streamgraph</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .chart {
+      width: 800px;
+      height: 600px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class=""chart"" id=""chart""></div>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 800 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+
+    const svg = d3.select(""#chart"")
+      .append(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"").then(data => {
+      data.forEach(d => {
+        d[""Year""] = +d[""Year""];
+        d[""Sales Figures""] = +d[""Sales Figures""];
+      });
+
+      const departments = Array.from(new Set(data.map(d => d.Department)));
+      const years = Array.from(new Set(data.map(d => d[""Year""]))).sort((a, b) => a - b);
+
+      const xScale = d3.scalePoint()
+        .domain(years)
+        .range([0, width])
+        .padding(0.5);
+
+      const yScale = d3.scaleLinear()
+        .range([height, 0]);
+
+      const zScale = d3.scaleOrdinal(d3.schemeCategory10)
+        .domain(departments);
+
+      const stack = d3.stack()
+        .keys(departments)
+        .value((d, key) => {
+          const value = data.find(v => v.Department === key && v[""Year""] === d);
+          return value ? value[""Sales Figures""] : 0;
+        })
+        .order(d3.stackOrderNone)
+        .offset(d3.stackOffsetExpand);
+
+      const series = stack(years.map(year => ({ Year: year })));
+
+      yScale.domain([0, d3.max(series, d => d3.max(d, d => d[1]))]).nice();
+
+      svg.selectAll(""path"")
+        .data(series)
+        .enter()
+        .append(""path"")
+        .attr(""d"", d3.line()
+          .x((d, i) => xScale(d.data.Year))
+          .y0(d => yScale(d[0]))
+          .y1(d => yScale(d[1]))
+        )
+        .attr(""fill"", (d, i) => zScale(departments[i]))
+        .attr(""stroke"", ""none"");
+
+      svg.append(""g"")
+        .attr(""transform"", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale));
+
+      svg.append(""g"")
+        .call(d3.axisLeft(yScale));
+
+      svg.append(""g"")
+        .selectAll(""text"")
+        .data(departments)
+        .enter()
+        .append(""text"")
+        .attr(""x"", width + 10)
+        .attr(""y"", (d, i) => height - i * 20)
+        .attr(""fill"", d => zScale(d))
+        .text(d => d);
+    });
+  </script>
+</body>
+</html>
+```"
+9,slopegraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Slopegraph to compare the Sales Figures between 2019 and 2020 for each Department.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Slopegraph</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .slopegraph {
+      width: 800px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    .slopegraph .line {
+      stroke: #ccc;
+      stroke-width: 1.5px;
+    }
+    .slopegraph .circle {
+      fill: #fff;
+      stroke: #ccc;
+      stroke-width: 1.5px;
+    }
+    .slopegraph .label {
+      font-size: 12px;
+      text-anchor: middle;
+    }
+  </style>
+</head>
+<body>
+  <svg class=""slopegraph""></svg>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+    const width = 800 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+
+    const svg = d3.select('.slopegraph')
+      .attr('width', width + margin.left + margin.right)
+      .attr('height', height + margin.top + margin.bottom)
+      .append('g')
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+      .then(data => {
+        data.forEach(d => {
+          d['Year'] = +d['Year'];
+          d['Sales Figures'] = +d['Sales Figures'];
+        });
+
+        const departments = Array.from(new Set(data.map(d => d.Department)));
+        const years = Array.from(new Set(data.map(d => d['Year'])));
+
+        const xScale = d3.scalePoint()
+          .domain(years)
+          .range([0, width])
+          .padding(0.5);
+
+        const yScale = d3.scaleLinear()
+          .domain([0, d3.max(data, d => d['Sales Figures'])])
+          .range([height, 0]);
+
+        const lines = svg.selectAll('.line')
+          .data(departments)
+          .enter()
+          .append('line')
+          .attr('class', 'line')
+          .attr('x1', d => xScale(2019))
+          .attr('y1', d => yScale(data.find(e => e.Department === d && e['Year'] === 2019)['Sales Figures']))
+          .attr('x2', d => xScale(2020))
+          .attr('y2', d => yScale(data.find(e => e.Department === d && e['Year'] === 2020)['Sales Figures']));
+
+        const circles = svg.selectAll('.circle')
+          .data(departments)
+          .enter()
+          .append('g')
+          .selectAll('.circle')
+          .data(d => [2019, 2020])
+          .enter()
+          .append('circle')
+          .attr('class', 'circle')
+          .attr('cx', (d, i) => xScale(d))
+          .attr('cy', (d, i, j) => yScale(data.find(e => e.Department === departments[j] && e['Year'] === d)['Sales Figures']))
+          .attr('r', 5);
+
+        const labels = svg.selectAll('.label')
+          .data(departments)
+          .enter()
+          .append('g')
+          .selectAll('.label')
+          .data(d => [2019, 2020])
+          .enter()
+          .append('text')
+          .attr('class', 'label')
+          .attr('x', (d, i) => xScale(d))
+          .attr('y', (d, i, j) => yScale(data.find(e => e.Department === departments[j] && e['Year'] === d)['Sales Figures']) + 10)
+          .text((d, i, j) => `${departments[j]}: ${data.find(e => e.Department === departments[j] && e['Year'] === d)['Sales Figures']}`);
+
+        svg.append('g')
+          .attr('transform', `translate(0, ${height})`)
+          .call(d3.axisBottom(xScale));
+
+        svg.append('g')
+          .call(d3.axisLeft(yScale));
+      });
+  </script>
+</body>
+</html>
+```"
+10,heatmap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Heatmap that visualizes the Sales Figures across Department and Years.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Sales Figures Heatmap</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .tooltip {
+      position: absolute;
+      padding: 10px;
+      font-size: 12px;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div id=""heatmap""></div>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 50, right: 50, bottom: 100, left: 100 };
+    const width = 800 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+
+    const svg = d3.select(""#heatmap"")
+      .append(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"")
+      .then(data => {
+        data.forEach(d => {
+          d[""Sales Figures""] = +d[""Sales Figures""];
+          d.Year = +d.Year;
+        });
+
+        const departments = [...new Set(data.map(d => d.Department))];
+        const years = [...new Set(data.map(d => d.Year))];
+
+        const xScale = d3.scaleBand()
+          .domain(years)
+          .range([0, width])
+          .padding(0.1);
+
+        const yScale = d3.scaleBand()
+          .domain(departments)
+          .range([height, 0])
+          .padding(0.1);
+
+        const colorScale = d3.scaleSequential()
+          .domain([0, d3.max(data, d => d[""Sales Figures""])])
+          .interpolator(d3.interpolateBlues);
+
+        const heatmap = svg.selectAll(""rect"")
+          .data(data)
+          .enter()
+          .append(""rect"")
+          .attr(""x"", d => xScale(d.Year))
+          .attr(""y"", d => yScale(d.Department))
+          .attr(""width"", xScale.bandwidth())
+          .attr(""height"", yScale.bandwidth())
+          .attr(""fill"", d => colorScale(d[""Sales Figures""]));
+
+        const tooltip = d3.select(""body"")
+          .append(""div"")
+          .attr(""class"", ""tooltip"")
+          .style(""opacity"", 0);
+
+        heatmap.on(""mouseover"", (event, d) => {
+          tooltip.transition()
+            .duration(200)
+            .style(""opacity"", 1);
+          tooltip.html(`Department: ${d.Department}<br>Year: ${d.Year}<br>Sales Figures: ${d[""Sales Figures""]}`)
+            .style(""left"", (event.pageX) + ""px"")
+            .style(""top"", (event.pageY - 28) + ""px"");
+        })
+        .on(""mouseout"", () => {
+          tooltip.transition()
+            .duration(500)
+            .style(""opacity"", 0);
+        });
+
+        svg.append(""g"")
+          .attr(""transform"", `translate(0, ${height})`)
+          .call(d3.axisBottom(xScale));
+
+        svg.append(""g"")
+          .call(d3.axisLeft(yScale));
+
+        svg.append(""text"")
+          .attr(""transform"", `translate(${width / 2}, ${height + margin.bottom - 10})`)
+          .attr(""text-anchor"", ""middle"")
+          .text(""Year"");
+
+        svg.append(""text"")
+          .attr(""transform"", `rotate(-90) translate(${-height / 2}, ${-margin.left + 20})`)
+          .attr(""text-anchor"", ""middle"")
+          .text(""Department"");
+      });
+  </script>
+</body>
+</html>
+```"
+11,bar chart+stacked bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Stacked Bar Chart that visualizes the given data table.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Stacked Bar Chart</title>
+  <style>
+    .chart {
+      width: 800px;
+      height: 600px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class=""chart"" id=""chart""></div>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 800 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+
+    const svg = d3.select(""#chart"")
+      .append(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"").then(data => {
+      data.forEach(d => {
+        d[""Sales Figures""] = +d[""Sales Figures""];
+        d[""Hours Worked""] = +d[""Hours Worked""];
+        d[""Revenue""] = +d[""Revenue""];
+        d[""Profit""] = +d[""Profit""];
+        d[""Employee Satisfaction Score""] = +d[""Employee Satisfaction Score""];
+        d[""Number of Employees""] = +d[""Number of Employees""];
+      });
+
+      const keys = [""Sales Figures"", ""Hours Worked"", ""Revenue"", ""Profit"", ""Employee Satisfaction Score"", ""Number of Employees""];
+      const stackedData = d3.stack().keys(keys)(data);
+
+      const xScale = d3.scaleBand()
+        .domain(data.map(d => d.Department))
+        .range([0, width])
+        .padding(0.2);
+
+      const yScale = d3.scaleLinear()
+        .domain([0, d3.max(stackedData[stackedData.length - 1], d => d[1])])
+        .range([height, 0]);
+
+      svg.append(""g"")
+        .attr(""transform"", `translate(0, ${height})`)
+        .call(d3.axisBottom(xScale));
+
+      svg.append(""g"")
+        .call(d3.axisLeft(yScale));
+
+      const groups = svg.selectAll(""g.layer"")
+        .data(stackedData)
+        .enter()
+        .append(""g"")
+        .attr(""class"", ""layer"");
+
+      groups.selectAll(""rect"")
+        .data(d => d)
+        .enter()
+        .append(""rect"")
+        .attr(""x"", d => xScale(d.data.Department))
+        .attr(""y"", d => yScale(d[1]))
+        .attr(""width"", xScale.bandwidth())
+        .attr(""height"", d => yScale(d[0]) - yScale(d[1]))
+        .attr(""fill"", (d, i) => d3.schemeCategory10[i]);
+    });
+  </script>
+</body>
+</html>
+```"
+12,bar chart+horizontal bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Horizontal Bar Chart that visualizes the Sales Figures for each Department in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Sales Figures by Department in 2020</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .chart {
+      margin: 40px;
+    }
+  </style>
+</head>
+<body>
+  <div class=""chart""></div>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 500 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
+
+    const svg = d3.select("".chart"")
+      .append(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"")
+      .then(data => {
+        data.forEach(d => {
+          d[""Year""] = +d[""Year""];
+          d[""Sales Figures""] = +d[""Sales Figures""];
+        });
+
+        const filteredData = data.filter(d => d[""Year""] === 2020);
+
+        const departments = [...new Set(filteredData.map(d => d[""Department""]))];
+
+        const xScale = d3.scaleLinear()
+          .domain([0, d3.max(filteredData, d => d[""Sales Figures""])])
+          .range([0, width]);
+
+        const yScale = d3.scaleBand()
+          .domain(departments)
+          .range([height, 0])
+          .padding(0.2);
+
+        svg.selectAll(""rect"")
+          .data(filteredData)
+          .enter()
+          .append(""rect"")
+          .attr(""x"", 0)
+          .attr(""y"", d => yScale(d[""Department""]))
+          .attr(""width"", d => xScale(d[""Sales Figures""]))
+          .attr(""height"", yScale.bandwidth());
+
+        svg.append(""g"")
+          .attr(""transform"", `translate(0, ${height})`)
+          .call(d3.axisBottom(xScale));
+
+        svg.append(""g"")
+          .call(d3.axisLeft(yScale));
+      });
+  </script>
+</body>
+</html>
+```"

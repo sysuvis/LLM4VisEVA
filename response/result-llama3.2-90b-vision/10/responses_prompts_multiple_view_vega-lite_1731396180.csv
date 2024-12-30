@@ -1,0 +1,502 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Visitors and Page Views, and a Bar Chart on the right that displays Traffic Source versus Visitors.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Website Traffic Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: row;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis"">
+    <div id=""scatterplot""></div>
+    <div id=""barchart""></div>
+  </div>
+
+  <script>
+    const scatterplotSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"" },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Visitors"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Page Views"", ""type"": ""quantitative""}
+      }
+    };
+
+    const barchartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"" },
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {""field"": ""Traffic Source"", ""type"": ""nominal"", ""sort"": ""-y""},
+        ""y"": {""field"": ""Visitors"", ""type"": ""quantitative"", ""aggregate"": ""sum""}
+      }
+    };
+
+    vegaEmbed(""#scatterplot"", scatterplotSpec);
+    vegaEmbed(""#barchart"", barchartSpec);
+  </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Visitors and Page Views, and a Bar Chart on the right that displays Traffic Source versus Visitors. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Website Traffic Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: row;
+    }
+    #scatterplot {
+      width: 50%;
+    }
+    #barchart {
+      width: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis"">
+    <div id=""scatterplot""></div>
+    <div id=""barchart""></div>
+  </div>
+
+  <script>
+    const scatterplotSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"" },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Visitors"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Page Views"", ""type"": ""quantitative""},
+        ""color"": {""field"": ""Traffic Source"", ""type"": ""nominal""}
+      },
+      ""selection"": {
+        ""brush"": {""type"": ""interval"", ""encodings"": [""x"", ""y""]}
+      }
+    };
+
+    const barchartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"" },
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {""field"": ""Traffic Source"", ""type"": ""nominal"", ""axis"": {""labelAngle"": 0}},
+        ""y"": {""field"": ""Visitors"", ""type"": ""quantitative""},
+        ""color"": {""condition"": {""test"": ""datum.Traffic Source === 'Organic'"", ""value"": ""steelblue""}, ""value"": ""gray""}
+      }
+    };
+
+    vegaEmbed(""#scatterplot"", scatterplotSpec).then(function(result) {
+      const scatterplotView = result.view;
+      vegaEmbed(""#barchart"", barchartSpec).then(function(result) {
+        const barchartView = result.view;
+        scatterplotView.addSignalListener(""brush"", function(name, value) {
+          barchartView.signal(""brush"", value);
+          barchartView.run();
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Visitors , while the pie chart represents the distribution of Page Views.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Website Traffic Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis"">
+    <div id=""line-chart""></div>
+    <div id=""pie-chart""></div>
+  </div>
+
+  <script>
+    const lineChartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"" },
+      ""mark"": ""line"",
+      ""encoding"": {
+        ""x"": {""field"": ""Week"", ""type"": ""nominal""},
+        ""y"": {""field"": ""Visitors"", ""type"": ""quantitative""}
+      }
+    };
+
+    const pieChartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"" },
+      ""mark"": ""arc"",
+      ""encoding"": {
+        ""theta"": {""field"": ""Page Views"", ""type"": ""quantitative""},
+        ""color"": {""field"": ""Region"", ""type"": ""nominal""}
+      }
+    };
+
+    vegaEmbed(""#line-chart"", lineChartSpec);
+    vegaEmbed(""#pie-chart"", pieChartSpec);
+  </script>
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Visitors , while the pie chart represents the distribution of Page Views. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Page Views for the selected group.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Website Traffic Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis"">
+    <div id=""line-chart""></div>
+    <div id=""pie-chart""></div>
+  </div>
+
+  <script>
+    const lineChartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"" },
+      ""mark"": ""line"",
+      ""encoding"": {
+        ""x"": {""field"": ""Week"", ""type"": ""nominal""},
+        ""y"": {""field"": ""Visitors"", ""type"": ""quantitative""},
+        ""tooltip"": [
+          {""field"": ""Week"", ""type"": ""nominal""},
+          {""field"": ""Visitors"", ""type"": ""quantitative""}
+        ]
+      },
+      ""selection"": {
+        ""brush"": {""type"": ""interval"", ""encodings"": [""x""]}
+      }
+    };
+
+    const pieChartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"" },
+      ""mark"": ""arc"",
+      ""encoding"": {
+        ""theta"": {""field"": ""Page Views"", ""type"": ""quantitative"", ""aggregate"": ""sum""},
+        ""color"": {""field"": ""Region"", ""type"": ""nominal""}
+      },
+      ""selection"": {
+        ""brush"": {""type"": ""interval"", ""encodings"": [""x""], ""on"": ""mouseover"", ""empty"": ""none""}
+      }
+    };
+
+    vegaEmbed(""#line-chart"", lineChartSpec, { ""actions"": false });
+    vegaEmbed(""#pie-chart"", pieChartSpec, { ""actions"": false });
+
+    const lineChartView = vega.View.fromElement(""#line-chart svg"");
+    const pieChartView = vega.View.fromElement(""#pie-chart svg"");
+
+    lineChartView.addEventListener(""mousedown"", function(event, item) {
+      const brush = lineChartView.getState().get(""brush"");
+      if (brush) {
+        const start = brush[0];
+        const end = brush[1];
+        const filteredData = lineChartView.data().filter(function(d) {
+          return d.Week >= start && d.Week <= end;
+        });
+        pieChartView.change(""source_0"", vega.changeset().remove(vega.truthy).insert(filteredData));
+        pieChartView.run();
+      }
+    });
+  </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Visitors, Page Views, and Bounce Rate. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatterplot Matrix</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    /* Add some basic styling to make the chart more presentable */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    // Define the data and the chart specification
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""transform"": [
+        {""filter"": ""isValid(datum.Visitors) && isValid(datum['Page Views']) && isValid(datum['Bounce Rate'])""}
+      ],
+      ""mark"": ""point"",
+      ""selection"": {
+        ""brush"": {""type"": ""interval"", ""encodings"": [""x"", ""y""]}
+      },
+      ""encoding"": {
+        ""x"": {""field"": ""Visitors"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Page Views"", ""type"": ""quantitative""},
+        ""color"": {""condition"": {""selection"": ""brush"", ""value"": ""steelblue""}, ""value"": ""grey""}
+      },
+      ""facet"": {
+        ""row"": {""field"": ""Bounce Rate"", ""type"": ""quantitative"", ""header"": {""title"": null}},
+        ""column"": {""field"": ""Visitors"", ""type"": ""quantitative"", ""header"": {""title"": null}}
+      },
+      ""spec"": {
+        ""mark"": ""point"",
+        ""encoding"": {
+          ""x"": {""field"": ""Page Views"", ""type"": ""quantitative""},
+          ""y"": {""field"": ""Bounce Rate"", ""type"": ""quantitative""},
+          ""color"": {""condition"": {""selection"": ""brush"", ""value"": ""steelblue""}, ""value"": ""grey""}
+        }
+      }
+    };
+
+    // Create the chart
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a brushable Scatterplot that visualizes the relationship between Visitors and Page Views. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Brushable Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""width"": 600,
+      ""height"": 400,
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Visitors"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Page Views"", ""type"": ""quantitative""},
+        ""tooltip"": [
+          {""field"": ""Week"", ""type"": ""nominal""},
+          {""field"": ""Traffic Source"", ""type"": ""nominal""},
+          {""field"": ""Bounce Rate"", ""type"": ""quantitative""},
+          {""field"": ""Average Session Duration"", ""type"": ""quantitative""},
+          {""field"": ""Conversion Rate"", ""type"": ""quantitative""},
+          {""field"": ""Region"", ""type"": ""nominal""},
+          {""field"": ""Device Type"", ""type"": ""nominal""}
+        ]
+      },
+      ""selection"": {
+        ""brush"": {""type"": ""interval"", ""encodings"": [""x"", ""y""]}
+      }
+    };
+
+    const spec2 = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""width"": 200,
+      ""height"": 400,
+      ""data"": {
+        ""name"": ""brush""
+      },
+      ""mark"": ""table"",
+      ""encoding"": {
+        ""x"": {""field"": ""Week"", ""type"": ""nominal""},
+        ""y"": {""field"": ""Traffic Source"", ""type"": ""nominal""},
+        ""detail"": [
+          {""field"": ""Visitors"", ""type"": ""quantitative""},
+          {""field"": ""Page Views"", ""type"": ""quantitative""},
+          {""field"": ""Bounce Rate"", ""type"": ""quantitative""},
+          {""field"": ""Average Session Duration"", ""type"": ""quantitative""},
+          {""field"": ""Conversion Rate"", ""type"": ""quantitative""},
+          {""field"": ""Region"", ""type"": ""nominal""},
+          {""field"": ""Device Type"", ""type"": ""nominal""}
+        ]
+      },
+      ""transform"": [
+        {""limit"": 20}
+      ]
+    };
+
+    vegaEmbed(""#vis"", spec, {actions: false});
+    vegaEmbed(""#vis"", spec2, {actions: false});
+  </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a horizontal Bar Chart that shows all the data concerning Visitors, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Visitors Bar Chart with Minimap</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""hconcat"": [
+        {
+          ""mark"": ""bar"",
+          ""encoding"": {
+            ""x"": {""field"": ""Visitors"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Week"", ""type"": ""nominal"", ""sort"": ""-x""},
+            ""tooltip"": [{""field"": ""Visitors"", ""type"": ""quantitative""}]
+          },
+          ""width"": 600,
+          ""height"": 600
+        },
+        {
+          ""mark"": ""bar"",
+          ""encoding"": {
+            ""x"": {""field"": ""Visitors"", ""type"": ""quantitative"", ""aggregate"": ""sum""},
+            ""y"": {""field"": ""Week"", ""type"": ""nominal"", ""sort"": ""-x""},
+            ""tooltip"": [{""field"": ""Visitors"", ""type"": ""quantitative""}]
+          },
+          ""width"": 200,
+          ""height"": 600,
+          ""transform"": [{""filter"": ""datum.Visitors > 0""}]
+        }
+      ]
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"

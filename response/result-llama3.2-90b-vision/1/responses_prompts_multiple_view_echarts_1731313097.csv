@@ -1,0 +1,819 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Agricultural Production Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #chart-container {
+            display: flex;
+            width: 100%;
+            height: 600px;
+        }
+        #scatterplot {
+            width: 50%;
+            height: 100%;
+        }
+        #barchart {
+            width: 50%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart-container"">
+        <div id=""scatterplot""></div>
+        <div id=""barchart""></div>
+    </div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+            .then(response => response.text())
+            .then(data => {
+                const csvData = data.split('\n').slice(1);
+                const scatterplotData = [];
+                const barchartData = [];
+                csvData.forEach(row => {
+                    const [Year, CropType, UnitsProduced, Revenue, ProductionCost, Profit, Yield, NumberOfFarms, ExportVolume] = row.split(',');
+                    scatterplotData.push([parseFloat(UnitsProduced), parseFloat(Profit)]);
+                    barchartData.push([CropType, parseFloat(Revenue)]);
+                });
+                const scatterplotChart = echarts.init(document.getElementById('scatterplot'));
+                const barchartChart = echarts.init(document.getElementById('barchart'));
+                scatterplotChart.setOption({
+                    title: {
+                        text: 'Units Produced vs Profit'
+                    },
+                    xAxis: {
+                        type: 'value'
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: scatterplotData
+                    }]
+                });
+                barchartChart.setOption({
+                    title: {
+                        text: 'Revenue by Crop Type'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: barchartData.map(item => item[0])
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        type: 'bar',
+                        data: barchartData.map(item => item[1])
+                    }]
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Agricultural Production Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js""></script>
+    <style>
+        #chart {
+            display: flex;
+            width: 100%;
+            height: 600px;
+        }
+        #scatterplot {
+            width: 50%;
+            height: 100%;
+        }
+        #barchart {
+            width: 50%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart"">
+        <div id=""scatterplot""></div>
+        <div id=""barchart""></div>
+    </div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+            .then(response => response.text())
+            .then(data => {
+                const csvData = data.split('\n').slice(1).map(row => row.split(','));
+                const years = csvData.map(row => row[0]);
+                const unitsProduced = csvData.map(row => parseFloat(row[2]));
+                const revenue = csvData.map(row => parseFloat(row[3]));
+                const profit = csvData.map(row => parseFloat(row[5]));
+                const yieldData = csvData.map(row => parseFloat(row[6]));
+
+                const scatterplotChart = echarts.init(document.getElementById('scatterplot'));
+                const barchartChart = echarts.init(document.getElementById('barchart'));
+
+                const scatterplotOption = {
+                    title: {
+                        text: 'Scatterplot of Units Produced vs Revenue'
+                    },
+                    xAxis: {
+                        type: 'value',
+                        name: 'Units Produced'
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: 'Revenue'
+                    },
+                    series: [
+                        {
+                            type: 'scatter',
+                            data: unitsProduced.map((value, index) => [value, revenue[index]]),
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ],
+                    brush: {
+                        id: 'brush',
+                        seriesIndex: 'all',
+                        brushLink: 'all',
+                        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                        inBrush: {
+                            opacity: 1
+                        },
+                        outOfBrush: {
+                            color: '#ccc'
+                        },
+                        throttleType: 'debounce',
+                        throttleDelay: 300
+                    }
+                };
+
+                const barchartOption = {
+                    title: {
+                        text: 'Bar Chart of Profit by Year'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: years
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: 'Profit'
+                    },
+                    series: [
+                        {
+                            type: 'bar',
+                            data: profit
+                        }
+                    ],
+                    brush: {
+                        id: 'brush',
+                        seriesIndex: 'all',
+                        brushLink: 'all',
+                        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                        inBrush: {
+                            opacity: 1
+                        },
+                        outOfBrush: {
+                            color: '#ccc'
+                        },
+                        throttleType: 'debounce',
+                        throttleDelay: 300
+                    }
+                };
+
+                scatterplotChart.setOption(scatterplotOption);
+                barchartChart.setOption(barchartOption);
+
+                scatterplotChart.on('brushSelected', params => {
+                    const selectedData = params.batch[0].areas[0].range;
+                    const startIndex = years.indexOf(selectedData[0][0]);
+                    const endIndex = years.indexOf(selectedData[0][1]);
+                    const selectedProfit = profit.slice(startIndex, endIndex + 1);
+                    const selectedYears = years.slice(startIndex, endIndex + 1);
+
+                    barchartChart.setOption({
+                        series: [
+                            {
+                                type: 'bar',
+                                data: profit.map((value, index) => {
+                                    if (selectedYears.includes(years[index])) {
+                                        return value;
+                                    } else {
+                                        return NaN;
+                                    }
+                                })
+                            }
+                        ]
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Units Produced , while the pie chart represents the distribution of Revenue.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Agricultural Production Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+            .then(response => response.text())
+            .then(data => {
+                const csvData = data.split('\n').slice(1);
+                const years = [];
+                const unitsProduced = [];
+                const revenue = [];
+                const cropTypes = [];
+                const revenueByCropType = {};
+
+                csvData.forEach(row => {
+                    const columns = row.split(',');
+                    years.push(columns[0]);
+                    unitsProduced.push(parseFloat(columns[2]));
+                    revenue.push(parseFloat(columns[3]));
+                    const cropType = columns[1];
+                    cropTypes.push(cropType);
+                    if (!revenueByCropType[cropType]) {
+                        revenueByCropType[cropType] = 0;
+                    }
+                    revenueByCropType[cropType] += parseFloat(columns[3]);
+                });
+
+                const chart = echarts.init(document.getElementById('chart'));
+                chart.setOption({
+                    grid: {
+                        top: '10%',
+                        bottom: '50%'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: years
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            type: 'line',
+                            data: unitsProduced
+                        }
+                    ],
+                    tooltip: {
+                        trigger: 'axis'
+                    }
+                });
+
+                const pieChart = echarts.init(document.getElementById('chart'));
+                pieChart.setOption({
+                    grid: {
+                        top: '60%',
+                        bottom: '10%'
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            data: Object.keys(revenueByCropType).map(cropType => ({
+                                name: cropType,
+                                value: revenueByCropType[cropType]
+                            })),
+                            radius: '50%'
+                        }
+                    ],
+                    tooltip: {
+                        trigger: 'item'
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Units Produced , while the pie chart represents the distribution of Revenue. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Revenue for the selected group.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Agricultural Production Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js""></script>
+    <style>
+        #chart {
+            width: 100%;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+        }
+        #line-chart {
+            width: 100%;
+            height: 60%;
+        }
+        #pie-chart {
+            width: 100%;
+            height: 40%;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart"">
+        <div id=""line-chart""></div>
+        <div id=""pie-chart""></div>
+    </div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+            .then(response => response.text())
+            .then(data => {
+                const csvData = data.split('\n').slice(1).map(row => row.split(','));
+                const years = csvData.map(row => row[0]);
+                const unitsProduced = csvData.map(row => parseFloat(row[2]));
+                const revenue = csvData.map(row => parseFloat(row[3]));
+
+                const lineChart = echarts.init(document.getElementById('line-chart'));
+                const pieChart = echarts.init(document.getElementById('pie-chart'));
+
+                const lineOption = {
+                    xAxis: {
+                        type: 'category',
+                        data: years
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            data: unitsProduced,
+                            type: 'line'
+                        }
+                    ],
+                    brush: {
+                        id: 'line-brush',
+                        xAxisIndex: 'all',
+                        brushLink: 'pie-brush',
+                        throttleType: 'debounce',
+                        throttleDelay: 300
+                    }
+                };
+
+                const pieOption = {
+                    series: [
+                        {
+                            type: 'pie',
+                            data: revenue.map((value, index) => ({ value, name: years[index] })),
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ],
+                    brush: {
+                        id: 'pie-brush',
+                        brushLink: 'line-brush',
+                        throttleType: 'debounce',
+                        throttleDelay: 300
+                    }
+                };
+
+                lineChart.setOption(lineOption);
+                pieChart.setOption(pieOption);
+
+                lineChart.on('brushSelected', params => {
+                    const selectedData = params.batch[0].areas[0].range;
+                    const startIndex = years.indexOf(selectedData[0][0]);
+                    const endIndex = years.indexOf(selectedData[0][1]);
+                    const selectedRevenue = revenue.slice(startIndex, endIndex + 1);
+                    const selectedYears = years.slice(startIndex, endIndex + 1);
+
+                    pieChart.setOption({
+                        series: [
+                            {
+                                data: selectedRevenue.map((value, index) => ({ value, name: selectedYears[index] }))
+                            }
+                        ]
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Units Produced, Revenue, Profit, Production Cost, Yield, and Export Volume. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Agricultural Production Scatterplot Matrix</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.min.js""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts-stat@1.2.0/dist/ecStat.min.js""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/d3@7.4.4/dist/d3.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 1000px; height: 800px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+            .then(response => response.text())
+            .then(data => {
+                const csvData = d3.csvParse(data);
+                const dimensions = ['Units Produced', 'Revenue', 'Profit', 'Production Cost', 'Yield', 'Export Volume'];
+                const chartData = [];
+                csvData.forEach(row => {
+                    const item = {};
+                    dimensions.forEach(dimension => {
+                        item[dimension] = parseFloat(row[dimension]);
+                    });
+                    chartData.push(item);
+                });
+
+                const option = {
+                    tooltip: {
+                        formatter: params => {
+                            const names = params.map(param => param.seriesName);
+                            const values = params.map(param => param.value);
+                            return `(${names.join(', ')})\n` + values.map((value, index) => `${names[index]}: ${value}`).join('\n');
+                        }
+                    },
+                    brush: {
+                        brushLink: 'all',
+                        xAxisIndex: 'all',
+                        yAxisIndex: 'all',
+                        brushType: 'rect',
+                        throttleType: 'debounce',
+                        throttleDelay: 300
+                    },
+                    grid: dimensions.map((dimension, index) => ({
+                        left: index % 3 * 33 + '%',
+                        top: Math.floor(index / 3) * 33 + '%',
+                        width: '30%',
+                        height: '30%'
+                    })),
+                    xAxis: dimensions.map((dimension, index) => ({
+                        gridIndex: index,
+                        type: 'value',
+                        name: dimension,
+                        nameLocation: 'middle',
+                        nameGap: 30,
+                        axisLine: { onZero: false }
+                    })),
+                    yAxis: dimensions.map((dimension, index) => ({
+                        gridIndex: index,
+                        type: 'value',
+                        name: dimension,
+                        nameLocation: 'middle',
+                        nameGap: 30,
+                        axisLine: { onZero: false }
+                    })),
+                    series: dimensions.map((dimension, index) => ({
+                        name: dimension,
+                        type: 'scatter',
+                        symbolSize: 5,
+                        xAxisIndex: index,
+                        yAxisIndex: index,
+                        data: chartData.map(item => [item[dimension], item[dimension]])
+                    })).concat(dimensions.map((dimension1, index1) => dimensions.slice(index1 + 1).map((dimension2, index2) => ({
+                        name: `${dimension1}-${dimension2}`,
+                        type: 'scatter',
+                        symbolSize: 5,
+                        xAxisIndex: index1,
+                        yAxisIndex: index1 + index2 + 1,
+                        data: chartData.map(item => [item[dimension1], item[dimension2]])
+                    })).flat()))
+                };
+
+                const chart = echarts.init(document.getElementById('chart'));
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a brushable Scatterplot that visualizes the relationship between Units Produced and Revenue. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Agricultural Production Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #chart {
+            width: 800px;
+            height: 600px;
+            border: 1px solid #ccc;
+            margin: 20px auto;
+        }
+        #table {
+            width: 300px;
+            height: 600px;
+            border: 1px solid #ccc;
+            margin: 20px auto;
+            float: right;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart""></div>
+    <div id=""table""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+            .then(response => response.text())
+            .then(data => {
+                const csvData = data.split('\n').slice(1).map(row => row.split(','));
+                const chartData = csvData.map(row => [+row[2], +row[3]]);
+                const tableData = csvData.map(row => ({
+                    Year: row[0],
+                    'Crop Type': row[1],
+                    'Units Produced': row[2],
+                    Revenue: row[3],
+                    'Production Cost': row[4],
+                    Profit: row[5],
+                    Yield: row[6],
+                    'Number of Farms': row[7],
+                    'Export Volume': row[8]
+                }));
+
+                const chart = echarts.init(document.getElementById('chart'));
+                chart.setOption({
+                    title: {
+                        text: 'Agricultural Production Scatterplot'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross'
+                        }
+                    },
+                    toolbox: {
+                        feature: {
+                            dataZoom: {
+                                yAxisIndex: 'none'
+                            },
+                            brush: {
+                                type: ['rect', 'polygon', 'clear']
+                            }
+                        }
+                    },
+                    grid: {
+                        left: '10%',
+                        right: '15%',
+                        bottom: '15%'
+                    },
+                    xAxis: {
+                        type: 'value',
+                        name: 'Units Produced',
+                        nameLocation: 'middle',
+                        nameGap: 30
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: 'Revenue',
+                        nameLocation: 'middle',
+                        nameGap: 40
+                    },
+                    series: [
+                        {
+                            name: 'Scatterplot',
+                            type: 'scatter',
+                            data: chartData,
+                            symbolSize: 10,
+                            itemStyle: {
+                                opacity: 0.8
+                            }
+                        }
+                    ],
+                    dataZoom: [
+                        {
+                            type: 'inside',
+                            start: 0,
+                            end: 100
+                        },
+                        {
+                            start: 0,
+                            end: 100
+                        }
+                    ]
+                });
+
+                chart.on('brushSelected', params => {
+                    const selectedData = params.batch[0].selected[0].data;
+                    const tableHtml = selectedData.slice(0, 20).map((row, index) => {
+                        return `
+                            <tr>
+                                <td>${tableData[row[1]].Year}</td>
+                                <td>${tableData[row[1]]['Crop Type']}</td>
+                                <td>${tableData[row[1]]['Units Produced']}</td>
+                                <td>${tableData[row[1]].Revenue}</td>
+                                <td>${tableData[row[1]]['Production Cost']}</td>
+                                <td>${tableData[row[1]].Profit}</td>
+                                <td>${tableData[row[1]].Yield}</td>
+                                <td>${tableData[row[1]]['Number of Farms']}</td>
+                                <td>${tableData[row[1]]['Export Volume']}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                    document.getElementById('table').innerHTML = `
+                        <table border=""1"">
+                            <tr>
+                                <th>Year</th>
+                                <th>Crop Type</th>
+                                <th>Units Produced</th>
+                                <th>Revenue</th>
+                                <th>Production Cost</th>
+                                <th>Profit</th>
+                                <th>Yield</th>
+                                <th>Number of Farms</th>
+                                <th>Export Volume</th>
+                            </tr>
+                            ${tableHtml}
+                        </table>
+                    `;
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a horizontal Bar Chart that shows Crop Type and Units Produced, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Agricultural Production Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 1000px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+            .then(response => response.text())
+            .then(data => {
+                const csvData = data.split('\n').slice(1);
+                const chartData = csvData.map(row => {
+                    const [Year, CropType, UnitsProduced, Revenue, ProductionCost, Profit, Yield, NumberOfFarms, ExportVolume] = row.split(',');
+                    return { CropType, UnitsProduced: Number(UnitsProduced) };
+                });
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const option = {
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+                    legend: {},
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'value',
+                        boundaryGap: [0, 0.01]
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: chartData.map(item => item.CropType)
+                    },
+                    series: [
+                        {
+                            name: 'Units Produced',
+                            type: 'bar',
+                            data: chartData.map(item => item.UnitsProduced)
+                        }
+                    ],
+                    dataZoom: [
+                        {
+                            type: 'inside',
+                            start: 0,
+                            end: 10
+                        },
+                        {
+                            show: true,
+                            type: 'slider',
+                            start: 0,
+                            end: 10,
+                            handleSize: 8,
+                            height: 8,
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            borderColor: '#ccc',
+                            backgroundColor: '#ccc',
+                            fillerColor: '#ccc',
+                            handleStyle: {
+                                color: '#fff',
+                                shadowBlur: 3,
+                                shadowColor: 'rgba(0, 0, 0, 0.6)',
+                                shadowOffsetX: 2,
+                                shadowOffsetY: 2
+                            },
+                            textStyle: {
+                                color: '#333'
+                            },
+                            dataBackground: {
+                                lineStyle: {
+                                    color: '#fff'
+                                },
+                                areaStyle: {
+                                    color: '#fff'
+                                }
+                            },
+                            fillerColor: 'rgba(255,255,255,0.65)',
+                            borderColor: '#ddd'
+                        }
+                    ]
+                };
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"

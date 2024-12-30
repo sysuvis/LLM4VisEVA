@@ -1,0 +1,656 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Adoption Rate and Investment, and a Bar Chart on the right that displays Technology Type versus Adoption Rate.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Technology Adoption Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: row;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis"">
+    <div id=""scatterplot""></div>
+    <div id=""barchart""></div>
+  </div>
+
+  <script>
+    const scatterplotSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"" },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Investment"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Adoption Rate"", ""type"": ""quantitative""}
+      }
+    };
+
+    const barchartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"" },
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {""field"": ""Technology Type"", ""type"": ""nominal""},
+        ""y"": {""field"": ""Adoption Rate"", ""type"": ""quantitative""}
+      }
+    };
+
+    vegaEmbed(""#scatterplot"", scatterplotSpec);
+    vegaEmbed(""#barchart"", barchartSpec);
+  </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Adoption Rate and Investment, and a Bar Chart on the right that displays Technology Type versus Adoption Rate. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Technology Adoption Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: row;
+    }
+    #scatterplot {
+      width: 50%;
+    }
+    #barchart {
+      width: 50%;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis"">
+    <div id=""scatterplot""></div>
+    <div id=""barchart""></div>
+  </div>
+
+  <script>
+    const scatterplotSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"" },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Investment"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Adoption Rate"", ""type"": ""quantitative""},
+        ""color"": {""field"": ""Technology Type"", ""type"": ""nominal""}
+      },
+      ""selection"": {
+        ""brush"": {""type"": ""interval"", ""encodings"": [""x"", ""y""]}
+      }
+    };
+
+    const barchartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"" },
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {""field"": ""Technology Type"", ""type"": ""nominal""},
+        ""y"": {""field"": ""Adoption Rate"", ""type"": ""quantitative""},
+        ""color"": {""field"": ""Technology Type"", ""type"": ""nominal""}
+      }
+    };
+
+    vegaEmbed(""#scatterplot"", scatterplotSpec, { ""actions"": false })
+      .then(function(result) {
+        const scatterplotView = result.view;
+
+        vegaEmbed(""#barchart"", barchartSpec, { ""actions"": false })
+          .then(function(result) {
+            const barchartView = result.view;
+
+            scatterplotView.addSignalListener(""brush"", function(name, value) {
+              barchartView.signal(""brush"", value);
+              barchartView.run();
+            });
+          });
+      });
+  </script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Adoption Rate , while the pie chart represents the distribution of Investment.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Technology Adoption Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const lineChartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"" },
+      ""mark"": ""line"",
+      ""encoding"": {
+        ""x"": {""field"": ""Year"", ""type"": ""temporal""},
+        ""y"": {""field"": ""Adoption Rate"", ""type"": ""quantitative""}
+      }
+    };
+
+    const pieChartSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"" },
+      ""mark"": ""arc"",
+      ""encoding"": {
+        ""theta"": {""field"": ""Investment"", ""type"": ""quantitative""},
+        ""color"": {""field"": ""Technology Type"", ""type"": ""nominal""}
+      }
+    };
+
+    vegaEmbed(""#vis"", lineChartSpec, { mode: ""vega-lite"" });
+    vegaEmbed(""#vis"", pieChartSpec, { mode: ""vega-lite"" });
+  </script>
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Adoption Rate , while the pie chart represents the distribution of Investment. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Investment for the selected group.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Technology Adoption Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""width"": 800,
+      ""height"": 600,
+      ""padding"": 5,
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""vconcat"": [
+        {
+          ""mark"": ""line"",
+          ""encoding"": {
+            ""x"": {""field"": ""Year"", ""type"": ""temporal""},
+            ""y"": {""field"": ""Adoption Rate"", ""type"": ""quantitative""},
+            ""tooltip"": [
+              {""field"": ""Year"", ""type"": ""temporal""},
+              {""field"": ""Adoption Rate"", ""type"": ""quantitative""},
+              {""field"": ""Investment"", ""type"": ""quantitative""}
+            ]
+          },
+          ""selection"": {
+            ""brush"": {
+              ""type"": ""interval"",
+              ""encodings"": [""x""],
+              ""on"": ""[mousedown[!event.shiftKey], mouseup] > mousemove"",
+              ""translate"": ""[mousedown[!event.shiftKey], mouseup] > mousemove!"",
+              ""zoom"": ""wheel![event.shiftKey]""
+            }
+          }
+        },
+        {
+          ""mark"": ""arc"",
+          ""encoding"": {
+            ""theta"": {""field"": ""Investment"", ""type"": ""quantitative"", ""stack"": true},
+            ""color"": {""field"": ""Technology Type"", ""type"": ""nominal""}
+          },
+          ""transform"": [
+            {
+              ""filter"": ""brush""
+            }
+          ]
+        }
+      ]
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Adoption Rate, Investment, Number of Users, and Market Share. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatterplot Matrix</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    /* Add some basic styling to our embed */
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""transform"": [
+        {
+          ""filter"": ""datum['Adoption Rate'] !== null && datum['Investment'] !== null && datum['Number of Users'] !== null && datum['Market Share'] !== null""
+        }
+      ],
+      ""spacing"": 50,
+      ""vconcat"": [
+        {
+          ""mark"": ""point"",
+          ""selection"": {
+            ""brush"": {
+              ""type"": ""interval"",
+              ""encodings"": [""x"", ""y""],
+              ""on"": ""[mousedown[!event.shiftKey], mouseup] > mousemove"",
+              ""translate"": ""[mousedown[!event.shiftKey], mouseup] > mousemove!"",
+              ""zoom"": ""![event.shiftKey]""
+            }
+          },
+          ""encoding"": {
+            ""x"": {""field"": ""Adoption Rate"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Investment"", ""type"": ""quantitative""},
+            ""color"": {
+              ""condition"": {
+                ""test"": ""brush"",
+                ""field"": ""Investment"",
+                ""type"": ""quantitative""
+              },
+              ""value"": ""grey""
+            }
+          }
+        },
+        {
+          ""mark"": ""point"",
+          ""selection"": {
+            ""brush"": {
+              ""type"": ""interval"",
+              ""encodings"": [""x"", ""y""],
+              ""on"": ""[mousedown[!event.shiftKey], mouseup] > mousemove"",
+              ""translate"": ""[mousedown[!event.shiftKey], mouseup] > mousemove!"",
+              ""zoom"": ""![event.shiftKey]""
+            }
+          },
+          ""encoding"": {
+            ""x"": {""field"": ""Adoption Rate"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Number of Users"", ""type"": ""quantitative""},
+            ""color"": {
+              ""condition"": {
+                ""test"": ""brush"",
+                ""field"": ""Number of Users"",
+                ""type"": ""quantitative""
+              },
+              ""value"": ""grey""
+            }
+          }
+        },
+        {
+          ""mark"": ""point"",
+          ""selection"": {
+            ""brush"": {
+              ""type"": ""interval"",
+              ""encodings"": [""x"", ""y""],
+              ""on"": ""[mousedown[!event.shiftKey], mouseup] > mousemove"",
+              ""translate"": ""[mousedown[!event.shiftKey], mouseup] > mousemove!"",
+              ""zoom"": ""![event.shiftKey]""
+            }
+          },
+          ""encoding"": {
+            ""x"": {""field"": ""Adoption Rate"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Market Share"", ""type"": ""quantitative""},
+            ""color"": {
+              ""condition"": {
+                ""test"": ""brush"",
+                ""field"": ""Market Share"",
+                ""type"": ""quantitative""
+              },
+              ""value"": ""grey""
+            }
+          }
+        },
+        {
+          ""mark"": ""point"",
+          ""selection"": {
+            ""brush"": {
+              ""type"": ""interval"",
+              ""encodings"": [""x"", ""y""],
+              ""on"": ""[mousedown[!event.shiftKey], mouseup] > mousemove"",
+              ""translate"": ""[mousedown[!event.shiftKey], mouseup] > mousemove!"",
+              ""zoom"": ""![event.shiftKey]""
+            }
+          },
+          ""encoding"": {
+            ""x"": {""field"": ""Investment"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Number of Users"", ""type"": ""quantitative""},
+            ""color"": {
+              ""condition"": {
+                ""test"": ""brush"",
+                ""field"": ""Number of Users"",
+                ""type"": ""quantitative""
+              },
+              ""value"": ""grey""
+            }
+          }
+        },
+        {
+          ""mark"": ""point"",
+          ""selection"": {
+            ""brush"": {
+              ""type"": ""interval"",
+              ""encodings"": [""x"", ""y""],
+              ""on"": ""[mousedown[!event.shiftKey], mouseup] > mousemove"",
+              ""translate"": ""[mousedown[!event.shiftKey], mouseup] > mousemove!"",
+              ""zoom"": ""![event.shiftKey]""
+            }
+          },
+          ""encoding"": {
+            ""x"": {""field"": ""Investment"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Market Share"", ""type"": ""quantitative""},
+            ""color"": {
+              ""condition"": {
+                ""test"": ""brush"",
+                ""field"": ""Market Share"",
+                ""type"": ""quantitative""
+              },
+              ""value"": ""grey""
+            }
+          }
+        },
+        {
+          ""mark"": ""point"",
+          ""selection"": {
+            ""brush"": {
+              ""type"": ""interval"",
+              ""encodings"": [""x"", ""y""],
+              ""on"": ""[mousedown[!event.shiftKey], mouseup] > mousemove"",
+              ""translate"": ""[mousedown[!event.shiftKey], mouseup] > mousemove!"",
+              ""zoom"": ""![event.shiftKey]""
+            }
+          },
+          ""encoding"": {
+            ""x"": {""field"": ""Number of Users"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Market Share"", ""type"": ""quantitative""},
+            ""color"": {
+              ""condition"": {
+                ""test"": ""brush"",
+                ""field"": ""Market Share"",
+                ""type"": ""quantitative""
+              },
+              ""value"": ""grey""
+            }
+          }
+        }
+      ]
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a brushable Scatterplot that visualizes the relationship between Adoption Rate and Investment. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Brushable Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""width"": 600,
+      ""height"": 400,
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"",
+        ""format"": {""type"": ""csv""}
+      },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {""field"": ""Adoption Rate"", ""type"": ""quantitative""},
+        ""y"": {""field"": ""Investment"", ""type"": ""quantitative""},
+        ""tooltip"": [
+          {""field"": ""Year"", ""type"": ""nominal""},
+          {""field"": ""Technology Type"", ""type"": ""nominal""},
+          {""field"": ""Adoption Rate"", ""type"": ""quantitative""},
+          {""field"": ""Investment"", ""type"": ""quantitative""},
+          {""field"": ""Return on Investment"", ""type"": ""quantitative""},
+          {""field"": ""Number of Users"", ""type"": ""quantitative""},
+          {""field"": ""Market Share"", ""type"": ""quantitative""},
+          {""field"": ""Customer Satisfaction Score"", ""type"": ""quantitative""}
+        ]
+      },
+      ""selection"": {
+        ""brush"": {""type"": ""interval"", ""encodings"": [""x"", ""y""]}
+      }
+    };
+
+    const opts = {
+      ""actions"": false
+    };
+
+    vegaEmbed(""#vis"", spec, opts).then(function(result) {
+      const view = result.view;
+      const brush = view.signal(""brush"");
+
+      view.addEventListener(""mouseover"", function(event, item) {
+        if (item && item.datum) {
+          const tableData = [];
+          const brushData = view.data(""brush_store_"")[0];
+          if (brushData) {
+            for (let i = 0; i < Math.min(20, brushData.length); i++) {
+              const row = brushData[i];
+              tableData.push({
+                ""Year"": row.Year,
+                ""Technology Type"": row[""Technology Type""],
+                ""Adoption Rate"": row[""Adoption Rate""],
+                ""Investment"": row.Investment,
+                ""Return on Investment"": row[""Return on Investment""],
+                ""Number of Users"": row[""Number of Users""],
+                ""Market Share"": row[""Market Share""],
+                ""Customer Satisfaction Score"": row[""Customer Satisfaction Score""]
+              });
+            }
+          }
+          const tableHtml = tableData.map(function(row, index) {
+            return `<tr><td>${row.Year}</td><td>${row[""Technology Type""]}</td><td>${row[""Adoption Rate""]}</td><td>${row.Investment}</td><td>${row[""Return on Investment""]}</td><td>${row[""Number of Users""]}</td><td>${row[""Market Share""]}</td><td>${row[""Customer Satisfaction Score""]}</td></tr>`;
+          }).join("""");
+          document.getElementById(""vis"").innerHTML = `
+            <svg width=""600"" height=""400""></svg>
+            <table>
+              <tr><th>Year</th><th>Technology Type</th><th>Adoption Rate</th><th>Investment</th><th>Return on Investment</th><th>Number of Users</th><th>Market Share</th><th>Customer Satisfaction Score</th></tr>
+              ${tableHtml}
+            </table>
+          `;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a horizontal Bar Chart that shows Technology Type and Adoption Rate, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Technology Adoption Rate</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0/build/vega.min.js""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0/build/vega-lite.min.js""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0/build/vega-embed.min.js""></script>
+  <style>
+    #vis {
+      width: 800px;
+      height: 600px;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""width"": 700,
+      ""height"": 500,
+      ""layer"": [
+        {
+          ""mark"": ""bar"",
+          ""encoding"": {
+            ""x"": {
+              ""field"": ""Adoption Rate"",
+              ""type"": ""quantitative"",
+              ""axis"": {
+                ""title"": ""Adoption Rate""
+              }
+            },
+            ""y"": {
+              ""field"": ""Technology Type"",
+              ""type"": ""nominal"",
+              ""axis"": {
+                ""title"": ""Technology Type""
+              }
+            },
+            ""color"": {
+              ""field"": ""Technology Type"",
+              ""type"": ""nominal""
+            }
+          }
+        },
+        {
+          ""mark"": ""bar"",
+          ""width"": 30,
+          ""x"": {""field"": ""Adoption Rate""},
+          ""y"": {""field"": ""Technology Type""},
+          ""color"": {""field"": ""Technology Type""},
+          ""transform"": [
+            {
+              ""filter"": ""datum.Adoption Rate > 0.5""
+            }
+          ]
+        }
+      ],
+      ""resolve"": {
+        ""scale"": {
+          ""color"": ""independent""
+        }
+      },
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"",
+        ""format"": {
+          ""type"": ""csv""
+        }
+      }
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
