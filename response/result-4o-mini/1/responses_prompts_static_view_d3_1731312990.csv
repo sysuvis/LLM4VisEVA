@@ -1,0 +1,963 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Scatterplot that visualizes the relationship between Units Produced and Revenue.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Units Produced vs Revenue</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .scatter {
+            fill: steelblue;
+            stroke: white;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+            margin = {top: 20, right: 30, bottom: 30, left: 40},
+            width = +svg.attr(""width"") - margin.left - margin.right,
+            height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            data.forEach(d => {
+                d[""Units Produced""] = +d[""Units Produced""];
+                d[""Revenue""] = +d[""Revenue""];
+            });
+
+            const x = d3.scaleLinear()
+                .domain(d3.extent(data, d => d[""Units Produced""])).nice()
+                .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain(d3.extent(data, d => d[""Revenue""])).nice()
+                .range([height, 0]);
+
+            g.append(""g"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .call(d3.axisLeft(y));
+
+            g.selectAll("".scatter"")
+                .data(data)
+                .enter().append(""circle"")
+                .attr(""class"", ""scatter"")
+                .attr(""cx"", d => x(d[""Units Produced""]))
+                .attr(""cy"", d => y(d[""Revenue""]))
+                .attr(""r"", 3);
+        });
+    </script>
+</body>
+</html>
+```"
+2,line chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Line Chart that visualizes the trend of Units Produced over the Year for each Crop Type.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Agricultural Production Trends</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        /* Basic styles for the chart */
+        .line {
+            fill: none;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+            margin = { top: 20, right: 30, bottom: 30, left: 40 },
+            width = svg.attr(""width"") - margin.left - margin.right,
+            height = svg.attr(""height"") - margin.top - margin.bottom;
+
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            const cropTypes = Array.from(new Set(data.map(d => d['Crop Type'])));
+            const parseYear = d3.scalePoint().domain(cropTypes).range([0, height]);
+
+            const years = Array.from(new Set(data.map(d => d.Year))).sort();
+            const x = d3.scaleBand().domain(years).range([0, width]).padding(0.1);
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => +d['Units Produced'])])
+                .nice()
+                .range([height, 0]);
+
+            const line = d3.line()
+                .x(d => x(d.Year) + x.bandwidth() / 2)
+                .y(d => y(d['Units Produced']));
+
+            const groupedData = d3.group(data, d => d['Crop Type']);
+
+            g.append(""g"")
+                .attr(""fill"", ""none"")
+                .attr(""stroke"", ""black"")
+                .attr(""stroke-width"", 1)
+                .selectAll("".line"")
+                .data(cropTypes)
+                .join(""path"")
+                .attr(""class"", ""line"")
+                .attr(""d"", d => line(groupedData.get(d).map(item => ({ Year: item['Year'], 'Units Produced': +item['Units Produced'] }))))
+                .style(""stroke"", (d, i) => d3.schemeCategory10[i % 10]);
+
+            g.append(""g"").attr(""class"", ""axis x-axis"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"").attr(""class"", ""axis y-axis"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"
+3,bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Bar Chart that visualizes the Units Produced for each Crop Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Crop Production Bar Chart</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .bar {
+            fill: steelblue;
+        }
+        .bar:hover {
+            fill: orange;
+        }
+        .axis--x path {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+            margin = {top: 20, right: 30, bottom: 40, left: 40},
+            width = +svg.attr(""width"") - margin.left - margin.right,
+            height = +svg.attr(""height"") - margin.top - margin.bottom,
+            g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            data = data.filter(d => d.Year === ""2020"");
+
+            const cropTypes = data.map(d => d['Crop Type']);
+            const unitsProduced = data.map(d => +d['Units Produced']);
+
+            const x = d3.scaleBand()
+                .domain(cropTypes)
+                .range([0, width])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(unitsProduced)])
+                .nice()
+                .range([height, 0]);
+
+            g.append(""g"")
+                .selectAll("".bar"")
+                .data(unitsProduced)
+                .enter().append(""rect"")
+                .attr(""class"", ""bar"")
+                .attr(""x"", (d, i) => x(cropTypes[i]))
+                .attr(""y"", d => y(d))
+                .attr(""width"", x.bandwidth())
+                .attr(""height"", d => height - y(d));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"
+4,pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Pie Chart that visualizes the proportion of Units Produced contributed by each Crop Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Crop Production Pie Chart</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .slice {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h2>Crop Production in 2020</h2>
+    <svg width=""500"" height=""500""></svg>
+
+    <script>
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            const filteredData = data.filter(d => d.Year == 2020);
+            const cropData = d3.rollup(filteredData, v => d3.sum(v, d => +d[""Units Produced""]), d => d[""Crop Type""]);
+            const cropArray = Array.from(cropData, ([key, value]) => ({ cropType: key, unitsProduced: value }));
+
+            const width = 500, height = 500, radius = Math.min(width, height) / 2;
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            const pie = d3.pie().value(d => d.unitsProduced);
+            const arc = d3.arc().innerRadius(0).outerRadius(radius);
+
+            const svg = d3.select(""svg"")
+                .append(""g"")
+                .attr(""transform"", `translate(${width / 2}, ${height / 2})`);
+
+            const arcs = svg.selectAll("".slice"")
+                .data(pie(cropArray))
+                .enter().append(""g"")
+                .attr(""class"", ""slice"");
+
+            arcs.append(""path"")
+                .attr(""d"", arc)
+                .attr(""fill"", (d, i) => color(i));
+
+            arcs.append(""text"")
+                .attr(""transform"", d => `translate(${arc.centroid(d)})`)
+                .text(d => d.data.cropType);
+        });
+    </script>
+</body>
+</html>
+```"
+5,donut chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Donut Chart that visualizes the distribution of Units Produced among Crop Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Donut Chart</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .arc {
+            stroke: #fff;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""400"" height=""400""></svg>
+    <script>
+        const width = 400;
+        const height = 400;
+        const innerRadius = 100;
+        const outerRadius = 150;
+
+        const svg = d3.select(""svg"")
+                      .append(""g"")
+                      .attr(""transform"", `translate(${width / 2}, ${height / 2})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            const filteredData = data.filter(d => d.Year == 2020);
+            const unitsByCrop = d3.rollup(filteredData, v => d3.sum(v, d => +d[""Units Produced""]), d => d[""Crop Type""]);
+
+            const pie = d3.pie().value(d => d[1]);
+            const arcs = pie(Array.from(unitsByCrop));
+
+            const arcGenerator = d3.arc()
+                                   .innerRadius(innerRadius)
+                                   .outerRadius(outerRadius);
+
+            svg.selectAll("".arc"")
+               .data(arcs)
+               .enter().append(""path"")
+               .attr(""class"", ""arc"")
+               .attr(""d"", arcGenerator)
+               .attr(""fill"", (d, i) => d3.schemeCategory10[i % 10]);
+        });
+    </script>
+</body>
+</html>
+```"
+6,coxcomb chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Coxcomb Chart(polar area chart) to compare the Units Produced of different Crop Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coxcomb Chart</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .arc {
+            stroke: #fff;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""600"" height=""600""></svg>
+    <script>
+        const width = 600, height = 600, radius = Math.min(width, height) / 2;
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${width / 2}, ${height / 2})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"")
+            .then(data => {
+                const filteredData = data.filter(d => d.Year == 2020);
+                const cropData = filteredData.map(d => ({
+                    crop: d['Crop Type'],
+                    units: +d['Units Produced']
+                }));
+
+                const pie = d3.pie()
+                    .value(d => d.units)
+                    .sort(null);
+
+                const arc = d3.arc()
+                    .innerRadius(0)
+                    .outerRadius(d => radius * (d.data.units / d3.max(cropData, d => d.units)));
+
+                const arcs = svg.selectAll("".arc"")
+                    .data(pie(cropData))
+                    .enter().append(""g"")
+                    .attr(""class"", ""arc"");
+
+                arcs.append(""path"")
+                    .attr(""d"", arc)
+                    .attr(""fill"", (d, i) => color(i));
+
+                arcs.append(""text"")
+                    .attr(""transform"", d => `translate(${arc.centroid(d)})`)
+                    .attr(""dy"", "".35em"")
+                    .text(d => d.data.crop);
+            });
+    </script>
+</body>
+</html>
+```"
+7,radar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Radar Chart to compare the Units Produced of different Crop Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Agricultural Production Radar Chart</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .radar-chart {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+        }
+        .axis {
+            stroke: #ccc;
+        }
+        .area {
+            fill: rgba(0, 128, 0, 0.5);
+        }
+        .circle {
+            fill: red;
+        }
+    </style>
+</head>
+<body>
+    <svg class=""radar-chart""></svg>
+    <script>
+        const width = 500, height = 500, margin = 50;
+
+        const radarData = d3.scalePoint()
+            .range([0, width / 2 - margin])
+            .domain([""Crop A"", ""Crop B"", ""Crop C"", ""Crop D"", ""Crop E""]);
+        
+        const angleSlice = Math.PI * 2 / radarData.domain().length;
+
+        const radarChartOptions = {
+            w: width,
+            h: height,
+            margin: margin,
+            maxValue: 0,
+        };
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            const filteredData = data.filter(d => d.Year === ""2020"");
+            const unitsProduced = {};
+
+            filteredData.forEach(d => {
+                unitsProduced[d[""Crop Type""]] = +d[""Units Produced""];
+            });
+
+            radarChartOptions.maxValue = d3.max(Object.values(unitsProduced));
+
+            const svg = d3.select("".radar-chart"")
+                .attr(""width"", radarChartOptions.w)
+                .attr(""height"", radarChartOptions.h);
+
+            const radarLine = d3.lineRadial()
+                .radius(d => radarData(d[1]))
+                .angle((d, i) => i * angleSlice);
+
+            const dataValues = Object.entries(unitsProduced).map(d => d[1]);
+
+            const radarPath = svg.append(""path"")
+                .datum(dataValues)
+                .attr(""class"", ""area"")
+                .attr(""d"", radarLine)
+                .attr(""transform"", ""translate("" + width / 2 + "","" + height / 2 + "")"")
+                .style(""fill"", ""red"")
+                .style(""fill-opacity"", 0.5);
+
+            const circles = svg.selectAll("".circle"")
+                .data(dataValues)
+                .enter().append(""circle"")
+                .attr(""class"", ""circle"")
+                .attr(""r"", 5)
+                .attr(""cx"", (d, i) => (radarData(d) * Math.cos(angleSlice * i - Math.PI / 2)) + width / 2)
+                .attr(""cy"", (d, i) => (radarData(d) * Math.sin(angleSlice * i - Math.PI / 2)) + height / 2)
+                .style(""fill"", ""blue"");
+        });
+    </script>
+</body>
+</html>
+```"
+8,streamgraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Streamgraph that visualizes the changes of Units Produced over the Year for each Crop Type.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Streamgraph</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .stream {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const margin = {top: 20, right: 20, bottom: 30, left: 40},
+              width = 800 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select(""body"").append(""svg"")
+            .attr(""width"", width + margin.left + margin.right)
+            .attr(""height"", height + margin.top + margin.bottom)
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            const nest = d3.group(data, d => d[""Crop Type""], d => d[""Year""]);
+            const crops = Array.from(nest.keys());
+            const years = Array.from(new Set(data.map(d => d[""Year""])));
+
+            const unitsProducedByCrop = crops.map(crop => {
+                return years.map(year => {
+                    const entry = nest.get(crop).get(year);
+                    return entry ? +entry[""Units Produced""] : 0; 
+                });
+            });
+
+            const stackedData = d3.stack()
+                .keys(crops)
+                (unitsProducedByCrop.map((d, i) => {
+                    const obj = { year: years[i] };
+                    crops.forEach((crop, j) => {
+                        obj[crop] = d[j];
+                    });
+                    return obj;
+                }));
+
+            const x = d3.scaleBand()
+                .domain(years)
+                .range([0, width])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(stackedData[stackedData.length - 1], d => d[1])])
+                .range([height, 0]);
+
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            svg.append(""g"")
+                .selectAll("".layer"")
+                .data(stackedData)
+                .enter().append(""path"")
+                .attr(""class"", ""layer"")
+                .attr(""fill"", (d, i) => color(i))
+                .attr(""d"", d3.area()
+                    .x(d => x(d.data.year) + x.bandwidth() / 2)
+                    .y0(d => y(d[0]))
+                    .y1(d => y(d[1]))
+                );
+
+            svg.append(""g"")
+                .attr(""class"", ""axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            svg.append(""g"")
+                .attr(""class"", ""axis--y"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"
+9,slopegraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Slopegraph to compare the Units Produced between 2019 and 2020 for each Crop Type.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Slopegraph of Units Produced</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .line {
+            stroke: #1f77b4;
+            stroke-width: 2;
+        }
+        .circle {
+            fill: #ff7f0e;
+        }
+        .axis {
+            font: 10px sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script>
+        const margin = {top: 20, right: 30, bottom: 30, left: 80},
+              width = 800 - margin.left - margin.right,
+              height = 600 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            const filteredData = data.filter(d => d.Year === ""2019"" || d.Year === ""2020"");
+
+            const cropTypes = Array.from(new Set(filteredData.map(d => d[""Crop Type""])));
+
+            const unitsProduced = cropTypes.map(crop => {
+                const yearData = filteredData.filter(d => d[""Crop Type""] === crop);
+                return {
+                    crop: crop,
+                    units2019: +yearData.find(d => d.Year === ""2019"")[""Units Produced""],
+                    units2020: +yearData.find(d => d.Year === ""2020"")[""Units Produced""]
+                };
+            });
+
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(unitsProduced, d => Math.max(d.units2019, d.units2020))])
+                .range([0, width]);
+            
+            const y = d3.scaleBand()
+                .domain(unitsProduced.map(d => d.crop))
+                .range([0, height])
+                .padding(0.1);
+
+            svg.append(""g"")
+                .selectAll("".line"")
+                .data(unitsProduced)
+                .enter()
+                .append(""line"")
+                .attr(""class"", ""line"")
+                .attr(""x1"", d => x(d.units2019))
+                .attr(""x2"", d => x(d.units2020))
+                .attr(""y1"", d => y(d.crop) + y.bandwidth()/2)
+                .attr(""y2"", d => y(d.crop) + y.bandwidth()/2);
+
+            svg.append(""g"")
+                .selectAll("".circle"")
+                .data(unitsProduced)
+                .enter()
+                .append(""circle"")
+                .attr(""class"", ""circle"")
+                .attr(""cx"", d => x(d.units2019))
+                .attr(""cy"", d => y(d.crop) + y.bandwidth()/2)
+                .attr(""r"", 4);
+
+            svg.append(""g"")
+                .selectAll("".circle"")
+                .data(unitsProduced)
+                .enter()
+                .append(""circle"")
+                .attr(""class"", ""circle"")
+                .attr(""cx"", d => x(d.units2020))
+                .attr(""cy"", d => y(d.crop) + y.bandwidth()/2)
+                .attr(""r"", 4);
+
+            svg.append(""g"")
+                .attr(""class"", ""x-axis"")
+                .attr(""transform"", `translate(0, ${height})`)
+                .call(d3.axisBottom(x));
+
+            svg.append(""g"")
+                .attr(""class"", ""y-axis"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"
+10,heatmap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Heatmap that visualizes the Units Produced across Crop Type and Years.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Agricultural Production Heatmap</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .cell {
+            stroke-width: 1;
+            stroke: #ccc;
+        }
+        .legend rect {
+            stroke: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script>
+        const margin = { top: 40, right: 20, bottom: 40, left: 80 },
+              width = 800 - margin.left - margin.right,
+              height = 600 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"")
+                      .append(""g"")
+                      .attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            const years = Array.from(new Set(data.map(d => d.Year)));
+            const cropTypes = Array.from(new Set(data.map(d => d[""Crop Type""])));
+
+            const unitsProducedMatrix = cropTypes.map(crop => years.map(year => {
+                const row = data.find(d => d[""Crop Type""] === crop && d.Year === year);
+                return row ? +row[""Units Produced""] : 0;
+            }));
+
+            const xScale = d3.scaleBand()
+                             .range([0, width])
+                             .domain(years)
+                             .padding(0.01);
+            const yScale = d3.scaleBand()
+                             .range([height, 0])
+                             .domain(cropTypes)
+                             .padding(0.01);
+            const colorScale = d3.scaleSequential(d3.interpolateYlGnBu)
+                                 .domain([0, d3.max(unitsProducedMatrix.flat())]);
+
+            svg.selectAll()
+               .data(unitsProducedMatrix)
+               .enter().selectAll(""rect"")
+               .data(d => d)
+               .enter().append(""rect"")
+               .attr(""x"", (d, i) => xScale(years[i % years.length]))
+               .attr(""y"", (d, i) => yScale(cropTypes[Math.floor(i / years.length)]))
+               .attr(""width"", xScale.bandwidth())
+               .attr(""height"", yScale.bandwidth())
+               .style(""fill"", d => colorScale(d))
+               .attr(""class"", ""cell"");
+
+            svg.append(""g"")
+               .attr(""class"", ""x axis"")
+               .attr(""transform"", `translate(0,${height})`)
+               .call(d3.axisBottom(xScale));
+
+            svg.append(""g"")
+               .attr(""class"", ""y axis"")
+               .call(d3.axisLeft(yScale));
+        });
+    </script>
+</body>
+</html>
+```"
+11,bar chart+stacked bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Stacked Bar Chart that visualizes the given data table.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Stacked Bar Chart</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .bar {
+            fill-opacity: 0.8;
+        }
+        .axis {
+            font: 10px sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+            margin = {top: 20, right: 30, bottom: 40, left: 40},
+            width = +svg.attr(""width"") - margin.left - margin.right,
+            height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            const keys = [""Revenue"", ""Production Cost"", ""Profit""];
+            const years = Array.from(new Set(data.map(d => d.Year)));
+
+            const stack = d3.stack()
+                .keys(keys)
+                .value((d, key) => +d[key]);
+
+            const stackedData = stack(d3.groups(data, d => d.Year).map(([key, values]) => {
+                return {
+                    Year: key,
+                    ...values.reduce((acc, curr) => {
+                        keys.forEach(k => { acc[k] = (acc[k] || 0) + +curr[k] });
+                        return acc;
+                    }, {})
+                };
+            }));
+
+            const x = d3.scaleBand()
+                .domain(years)
+                .range([0, width])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(stackedData[stackedData.length - 1], d => d[stackedData.length - 1].data[keys[keys.length - 1]])])
+                .range([height, 0]);
+
+            g.append(""g"")
+                .selectAll(""g"")
+                .data(stackedData)
+                .enter().append(""g"")
+                .attr(""fill"", (d, i) => d3.schemeCategory10[i])
+                .selectAll(""rect"")
+                .data(d => d)
+                .enter().append(""rect"")
+                .attr(""class"", ""bar"")
+                .attr(""x"", d => x(d.data.Year))
+                .attr(""y"", d => y(d[1]))
+                .attr(""height"", d => y(d[0]) - y(d[1]))
+                .attr(""width"", x.bandwidth());
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis-x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis-y"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"
+12,bar chart+horizontal bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Horizontal Bar Chart that visualizes the Units Produced for each Crop Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Horizontal Bar Chart of Units Produced in 2020</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .bar {
+            fill: steelblue;
+        }
+
+        .axis--x path {
+            display: none;
+        }
+
+        .axis--y text {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""500""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+            margin = {top: 20, right: 30, bottom: 40, left: 100},
+            width = +svg.attr(""width"") - margin.left - margin.right,
+            height = +svg.attr(""height"") - margin.top - margin.bottom,
+            g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            data = data.filter(d => d.Year == 2020);
+            data.forEach(d => {
+                d[""Units Produced""] = +d[""Units Produced""];
+            });
+
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d[""Units Produced""])])
+                .range([0, width]);
+
+            const y = d3.scaleBand()
+                .domain(data.map(d => d[""Crop Type""]))
+                .range([0, height])
+                .padding(0.1);
+
+            g.append(""g"")
+                .selectAll("".bar"")
+                .data(data)
+                .enter().append(""rect"")
+                .attr(""class"", ""bar"")
+                .attr(""x"", 0)
+                .attr(""y"", d => y(d[""Crop Type""]))
+                .attr(""width"", d => x(d[""Units Produced""]))
+                .attr(""height"", y.bandwidth());
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"

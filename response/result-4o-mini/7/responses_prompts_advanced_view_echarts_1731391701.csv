@@ -1,0 +1,853 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot that visualizes the relationship between Net Income and Revenue. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Scatterplot of Net Income vs Revenue</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const netIncome = [];
+                const revenue = [];
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns.length > 1) {
+                        netIncome.push(parseFloat(columns[2]));
+                        revenue.push(parseFloat(columns[3]));
+                    }
+                });
+
+                const chartDom = document.getElementById('chart');
+                const myChart = echarts.init(chartDom);
+
+                const option = {
+                    title: {
+                        text: 'Net Income vs Revenue',
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: params => {
+                            const netIncomeVal = params.data[0];
+                            const revenueVal = params.data[1];
+                            return `Net Income: ${netIncomeVal}<br/>Revenue: ${revenueVal}`;
+                        }
+                    },
+                    xAxis: {
+                        name: 'Net Income',
+                        type: 'value',
+                    },
+                    yAxis: {
+                        name: 'Revenue',
+                        type: 'value',
+                    },
+                    series: [{
+                        symbolSize: 10,
+                        data: netIncome.map((ni, idx) => [ni, revenue[idx]]),
+                        type: 'scatter',
+                    }]
+                };
+
+                myChart.setOption(option);
+            })
+            .catch(error => console.error('Error fetching the data:', error));
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot that visualizes the relationship between Net Income and Revenue. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Net Income vs Revenue Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""main""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const netIncome = [];
+                const revenue = [];
+                const companyNames = [];
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns.length > 1) {
+                        companyNames.push(columns[1]);
+                        netIncome.push(parseFloat(columns[2]));
+                        revenue.push(parseFloat(columns[3]));
+                    }
+                });
+
+                const option = {
+                    title: {
+                        text: 'Net Income vs Revenue Scatterplot'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function (params) {
+                            return params.name + '<br/>' + 
+                                   'Net Income: ' + params.value[1] + '<br/>' + 
+                                   'Revenue: ' + params.value[0];
+                        }
+                    },
+                    xAxis: {
+                        name: 'Revenue',
+                        type: 'value'
+                    },
+                    yAxis: {
+                        name: 'Net Income',
+                        type: 'value'
+                    },
+                    series: [{
+                        name: 'Companies',
+                        type: 'scatter',
+                        data: revenue.map((rev, idx) => [rev, netIncome[idx], companyNames[idx]]),
+                        emphasis: {
+                            focus: 'series'
+                        },
+                        itemStyle: {
+                            color: '#5470C6'
+                        }
+                    }]
+                };
+
+                const chart = echarts.init(document.getElementById('main'));
+                chart.setOption(option);
+
+                chart.on('click', function (params) {
+                    if (params.data) {
+                        alert('You clicked on ' + params.data[2] + '\nNet Income: ' + params.data[1] + '\nRevenue: ' + params.data[0]);
+                    }
+                });
+
+                chart.on('brushSelected', function (params) {
+                    const selectedPoints = params.batch[0].selected;
+                    let message = 'Selected Companies:\n';
+                    selectedPoints.forEach(point => {
+                        message += point.data[2] + '\n';
+                    });
+                    alert(message);
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot that visualizes the relationship between Net Income and Revenue. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Net Income vs Revenue Scatterplot</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.3/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""scatterplot"" style=""width: 100%; height: 600px;""></div>
+
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1); // skip header
+                
+                const netIncome = [];
+                const revenue = [];
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns.length > 4) { // Ensure there are enough columns
+                        netIncome.push(parseFloat(columns[2]));
+                        revenue.push(parseFloat(columns[3]));
+                    }
+                });
+
+                const myChart = echarts.init(document.getElementById('scatterplot'));
+
+                const option = {
+                    tooltip: {
+                        formatter: function (params) {
+                            return `Net Income: ${params.data[0]}<br/>Revenue: ${params.data[1]}`;
+                        }
+                    },
+                    xAxis: {
+                        name: 'Revenue',
+                        type: 'value'
+                    },
+                    yAxis: {
+                        name: 'Net Income',
+                        type: 'value'
+                    },
+                    series: [{
+                        symbolSize: 10,
+                        data: netIncome.map((income, index) => [revenue[index], income]),
+                        type: 'scatter'
+                    }],
+                    dataZoom: [{
+                        type: 'inside',
+                        xAxisIndex: [0],
+                        filterMode: 'none'
+                    }]
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Net Income and Revenue. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Net Income vs Revenue Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1);
+            const scatterData = rows.map(row => {
+                const cols = row.split(',');
+                return {
+                    name: cols[1],
+                    netIncome: parseFloat(cols[2]),
+                    revenue: parseFloat(cols[3]),
+                    url: `https://www.google.com/search?q=${encodeURIComponent(cols[1])}`
+                };
+            }).filter(item => !isNaN(item.netIncome) && !isNaN(item.revenue));
+
+            const myChart = echarts.init(document.getElementById('main'));
+
+            const option = {
+                title: {
+                    text: 'Net Income vs Revenue',
+                },
+                tooltip: {
+                    formatter: function (params) {
+                        return `${params.data.name}<br/>Net Income: ${params.data.netIncome}<br/>Revenue: ${params.data.revenue}`;
+                    }
+                },
+                xAxis: {
+                    name: 'Revenue',
+                    type: 'value',
+                },
+                yAxis: {
+                    name: 'Net Income',
+                    type: 'value',
+                },
+                series: [{
+                    symbolSize: 20,
+                    data: scatterData.map(item => [item.revenue, item.netIncome, item]),
+                    type: 'scatter',
+                }]
+            };
+
+            myChart.setOption(option);
+
+            myChart.on('click', function (params) {
+                if (params.componentType === 'series') {
+                    const clickedData = params.data[2];
+                    window.open(clickedData.url, '_blank');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot with query widgets showing the Net Income and Revenue of the given dataset. Add a slider to represent the Quarter.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Financial Data Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 500px;""></div>
+    <input type=""range"" id=""quarterSlider"" min=""1"" max=""4"" value=""1"" step=""1"" style=""width: 100%;"">
+    <label for=""quarterSlider"">Quarter: <span id=""quarterLabel"">1</span></label>
+    
+    <script>
+        let data;
+        const quarterSlider = document.getElementById('quarterSlider');
+        const quarterLabel = document.getElementById('quarterLabel');
+
+        fetch('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+            .then(response => response.text())
+            .then(csvData => {
+                const rows = csvData.split('\n').slice(1);
+                data = rows.map(row => {
+                    const cols = row.split(',');
+                    return {
+                        Quarter: parseInt(cols[0]),
+                        Company: cols[1],
+                        NetIncome: parseFloat(cols[2]),
+                        Revenue: parseFloat(cols[3]),
+                        Expenses: parseFloat(cols[4]),
+                        EmployeeCount: parseInt(cols[5]),
+                        Industry: cols[6],
+                        StockPrice: parseFloat(cols[7])
+                    };
+                });
+                updateChart(1);
+            });
+
+        function updateChart(quarter) {
+            const filteredData = data.filter(d => d.Quarter === quarter);
+            const netIncome = filteredData.map(d => d.NetIncome);
+            const revenue = filteredData.map(d => d.Revenue);
+            const companies = filteredData.map(d => d.Company);
+
+            const option = {
+                title: {
+                    text: 'Net Income vs Revenue'
+                },
+                tooltip: {},
+                xAxis: {
+                    name: 'Revenue',
+                    type: 'value'
+                },
+                yAxis: {
+                    name: 'Net Income',
+                    type: 'value'
+                },
+                series: [{
+                    symbolSize: 10,
+                    data: netIncome.map((ni, index) => [revenue[index], ni]),
+                    type: 'scatter'
+                }]
+            };
+            
+            const chart = echarts.init(document.getElementById('main'));
+            chart.setOption(option);
+        }
+
+        quarterSlider.addEventListener('input', function () {
+            quarterLabel.textContent = this.value;
+            updateChart(parseInt(this.value));
+        });
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Scatterplot showing the Net Income of Alpha Inc. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Net Income Scatterplot</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.2/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const alphaIncData = rows
+                    .map(row => row.split(','))
+                    .filter(row => row[1] === 'Alpha Inc')
+                    .map(row => ({
+                        quarter: row[0],
+                        netIncome: parseFloat(row[2]),
+                        revenue: parseFloat(row[3]),
+                        expenses: parseFloat(row[4]),
+                        employeeCount: parseInt(row[5]),
+                        industry: row[6],
+                        stockPrice: parseFloat(row[7]),
+                    }));
+
+                const quarters = alphaIncData.map(item => item.quarter);
+                const netIncomes = alphaIncData.map(item => item.netIncome);
+
+                const chartDom = document.getElementById('main');
+                const myChart = echarts.init(chartDom);
+                const option = {
+                    title: {
+                        text: 'Net Income of Alpha Inc.',
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: quarters,
+                    },
+                    yAxis: {
+                        type: 'value',
+                    },
+                    series: [{
+                        type: 'line',
+                        data: netIncomes,
+                        animate: true,
+                        lineSmooth: true,
+                        label: {
+                            show: true,
+                            position: 'top'
+                        },
+                    }],
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Net Income of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Financial Data Line Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1);
+                const result = {};
+                
+                lines.forEach(line => {
+                    const [quarter, company, netIncome] = line.split(',');
+                    if (!result[company]) {
+                        result[company] = { quarter: [], netIncome: [] };
+                    }
+                    result[company].quarter.push(quarter);
+                    result[company].netIncome.push(parseFloat(netIncome));
+                });
+
+                const series = Object.keys(result).map(company => ({
+                    name: company,
+                    type: 'line',
+                    data: result[company].netIncome,
+                    smooth: true,
+                }));
+
+                const option = {
+                    title: {
+                        text: 'Net Income by Company',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                    },
+                    legend: {
+                        data: Object.keys(result),
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: result[Object.keys(result)[0]].quarter,
+                    },
+                    yAxis: {
+                        type: 'value',
+                    },
+                    series: series,
+                };
+
+                const chart = echarts.init(document.getElementById('main'));
+                chart.setOption(option);
+
+                chart.on('mouseover', function (params) {
+                    if (params.componentType === 'series') {
+                        chart.dispatchAction({
+                            type: 'highlight',
+                            seriesIndex: params.seriesIndex,
+                        });
+                    }
+                });
+
+                chart.on('mouseout', function (params) {
+                    if (params.componentType === 'series') {
+                        chart.dispatchAction({
+                            type: 'downplay',
+                            seriesIndex: params.seriesIndex,
+                        });
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Bar Chart that visualizes the Net Income for each Company in Q1-2021. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Net Income Bar Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 400px;""></div>
+    <script>
+        async function fetchData() {
+            const response = await fetch('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv');
+            const data = await response.text();
+            const rows = data.split('\n').slice(1);
+            const companies = [];
+            const netIncome = [];
+
+            rows.forEach(row => {
+                const values = row.split(',');
+                if (values[0] === 'Q1-2021') {
+                    companies.push(values[1]);
+                    netIncome.push(parseFloat(values[2]));
+                }
+            });
+
+            drawChart(companies, netIncome);
+        }
+
+        function drawChart(companies, netIncome) {
+            const chartDom = document.getElementById('chart');
+            const myChart = echarts.init(chartDom);
+            const option = {
+                title: {
+                    text: 'Net Income for Each Company in Q1-2021',
+                },
+                tooltip: {},
+                xAxis: {
+                    type: 'category',
+                    data: companies,
+                },
+                yAxis: {
+                    type: 'value',
+                },
+                series: [{
+                    name: 'Net Income',
+                    type: 'bar',
+                    data: netIncome,
+                }],
+                dataZoom: [
+                    {
+                        type: 'slider',
+                        show: true,
+                        start: 0,
+                        end: 100,
+                    },
+                    {
+                        type: 'inside',
+                        start: 0,
+                        end: 100,
+                    }
+                ],
+                toolbox: {
+                    feature: {
+                        dataView: {},
+                        magicType: { type: ['line', 'bar'] },
+                        restore: {},
+                        saveAsImage: {}
+                    }
+                }
+            };
+
+            myChart.setOption(option);
+            window.addEventListener('resize', myChart.resize);
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
+```"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Bar Chart that visualizes the Net Income for each Company in Q1-2021. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Net Income Bar Chart Q1-2021</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""main""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1); // Skip header
+                const q1_2021_data = rows
+                    .map(row => row.split(','))
+                    .filter(row => row[0] === 'Q1-2021')
+                    .map(row => ({ company: row[1], netIncome: parseFloat(row[2]) }));
+
+                const companies = q1_2021_data.map(item => item.company);
+                const netIncomes = q1_2021_data.map(item => item.netIncome);
+
+                const chart = echarts.init(document.getElementById('main'));
+
+                const option = {
+                    title: {
+                        text: 'Net Income for Each Company in Q1-2021'
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        type: 'category',
+                        data: companies,
+                        axisLabel: {
+                            interval: 0,
+                            rotate: 30
+                        }
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        name: 'Net Income',
+                        type: 'bar',
+                        data: netIncomes,
+                        draggable: true,
+                    }],
+                    animationDuration: 1000,
+                    animationEasing: 'cubicInOut'
+                };
+
+                chart.setOption(option);
+
+                // Enabling drag-and-drop functionality
+                chart.on('mousedown', function (params) {
+                    if (params.componentType === 'series') {
+                        chart.dispatchAction({ type: 'down', seriesIndex: 0, dataIndex: params.dataIndex });
+                    }
+                });
+
+                chart.on('mouseup', function (params) {
+                    if (params.componentType === 'series') {
+                        chart.dispatchAction({ type: 'up', seriesIndex: 0, dataIndex: params.dataIndex });
+                    }
+                });
+
+                chart.on('drag', function (params) {
+                    if (params.componentType === 'series') {
+                        const newIndex = params.dataIndex;
+                        const oldIndex = params.oldIndex;
+
+                        if (newIndex !== oldIndex) {
+                            const movedData = netIncomes[oldIndex];
+                            netIncomes.splice(oldIndex, 1);
+                            netIncomes.splice(newIndex, 0, movedData);
+                            companies.splice(oldIndex, 1);
+                            companies.splice(newIndex, 0, q1_2021_data[oldIndex].company);
+
+                            chart.setOption({
+                                xAxis: {
+                                    data: companies
+                                },
+                                series: [{
+                                    data: netIncomes
+                                }]
+                            });
+                        }
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a Bar Chart that visualizes the Net Income for each Company in Q1-2021. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Net Income.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Net Income Bar Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+    <style>
+        #main { width: 600px; height: 400px; }
+    </style>
+</head>
+<body>
+    <div id=""main""></div>
+    <select id=""sortOrder"" onchange=""updateChart()"">
+        <option value=""desc"">Descending</option>
+        <option value=""asc"">Ascending</option>
+    </select>
+    <script>
+        let chartData = [];
+        
+        fetch('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                rows.forEach(row => {
+                    const cols = row.split(',');
+                    if (cols[0] === 'Q1-2021') {
+                        chartData.push({
+                            Company: cols[1],
+                            NetIncome: parseFloat(cols[2])
+                        });
+                    }
+                });
+                updateChart();
+            });
+
+        function updateChart() {
+            const sortOrder = document.getElementById(""sortOrder"").value;
+            const sortedData = chartData.sort((a, b) => sortOrder === 'asc' ? a.NetIncome - b.NetIncome : b.NetIncome - a.NetIncome);
+
+            let companies = sortedData.map(d => d.Company);
+            let netIncomes = sortedData.map(d => d.NetIncome);
+
+            const option = {
+                title: {
+                    text: 'Net Income for Each Company in Q1-2021',
+                    subtext: 'Bar Chart with Animated Transitions',
+                },
+                tooltip: {},
+                xAxis: {
+                    type: 'category',
+                    data: companies,
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: 'Net Income',
+                    type: 'bar',
+                    data: netIncomes,
+                    animationDuration: 1000,
+                }]
+            };
+
+            const myChart = echarts.init(document.getElementById('main'));
+            myChart.setOption(option);
+        }
+    </script>
+</body>
+</html>
+```"

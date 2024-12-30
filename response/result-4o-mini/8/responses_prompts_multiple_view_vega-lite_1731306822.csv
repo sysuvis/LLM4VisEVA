@@ -1,0 +1,730 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Vega-Lite Visualizations</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.8.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.1""></script>
+    <style>
+        #vis-container {
+            display: flex;
+        }
+        #scatterplot, #barchart {
+            width: 50%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""vis-container"">
+        <div id=""scatterplot""></div>
+        <div id=""barchart""></div>
+    </div>
+
+    <script>
+        const scatterplotSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""mark"": ""point"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Units Sold"",
+                    ""type"": ""Quantitative"",
+                    ""title"": ""Units Sold""
+                },
+                ""y"": {
+                    ""field"": ""Revenue"",
+                    ""type"": ""Quantitative"",
+                    ""title"": ""Revenue""
+                },
+                ""color"": {
+                    ""field"": ""Product"",
+                    ""type"": ""Nominal""
+                },
+                ""tooltip"": [
+                    {""field"": ""Year"", ""type"": ""Temporal""},
+                    {""field"": ""Profit"", ""type"": ""Quantitative""},
+                    {""field"": ""Number of Stores"", ""type"": ""Quantitative""},
+                    {""field"": ""Customer Satisfaction Score"", ""type"": ""Quantitative""}
+                ]
+            }
+        };
+
+        const barChartSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Year"",
+                    ""type"": ""Ordinal"",
+                    ""title"": ""Year""
+                },
+                ""y"": {
+                    ""aggregate"": ""sum"",
+                    ""field"": ""Profit"",
+                    ""type"": ""Quantitative"",
+                    ""title"": ""Total Profit""
+                },
+                ""color"": {
+                    ""field"": ""Product"",
+                    ""type"": ""Nominal""
+                }
+            }
+        };
+
+        vegaEmbed('#scatterplot', scatterplotSpec);
+        vegaEmbed('#barchart', barChartSpec);
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Retail Sales Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vue@2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+    <style>
+        #chart-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .chart {
+            width: 45%;
+        }
+    </style>
+</head>
+<body>
+<div id=""chart-container"">
+    <div id=""scatterplot"" class=""chart""></div>
+    <div id=""barchart"" class=""chart""></div>
+</div>
+
+<script>
+    const scatterSpec = {
+        ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+        ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"" },
+        ""selection"": {
+            "" Brush"": {
+                ""type"": ""interval"",
+                ""encodings"": [""x"", ""y""]
+            }
+        },
+        ""mark"": ""point"",
+        ""encoding"": {
+            ""x"": { ""field"": ""Units Sold"", ""type"": ""quantitative"" },
+            ""y"": { ""field"": ""Profit"", ""type"": ""quantitative"" },
+            ""color"": {
+                ""condition"": {
+                    ""selection"": ""Brush"",
+                    ""field"": ""Product"",
+                    ""type"": ""nominal"",
+                    ""scale"": { ""scheme"": ""category10"" }
+                },
+                ""value"": ""gray""
+            },
+            ""tooltip"": [
+                { ""field"": ""Year"", ""type"": ""ordinal"" },
+                { ""field"": ""Product"", ""type"": ""nominal"" },
+                { ""field"": ""Units Sold"", ""type"": ""quantitative"" },
+                { ""field"": ""Revenue"", ""type"": ""quantitative"" },
+                { ""field"": ""Profit"", ""type"": ""quantitative"" },
+                { ""field"": ""Customer Satisfaction Score"", ""type"": ""quantitative"" }
+            ]
+        },
+        ""transform"": [
+            {
+                ""filter"": {
+                    ""selection"": ""Brush""
+                }
+            }
+        ]
+    };
+
+    const barSpec = {
+        ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+        ""data"": { ""url"": ""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"" },
+        ""transform"": [
+            { ""filter"": { ""selection"": ""Brush"" } },
+            { ""aggregate"": [{ ""op"": ""sum"", ""field"": ""Revenue"", ""as"": ""Total Revenue"" }], ""groupby"": [""Product""] }
+        ],
+        ""mark"": ""bar"",
+        ""encoding"": {
+            ""x"": { ""field"": ""Product"", ""type"": ""ordinal"" },
+            ""y"": { ""field"": ""Total Revenue"", ""type"": ""quantitative"" },
+            ""color"": { ""field"": ""Product"", ""type"": ""nominal"", ""scale"": { ""scheme"": ""category10"" } }
+        }
+    };
+
+    vegaEmbed('#scatterplot', scatterSpec).then(function (result) {
+        const brush = result.view.addTrigger(vega.scenic, 'Brush', {
+            update: 'name'
+        });
+        vegaEmbed('#barchart', barSpec);
+    });
+</script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Units Sold , while the pie chart represents the distribution of Revenue.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Vega-Lite Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.3.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.2""></script>
+    <style>
+        #chart1, #chart2 {
+            width: 600px;
+            height: 400px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+
+<div id=""chart1""></div>
+<div id=""chart2""></div>
+
+<script type=""text/javascript"">
+    const spec1 = {
+        ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+        ""data"": {
+            ""url"": ""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"",
+            ""format"": {
+                ""type"": ""csv""
+            }
+        },
+        ""mark"": ""line"",
+        ""encoding"": {
+            ""x"": {
+                ""field"": ""Year"",
+                ""type"": ""ordinal"",
+                ""title"": ""Year""
+            },
+            ""y"": {
+                ""field"": ""Units Sold"",
+                ""type"": ""quantitative"",
+                ""title"": ""Units Sold""
+            }
+        }
+    };
+
+    const spec2 = {
+        ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+        ""data"": {
+            ""url"": ""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"",
+            ""format"": {
+                ""type"": ""csv""
+            }
+        },
+        ""mark"": ""arc"",
+        ""encoding"": {
+            ""theta"": {
+                ""field"": ""Revenue"",
+                ""type"": ""quantitative""
+            },
+            ""color"": {
+                ""field"": ""Product"",
+                ""type"": ""nominal""
+            },
+            ""tooltip"": [
+                {""field"": ""Product"", ""type"": ""nominal""},
+                {""field"": ""Revenue"", ""type"": ""quantitative""}
+            ]
+        },
+        ""transform"": [
+            {
+                ""aggregate"": [
+                    {
+                        ""op"": ""sum"",
+                        ""field"": ""Revenue"",
+                        ""as"": ""Revenue""
+                    }
+                ],
+                ""groupby"": [""Product""]
+            }
+        ]
+    };
+
+    vegaEmbed('#chart1', spec1);
+    vegaEmbed('#chart2', spec2);
+</script>
+
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Units Sold , while the pie chart represents the distribution of Revenue. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Revenue for the selected group.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Interactive Charts</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.4.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.0""></script>
+</head>
+<body>
+    <div id=""line-chart""></div>
+    <div id=""pie-chart""></div>
+
+    <script>
+        const dataUrl = ""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"";
+
+        const lineChartSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": dataUrl,
+                ""format"": {""type"": ""csv""}
+            },
+            ""transform"": [
+                {""filter"": ""datum['Units Sold'] != null""}
+            ],
+            ""mark"": ""line"",
+            ""encoding"": {
+                ""x"": {""field"": ""Year"", ""type"": ""ordinal""},
+                ""y"": {""field"": ""Units Sold"", ""type"": ""quantitative""},
+                ""tooltip"": [
+                    {""field"": ""Year"", ""type"": ""ordinal""},
+                    {""field"": ""Units Sold"", ""type"": ""quantitative""}
+                ]
+            },
+            ""selection"": {
+                ""brush"": {
+                    ""type"": ""interval"",
+                    ""encodings"": [""x""]
+                }
+            }
+        };
+
+        const pieChartSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": dataUrl,
+                ""format"": {""type"": ""csv""},
+                ""transform"": [
+                    {""filter"": ""datum['Revenue'] != null""},
+                    {
+                        ""filter"": {
+                            ""selection"": ""brush""
+                        }
+                    }
+                ]
+            },
+            ""mark"": ""arc"",
+            ""encoding"": {
+                ""theta"": {""field"": ""Revenue"", ""type"": ""quantitative""},
+                ""color"": {""field"": ""Product"", ""type"": ""nominal""}
+            }
+        };
+
+        vegaEmbed('#line-chart', lineChartSpec).then((result) => {
+            // Update pie chart on brush selection from line chart
+            result.view.addSignalListener('brush', () => {
+                // Clear the previous selection if not in brush mode
+                pieChartSpec.data.transform[1].filter = {
+                    ""selection"": ""brush""
+                };
+                result.view.insert('brush', {});
+                vegaEmbed('#pie-chart', pieChartSpec);
+            });
+        });
+
+        vegaEmbed('#pie-chart', pieChartSpec);
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Units Sold, Revenue, Profit, and Customer Satisfaction. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Brushable Scatterplot Matrix</title>
+    <script src=""https://cdn.jsdelivr.net/npm Vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm Vega-Lite@5.3.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm Vega-Embed@6.20.0""></script>
+    <style>
+        .vega-embed {
+            max-width: 800px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script>
+        const spec = {
+            $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+            description: 'A brushable scatterplot matrix.',
+            data: {
+                url: 'https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv',
+                format: { type: 'csv' }
+            },
+            transform: [
+                {
+                    filter: { selection: 'brush' }
+                }
+            ],
+            selection: {
+                brush: {
+                    type: 'interval',
+                    encodings: ['x', 'y']
+                }
+            },
+            layer: [
+                {
+                    // Overall layout using 'facet'
+                    facet: {
+                        row: { field: 'column1', header: { title: 'Units Sold' } },
+                        column: { field: 'column2', header: { title: 'Revenue' } }
+                    },
+                    mark: 'circle',
+                    encoding: {
+                        x: { field: 'column1', type: 'quantitative' },
+                        y: { field: 'column2', type: 'quantitative' },
+                        color: {
+                            condition: {
+                                selection: 'brush',
+                                field: 'Profit',
+                                type: 'quantitative',
+                                scale: { scheme: 'category10' }
+                            },
+                            value: 'lightgray'
+                        },
+                        tooltip: [
+                            { field: 'Units Sold', type: 'quantitative' },
+                            { field: 'Revenue', type: 'quantitative' },
+                            { field: 'Profit', type: 'quantitative' },
+                            { field: 'Customer Satisfaction Score', type: 'quantitative' }
+                        ]
+                    }
+                },
+                {
+                    // Plot different pairwise combinations
+                    mark: 'circle',
+                    data: { name: 'points' },
+                    encoding: {
+                        x: { field: 'Units Sold', type: 'quantitative' },
+                        y: { field: 'Revenue', type: 'quantitative' },
+                        color: {
+                            condition: {
+                                selection: 'brush',
+                                field: 'Profit',
+                                type: 'quantitative',
+                                scale: { scheme: 'category10' }
+                            },
+                            value: 'lightgray'
+                        },
+                        tooltip: [
+                            { field: 'Units Sold', type: 'quantitative' },
+                            { field: 'Revenue', type: 'quantitative' },
+                            { field: 'Profit', type: 'quantitative' },
+                            { field: 'Customer Satisfaction Score', type: 'quantitative' }
+                        ]
+                    }
+                }
+            ]
+        };
+
+        vegaEmbed('#vis', spec).then(result => {
+            // Access the Vega view instance
+            const view = result.view;
+            // Set the data for the points
+            view.data('points', view.data('table'));
+            // Render the view
+            view.run();
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a brushable Scatterplot that visualizes the relationship between Units Sold and Revenue. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Brushable Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.8.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.0""></script>
+    <style>
+        #scatterplot {
+            width: 600px;
+            height: 400px;
+        }
+        #data-table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        #data-table th, #data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        #data-table th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<div id=""scatterplot""></div>
+<table id=""data-table"">
+    <thead>
+        <tr>
+            <th>Year</th>
+            <th>Product</th>
+            <th>Units Sold</th>
+            <th>Revenue</th>
+            <th>Profit</th>
+            <th>Number of Stores</th>
+            <th>Customer Satisfaction Score</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script type=""text/javascript"">
+    const scatterSpec = {
+        ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+        ""data"": {
+            ""url"": ""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"",
+            ""format"": {
+                ""type"": ""csv""
+            }
+        },
+        ""mark"": ""point"",
+        ""encoding"": {
+            ""x"": { ""field"": ""Units Sold"", ""type"": ""quantitative"" },
+            ""y"": { ""field"": ""Revenue"", ""type"": ""quantitative"" },
+            ""color"": { ""field"": ""Product"", ""type"": ""nominal"" },
+            ""tooltip"": [
+                { ""field"": ""Year"", ""type"": ""ordinal"" },
+                { ""field"": ""Product"", ""type"": ""nominal"" },
+                { ""field"": ""Units Sold"", ""type"": ""quantitative"" },
+                { ""field"": ""Revenue"", ""type"": ""quantitative"" },
+                { ""field"": ""Profit"", ""type"": ""quantitative"" },
+                { ""field"": ""Number of Stores"", ""type"": ""quantitative"" },
+                { ""field"": ""Customer Satisfaction Score"", ""type"": ""quantitative"" }
+            ]
+        },
+        ""selection"": {
+            ""brush"": {
+                ""type"": ""interval"", 
+                ""encodings"": [""x"", ""y""]
+            }
+        },
+        ""transform"": [
+            {
+                ""filter"": {
+                    ""selection"": ""brush""
+                }
+            }
+        ]
+    };
+
+    vegaEmbed('#scatterplot', scatterSpec).then(result => {
+        const view = result.view;
+
+        view.addEventListener('click', (event) => {
+            const selection = view.data('brush');
+            const selected = selection.filter(d => selection.includes(d));
+            const tableBody = document.querySelector('#data-table tbody');
+            tableBody.innerHTML = ''; // Clear previous rows
+
+            selected.slice(0, 20).forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.Year}</td>
+                    <td>${row.Product}</td>
+                    <td>${row['Units Sold']}</td>
+                    <td>${row.Revenue}</td>
+                    <td>${row.Profit}</td>
+                    <td>${row['Number of Stores']}</td>
+                    <td>${row['Customer Satisfaction Score']}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        });
+    }).catch(console.error);
+</script>
+
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a horizontal Bar Chart that shows Product and Units Sold, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Vega-Lite Bar Chart with Minimap</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.8.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@7.0.0""></script>
+    <style>
+        #view {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        #minimap {
+            width: 200px;
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""view"">
+        <div id=""chart""></div>
+        <div id=""minimap""></div>
+    </div>
+
+    <script>
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"",
+                ""format"": { ""type"": ""csv"" }
+            },
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""y"": {
+                    ""field"": ""Product"",
+                    ""type"": ""nominal"",
+                    ""axis"": { ""title"": null }
+                },
+                ""x"": {
+                    ""field"": ""Units Sold"",
+                    ""type"": ""quantitative"",
+                    ""axis"": { ""title"": ""Units Sold"" }
+                }
+            },
+            ""width"": 400,
+            ""height"": 300
+        };
+
+        const minimapSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"",
+                ""format"": { ""type"": ""csv"" }
+            },
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""y"": {
+                    ""field"": ""Product"",
+                    ""type"": ""nominal""
+                },
+                ""x"": {
+                    ""field"": ""Units Sold"",
+                    ""type"": ""quantitative""
+                }
+            },
+            ""width"": 200,
+            ""height"": 100
+        };
+
+        vegaEmbed('#chart', spec);
+        vegaEmbed('#minimap', minimapSpec);
+    </script>
+</body>
+</html>
+```"

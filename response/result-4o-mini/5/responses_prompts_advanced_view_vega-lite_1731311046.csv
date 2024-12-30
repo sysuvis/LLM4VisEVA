@@ -1,0 +1,791 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Scatterplot that visualizes the relationship between Sales Figures and Hours Worked. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <title>Scatterplot of Sales Figures vs Hours Worked</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vue@2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.5.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.1""></script>
+    <style>
+        .vega-tooltip {
+            position: absolute;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 5px;
+            pointer-events: none;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div id=""vis""></div>
+
+    <script>
+        const yourVlSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv""
+            },
+            ""mark"": ""point"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Sales Figures"",
+                    ""type"": ""quantitative"",
+                    ""scale"": {
+                        ""domain"": { ""data"": ""data"", ""field"": ""Sales Figures"" }
+                    },
+                    ""axis"": { ""title"": ""Sales Figures"" }
+                },
+                ""y"": {
+                    ""field"": ""Hours Worked"",
+                    ""type"": ""quantitative"",
+                    ""scale"": {
+                        ""domain"": { ""data"": ""data"", ""field"": ""Hours Worked"" }
+                    },
+                    ""axis"": { ""title"": ""Hours Worked"" }
+                },
+                ""tooltip"": [
+                    { ""field"": ""Sales Figures"", ""type"": ""quantitative"" },
+                    { ""field"": ""Hours Worked"", ""type"": ""quantitative"" },
+                    { ""field"": ""Employee Satisfaction Score"", ""type"": ""quantitative"" }
+                ]
+            },
+            ""config"": {
+                ""view"": {
+                    ""tooltip"": true
+                }
+            }
+        };
+
+        vegaEmbed('#vis', yourVlSpec).then(function(result) {
+            result.view.addSignalListener('hover', function(name, value) {
+                console.log(name, value);
+            });
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Scatterplot that visualizes the relationship between Sales Figures and Hours Worked. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Sales Figures vs Hours Worked</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vue@2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script>
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""description"": ""A scatterplot showing the relationship between Sales Figures and Hours Worked."",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""mark"": ""point"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Sales Figures"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Sales Figures""
+                },
+                ""y"": {
+                    ""field"": ""Hours Worked"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Hours Worked""
+                },
+                ""tooltip"": [
+                    {""field"": ""Sales Figures"", ""type"": ""quantitative""},
+                    {""field"": ""Hours Worked"", ""type"": ""quantitative""},
+                    {""field"": ""Employee Satisfaction Score"", ""type"": ""quantitative""}
+                ]
+            },
+            ""selection"": {
+                ""brush"": {
+                    ""type"": ""interval"", 
+                    ""encodings"": [""x"", ""y""]
+                }
+            },
+            ""transform"": [
+                {
+                    ""filter"": {
+                        ""selection"": ""brush""
+                    }
+                }
+            ]
+        };
+
+        vegaEmbed('#vis', spec).then(function(result) {
+            // Access the underlying Vega view instance and listen for changes.
+            result.view.addEventListener('click', function(event) {
+                const selections = result.view.data('table');
+                console.log(selections);
+            });
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Scatterplot that visualizes the relationship between Sales Figures and Hours Worked. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Sales Figures and Hours Worked</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+<body>
+
+<div id=""vis""></div>
+
+<script type=""text/javascript"">
+    const spec = {
+        ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+        ""data"": {
+            ""url"": ""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"",
+            ""format"": {""type"": ""csv""}
+        },
+        ""mark"": ""point"",
+        ""encoding"": {
+            ""x"": {""field"": ""Sales Figures"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Hours Worked"", ""type"": ""quantitative""},
+            ""tooltip"": [
+                {""field"": ""Sales Figures"", ""type"": ""quantitative""},
+                {""field"": ""Hours Worked"", ""type"": ""quantitative""}
+            ]
+        },
+        ""resolve"": {""scale"": {""x"": ""independent"", ""y"": ""independent""}},
+        ""config"": {
+            ""view"": {""stroke"": ""transparent""},
+            ""axes"": {
+                ""domain"": false
+            }
+        }
+    };
+
+    vegaEmbed('#vis', spec, {renderer: 'canvas', actions: false}).then(function(result) {
+        // Add interactivity for zooming
+        result.view.addListener('wheel', function(event) {
+            result.view.zoom(event);
+            result.view.run();
+        });
+    }).catch(console.error);
+</script>
+
+</body>
+</html>
+```"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Sales Figures and Hours Worked. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Sales Figures vs Hours Worked</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vue@2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script type=""text/javascript"">
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"",
+                ""format"": { ""type"": ""csv"" }
+            },
+            ""mark"": ""point"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Sales Figures"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Sales Figures""
+                },
+                ""y"": {
+                    ""field"": ""Hours Worked"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Hours Worked""
+                },
+                ""tooltip"": [
+                    {""field"": ""Department"", ""type"": ""nominal""},
+                    {""field"": ""Revenue"", ""type"": ""quantitative""},
+                    {""field"": ""Profit"", ""type"": ""quantitative""},
+                    {""field"": ""Employee Satisfaction Score"", ""type"": ""quantitative""}
+                ]
+            },
+            ""config"": {
+                ""mark"": {
+                    ""tooltip"": true
+                }
+            }
+        };
+
+        vegaEmbed('#vis', spec).then(function(result) {
+            const view = result.view;
+            view.addEventListener('click', function(event, item) {
+                if (item && item.datum) {
+                    const sales = item.datum[""Sales Figures""];
+                    const hours = item.datum[""Hours Worked""];
+                    const query = `Sales Figures: ${sales}, Hours Worked: ${hours}`;
+                    const googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                    window.open(googleSearchUrl, '_blank');
+                }
+            });
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Scatterplot with query widgets showing the Sales Figures and Hours Worked of the given dataset. Add a slider to represent the Year.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Employee Performance Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+<body>
+
+<div id=""vis""></div>
+
+<script type=""text/javascript"">
+    const spec = {
+        ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+        ""description"": ""A scatter plot showing Sales Figures vs Hours Worked."",
+        ""data"": {
+            ""url"": ""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"",
+            ""format"": {""type"": ""csv""}
+        },
+        ""transform"": [
+            {
+                ""filter"": ""datum.Year == year""
+            }
+        ],
+        ""params"": [
+            {
+                ""name"": ""year"",
+                ""value"": 2020,
+                ""bind"": {
+                    ""input"": ""range"",
+                    ""min"": 2015,
+                    ""max"": 2023,
+                    ""step"": 1
+                }
+            }
+        ],
+        ""mark"": ""circle"",
+        ""encoding"": {
+            ""x"": {
+                ""field"": ""Sales Figures"",
+                ""type"": ""quantitative"",
+                ""title"": ""Sales Figures""
+            },
+            ""y"": {
+                ""field"": ""Hours Worked"",
+                ""type"": ""quantitative"",
+                ""title"": ""Hours Worked""
+            },
+            ""color"": {
+                ""field"": ""Department"",
+                ""type"": ""nominal"",
+                ""title"": ""Department""
+            },
+            ""tooltip"": [
+                {""field"": ""Year"", ""type"": ""ordinal""},
+                {""field"": ""Sales Figures"", ""type"": ""quantitative""},
+                {""field"": ""Hours Worked"", ""type"": ""quantitative""},
+                {""field"": ""Profit"", ""type"": ""quantitative""}
+            ]
+        },
+        ""width"": 600,
+        ""height"": 400
+    };
+
+    vegaEmbed('#vis', spec)
+        .then(function(result) {})
+        .catch(console.error);
+</script>
+
+</body>
+</html>
+```"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Scatterplot showing the Sales Figures of Marketing. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Sales Figures Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script>
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""transform"": [
+                {
+                    ""filter"": ""datum.Department === 'Marketing'""
+                }
+            ],
+            ""mark"": {
+                ""type"": ""point"",
+                ""filled"": true
+            },
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Sales Figures"",
+                    ""type"": ""quantitative"",
+                    ""axis"": {
+                        ""title"": ""Sales Figures""
+                    }
+                },
+                ""y"": {
+                    ""field"": ""Revenue"",
+                    ""type"": ""quantitative"",
+                    ""axis"": {
+                        ""title"": ""Revenue""
+                    }
+                },
+                ""tooltip"": [
+                    {""field"": ""Year"", ""type"": ""ordinal""},
+                    {""field"": ""Sales Figures"", ""type"": ""quantitative""},
+                    {""field"": ""Revenue"", ""type"": ""quantitative""}
+                ]
+            },
+            ""animation"": {
+                ""duration"": 2000,
+                ""easing"": ""quadratic-in-out"",
+                ""update"": [
+                    {""property"": ""opacity"", ""from"": 0, ""to"": 1}
+                ]
+            }
+        };
+
+        vegaEmbed('#vis', spec).then(function(result) {
+            console.log(result);
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Sales Figures of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Employee Performance - Sales Figures</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.17.0""></script>
+    <style>
+        #vis {
+            width: 800px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script>
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""description"": ""Sales Figures by Department over Years"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""mark"": {
+                ""type"": ""line"",
+                ""point"": true,
+                ""tooltip"": true
+            },
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Year"",
+                    ""type"": ""ordinal"",
+                    ""title"": ""Year""
+                },
+                ""y"": {
+                    ""field"": ""Sales Figures"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Sales Figures""
+                },
+                ""color"": {
+                    ""field"": ""Department"",
+                    ""type"": ""nominal"",
+                    ""title"": ""Department""
+                }
+            },
+            ""config"": {
+                ""view"": {
+                    ""stroke"": null
+                },
+                ""line"": {
+                    ""interpolate"": ""monotone""
+                }
+            }
+        };
+
+        vegaEmbed('#vis', spec).then(function(result) {
+            const view = result.view;
+            view.addEventListener('mouseover', function(event, item) {
+                if (item && item.mark && item.mark.type === 'line') {
+                    const mark = item.mark;
+                    mark.stroke = 'orange';
+                    mark.strokeWidth = 3;
+                    view.run();
+                }
+            });
+
+            view.addEventListener('mouseout', function(event, item) {
+                if (item && item.mark && item.mark.type === 'line') {
+                    const mark = item.mark;
+                    mark.stroke = undefined;
+                    mark.strokeWidth = 1;
+                    view.run();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Bar Chart that visualizes the Sales Figures for each Department in 2020. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Sales Figures by Department in 2020</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.9.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.0""></script>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script>
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""description"": ""Bar Chart of Sales Figures for each Department in 2020"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""transform"": [
+                {
+                    ""filter"": ""datum.Year === '2020'""
+                }
+            ],
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Department"",
+                    ""type"": ""ordinal"",
+                    ""title"": ""Department""
+                },
+                ""y"": {
+                    ""field"": ""Sales Figures"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Sales Figures""
+                }
+            },
+            ""interaction"": {
+                ""scrollZoom"": true,
+                ""pan"": true
+            }
+        };
+
+        vegaEmbed('#vis', spec, {renderer: 'svg'}).then(result => {
+            result.view.addSignalListener('zoom', () => {
+                result.view.run();
+            });
+            result.view.addSignalListener('pan', () => {
+                result.view.run();
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Bar Chart that visualizes the Sales Figures for each Department in 2020. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <title>Sales Figures by Department in 2020</title>
+    <script src=""https://cdn.jsdelivr.net/npm/d3@7.0.0/dist/d3.min.js""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0/build/vega.js""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.3.0/build/vega-lite.js""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.0/build/vega-embed.js""></script>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script>
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""transform"": [
+                {
+                    ""filter"": {
+                        ""field"": ""Year"",
+                        ""equal"": 2020
+                    }
+                }
+            ],
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Department"",
+                    ""type"": ""ordinal"",
+                    ""sort"": null,
+                    ""title"": ""Department""
+                },
+                ""y"": {
+                    ""field"": ""Sales Figures"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Sales Figures""
+                },
+                ""color"": {
+                    ""field"": ""Department"",
+                    ""type"": ""nominal""
+                }
+            },
+            ""config"": {
+                ""drag"": ""x""
+            }
+        };
+
+        vegaEmbed('#vis', spec).then(function(result) {
+            const view = result.view;
+            view.addSignalListener('drag', (name, value) => {
+                view.data('table').update();
+                view.runAsync();
+            });
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Bar Chart that visualizes the Sales Figures for each Department in 2020. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Sales Figures.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Employee Performance Visualization</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/vega/5.21.0/vega.min.js""></script>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/vega-lite/5.10.0/vega-lite.min.js""></script>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/vega-embed/6.20.2/vega-embed.min.js""></script>
+</head>
+<body>
+    <h2>Sales Figures by Department in 2020</h2>
+    <div id=""vis""></div>
+    <script>
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""transform"": [
+                {
+                    ""filter"": ""datum.Year == 2020""
+                },
+                {
+                    ""calculate"": ""datum.Sales Figures"",
+                    ""as"": ""SalesFigures""
+                }
+            ],
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Department"",
+                    ""type"": ""ordinal"",
+                    ""axis"": {
+                        ""labelAngle"": -45
+                    }
+                },
+                ""y"": {
+                    ""field"": ""SalesFigures"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Sales Figures""
+                },
+                ""color"": {
+                    ""field"": ""SalesFigures"",
+                    ""type"": ""quantitative"",
+                    ""scale"": {
+                        ""scheme"": ""blues""
+                    }
+                }
+            },
+            ""params"": [
+                {
+                    ""name"": ""sortOrder"",
+                    ""value"": ""ascending"",
+                    ""bind"": {
+                        ""input"": ""select"",
+                        ""options"": [
+                            ""ascending"",
+                            ""descending""
+                        ]
+                    }
+                }
+            ],
+            ""config"": {
+                ""view"": {
+                    ""continuousWidth"": 500,
+                    ""continuousHeight"": 300
+                }
+            }
+        };
+
+        vegaEmbed('#vis', spec).then(function(result) {
+            result.view.addSignalListener('sortOrder', function(name, value) {
+                result.view.dispatch('start', true);
+                result.view.runAsync();
+            });
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"

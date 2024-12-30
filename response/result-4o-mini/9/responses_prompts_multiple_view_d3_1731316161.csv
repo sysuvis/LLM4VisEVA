@@ -1,0 +1,932 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Adoption Rate and Investment, and a Bar Chart on the right that displays Technology Type versus Adoption Rate.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Data Visualization</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .scatterplot {
+            float: left;
+            width: 50%;
+        }
+        .barchart {
+            float: right;
+            width: 50%;
+        }
+        svg {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <div class=""scatterplot"" id=""scatterplot""></div>
+    <div class=""barchart"" id=""barchart""></div>
+
+    <script>
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            // Parse the data
+            data.forEach(d => {
+                d['Adoption Rate'] = +d['Adoption Rate'];
+                d['Investment'] = +d['Investment'];
+            });
+
+            // Scatterplot
+            const svgScatter = d3.select(""#scatterplot"").append(""svg"")
+                .attr(""width"", 400)
+                .attr(""height"", 400);
+
+            const xScaleScatter = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Investment'])])
+                .range([40, 360]);
+
+            const yScaleScatter = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Adoption Rate'])])
+                .range([360, 40]);
+
+            svgScatter.selectAll(""circle"")
+                .data(data)
+                .enter()
+                .append(""circle"")
+                .attr(""cx"", d => xScaleScatter(d['Investment']))
+                .attr(""cy"", d => yScaleScatter(d['Adoption Rate']))
+                .attr(""r"", 5)
+                .attr(""fill"", ""blue"");
+
+            svgScatter.append(""g"")
+                .attr(""transform"", ""translate(0,360)"")
+                .call(d3.axisBottom(xScaleScatter));
+
+            svgScatter.append(""g"")
+                .attr(""transform"", ""translate(40,0)"")
+                .call(d3.axisLeft(yScaleScatter));
+
+            // Bar Chart
+            const svgBar = d3.select(""#barchart"").append(""svg"")
+                .attr(""width"", 400)
+                .attr(""height"", 400);
+
+            const xScaleBar = d3.scaleBand()
+                .domain(data.map(d => d['Technology Type']))
+                .range([0, 400])
+                .padding(0.1);
+
+            const yScaleBar = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Adoption Rate'])])
+                .range([400, 0]);
+
+            svgBar.selectAll(""rect"")
+                .data(data)
+                .enter()
+                .append(""rect"")
+                .attr(""x"", d => xScaleBar(d['Technology Type']))
+                .attr(""y"", d => yScaleBar(d['Adoption Rate']))
+                .attr(""width"", xScaleBar.bandwidth())
+                .attr(""height"", d => 400 - yScaleBar(d['Adoption Rate']))
+                .attr(""fill"", ""orange"");
+
+            svgBar.append(""g"")
+                .attr(""transform"", ""translate(0,400)"")
+                .call(d3.axisBottom(xScaleBar));
+
+            svgBar.append(""g"")
+                .attr(""transform"", ""translate(0,0)"")
+                .call(d3.axisLeft(yScaleBar));
+        });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Adoption Rate and Investment, and a Bar Chart on the right that displays Technology Type versus Adoption Rate. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Visualization</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .chart-area {
+            display: flex;
+        }
+        .scatterplot {
+            width: 50%;
+            height: 400px;
+        }
+        .barchart {
+            width: 50%;
+            height: 400px;
+        }
+        .bar {
+            fill: steelblue;
+        }
+        .bar.highlight {
+            fill: orange;
+        }
+        .dot {
+            fill: blue;
+            cursor: pointer;
+        }
+        .dot.selected {
+            fill: red;
+        }
+    </style>
+</head>
+<body>
+
+<div class=""chart-area"">
+    <svg class=""scatterplot""></svg>
+    <svg class=""barchart""></svg>
+</div>
+
+<script>
+    const scatterplotWidth = 400;
+    const scatterplotHeight = 400;
+    const barchartWidth = 400;
+    const barchartHeight = 400;
+
+    const scatterplotSvg = d3.select('.scatterplot')
+        .attr('width', scatterplotWidth)
+        .attr('height', scatterplotHeight);
+
+    const barchartSvg = d3.select('.barchart')
+        .attr('width', barchartWidth)
+        .attr('height', barchartHeight);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+        data.forEach(d => {
+            d[""Adoption Rate""] = +d[""Adoption Rate""];
+            d[""Investment""] = +d[""Investment""];
+        });
+
+        const xScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d[""Investment""])])
+            .range([40, scatterplotWidth - 40]);
+
+        const yScale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d[""Adoption Rate""])])
+            .range([scatterplotHeight - 40, 40]);
+
+        scatterplotSvg.append(""g"")
+            .attr(""transform"", ""translate(0,"" + (scatterplotHeight - 40) + "")"")
+            .call(d3.axisBottom(xScale));
+
+        scatterplotSvg.append(""g"")
+            .attr(""transform"", ""translate(40,0)"")
+            .call(d3.axisLeft(yScale));
+
+        const dots = scatterplotSvg.selectAll("".dot"")
+            .data(data)
+            .enter().append(""circle"")
+            .attr(""class"", ""dot"")
+            .attr(""cx"", d => xScale(d[""Investment""]))
+            .attr(""cy"", d => yScale(d[""Adoption Rate""]))
+            .attr(""r"", 5)
+            .on(""mouseover"", function() {
+                d3.select(this).attr(""stroke"", ""black"");
+            })
+            .on(""mouseout"", function() {
+                d3.select(this).attr(""stroke"", null);
+            });
+
+        const brush = d3.brush()
+            .extent([[0, 0], [scatterplotWidth, scatterplotHeight]])
+            .on(""brush end"", brushed);
+
+        scatterplotSvg.append(""g"")
+            .attr(""class"", ""brush"")
+            .call(brush);
+
+        function brushed(event) {
+            if (!event.selection) {
+                dots.classed(""selected"", false);
+                updateBarChart(data);
+                return;
+            }
+
+            const [[x0, y0], [x1, y1]] = event.selection;
+
+            dots.classed(""selected"", d => {
+                const x = xScale(d[""Investment""]);
+                const y = yScale(d[""Adoption Rate""]);
+                return x >= x0 && x <= x1 && y >= y0 && y <= y1;
+            });
+
+            const selectedData = data.filter(d => 
+                xScale(d[""Investment""]) >= x0 && xScale(d[""Investment""]) <= x1 && 
+                yScale(d[""Adoption Rate""]) >= y0 && yScale(d[""Adoption Rate""]) <= y1
+            );
+
+            updateBarChart(selectedData);
+        }
+
+        function updateBarChart(selectedData) {
+            const adoptionRateByType = d3.rollup(selectedData, 
+                v => d3.mean(v, d => d[""Adoption Rate""]), 
+                d => d[""Technology Type""]
+            );
+
+            const bars = barchartSvg.selectAll("".bar"")
+                .data(adoptionRateByType);
+
+            bars.exit().remove();
+
+            const yBarScale = d3.scaleBand()
+                .domain(Array.from(adoptionRateByType.keys()))
+                .range([0, barchartHeight - 40])
+                .padding(0.1);
+
+            const xBarScale = d3.scaleLinear()
+                .domain([0, d3.max(Array.from(adoptionRateByType.values()))])
+                .range([0, barchartWidth - 100]);
+
+            barchartSvg.append(""g"")
+                .attr(""transform"", ""translate(0,"" + (barchartHeight - 40) + "")"")
+                .call(d3.axisBottom(xBarScale));
+
+            barchartSvg.append(""g"")
+                .call(d3.axisLeft(yBarScale));
+
+            const newBars = bars.enter().append(""rect"")
+                .attr(""class"", ""bar"")
+                .attr(""x"", 0)
+                .attr(""y"", d => yBarScale(d[0]))
+                .attr(""width"", d => xBarScale(d[1]))
+                .attr(""height"", yBarScale.bandwidth())
+                .on(""mouseover"", function() {
+                    d3.select(this).classed(""highlight"", true);
+                })
+                .on(""mouseout"", function() {
+                    d3.select(this).classed(""highlight"", false);
+                });
+
+            bars.merge(newBars)
+                .transition()
+                .duration(300)
+                .attr(""x"", 0)
+                .attr(""y"", d => yBarScale(d[0]))
+                .attr(""width"", d => xBarScale(d[1]))
+                .attr(""height"", yBarScale.bandwidth());
+
+            bars.append(""title"")
+                .text(d => d[0] + "": "" + d[1].toFixed(2));
+        }
+
+    });
+</script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Adoption Rate , while the pie chart represents the distribution of Investment.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Visualization</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 2px;
+        }
+        .arc {
+            stroke: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Technology Adoption Overview</h1>
+    <svg id=""line-chart"" width=""800"" height=""400""></svg>
+    <svg id=""pie-chart"" width=""400"" height=""400""></svg>
+
+    <script>
+        const svgLine = d3.select(""#line-chart""),
+              svgPie = d3.select(""#pie-chart""),
+              margin = {top: 20, right: 30, bottom: 30, left: 40},
+              width = +svgLine.attr(""width"") - margin.left - margin.right,
+              height = +svgLine.attr(""height"") - margin.top - margin.bottom;
+
+        const x = d3.scaleLinear().range([0, width]);
+        const y = d3.scaleLinear().range([height, 0]);
+        const line = d3.line()
+            .x(d => x(d.Year))
+            .y(d => y(d[""Adoption Rate""]));
+
+        const gLine = svgLine.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            data.forEach(d => {
+                d.Year = +d.Year;
+                d[""Adoption Rate""] = +d[""Adoption Rate""];
+            });
+
+            x.domain(d3.extent(data, d => d.Year));
+            y.domain([0, d3.max(data, d => d[""Adoption Rate""])]);
+
+            gLine.append(""path"")
+                .datum(data)
+                .attr(""class"", ""line"")
+                .attr(""d"", line);
+
+            gLine.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            gLine.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y).ticks(10, ""%""));
+        });
+
+        const radius = Math.min(400, 400) / 2;
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+        const gPie = svgPie.append(""g"").attr(""transform"", `translate(${radius},${radius})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            const investmentData = d3.nest()
+                .key(d => d[""Technology Type""])
+                .rollup(v => d3.sum(v, d => +d.Investment))
+                .entries(data);
+
+            const pie = d3.pie().value(d => d.value);
+            const arc = d3.arc().innerRadius(0).outerRadius(radius);
+
+            gPie.selectAll("".arc"")
+                .data(pie(investmentData))
+                .enter().append(""path"")
+                .attr(""class"", ""arc"")
+                .attr(""d"", arc)
+                .attr(""fill"", d => color(d.data.key));
+        });
+    </script>
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Adoption Rate , while the pie chart represents the distribution of Investment. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Investment for the selected group.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Visualization</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 2px;
+        }
+
+        .arc {
+            stroke: #fff;
+        }
+
+        .chart {
+            display: block;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <svg class=""chart"" width=""800"" height=""400""></svg>
+    <svg class=""pie-chart"" width=""800"" height=""400""></svg>
+
+    <script>
+        const lineChartSvg = d3.select(""svg.chart""),
+              pieChartSvg = d3.select(""svg.pie-chart""),
+              margin = {top: 20, right: 30, bottom: 30, left: 40},
+              width = +lineChartSvg.attr(""width"") - margin.left - margin.right,
+              height = +lineChartSvg.attr(""height"") - margin.top - margin.bottom;
+
+        const lineG = lineChartSvg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+        const pieG = pieChartSvg.append(""g"").attr(""transform"", `translate(${width / 2},${height / 2})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            // Parse the data
+            data.forEach(d => {
+                d[""Adoption Rate""] = +d[""Adoption Rate""];
+                d[""Investment""] = +d[""Investment""];
+            });
+
+            // Set up the scales for the line chart
+            const x = d3.scaleLinear()
+                .domain(d3.extent(data, d => d.Year))
+                .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d[""Adoption Rate""])])
+                .range([height, 0]);
+
+            // Add x-axis
+            lineG.append(""g"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            // Add y-axis
+            lineG.append(""g"")
+                .call(d3.axisLeft(y));
+
+            // Add the line
+            const line = d3.line()
+                .x(d => x(d.Year))
+                .y(d => y(d[""Adoption Rate""]));
+
+            lineG.append(""path"")
+                .datum(data)
+                .attr(""class"", ""line"")
+                .attr(""d"", line);
+
+            // Brushing functionality
+            const brush = d3.brushX()
+                .extent([[0, 0], [width, height]])
+                .on(""end"", brushed);
+
+            lineG.append(""g"")
+                .attr(""class"", ""brush"")
+                .call(brush);
+
+            function brushed(event) {
+                const selection = event.selection;
+                if (selection) {
+                    const [x0, x1] = selection.map(x.invert);
+                    const selectedData = data.filter(d => d.Year >= x0 && d.Year <= x1);
+                    updatePieChart(selectedData);
+                } else {
+                    updatePieChart(data);
+                }
+            }
+
+            function updatePieChart(data) {
+                const investmentData = d3.rollup(data, v => d3.sum(v, d => d[""Investment""]), d => d[""Technology Type""]);
+                const pieData = d3.entries(investmentData);
+
+                // Clear previous pie chart
+                pieG.selectAll(""*"").remove();
+
+                // Set up the pie layout
+                const pie = d3.pie().value(d => d.value);
+            const arc = d3.arc().innerRadius(0).outerRadius(150);
+
+                // Bind data and create the arcs
+                const arcs = pieG.selectAll("".arc"")
+                    .data(pie(pieData))
+                    .enter().append(""g"")
+                    .attr(""class"", ""arc"");
+
+                arcs.append(""path"")
+                    .attr(""class"", ""arc"")
+                    .attr(""d"", arc)
+                    .attr(""fill"", (d, i) => d3.schemeCategory10[i]);
+                
+                arcs.append(""text"")
+                    .attr(""transform"", d => `translate(${arc.centroid(d)})`)
+                    .attr(""dy"", "".35em"")
+                    .text(d => d.data.key);
+            }
+
+            updatePieChart(data);
+        });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Adoption Rate, Investment, Number of Users, and Market Share. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot Matrix</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .scatterplot {
+            display: inline-block;
+            margin: 5px;
+            border: 1px solid #ccc;
+        }
+        .brush .extent {
+            fill: #9ecae1;
+            opacity: 0.5;
+        }
+        .highlight {
+            fill: orange !important;
+            stroke: black !important;
+            stroke-width: 2px !important;
+        }
+    </style>
+</head>
+<body>
+
+<svg width=""800"" height=""800""></svg>
+
+<script>
+    const margin = {top: 20, right: 20, bottom: 20, left: 40},
+          size = 200;
+
+    const xAccessor = (d, i) => d[0];
+    const yAccessor = (d, i) => d[1];
+
+    const xScales = {},
+          yScales = {};
+
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    const dataKeys = ['Adoption Rate', 'Investment', 'Number of Users', 'Market Share'];
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+        data.forEach(d => {
+            d['Adoption Rate'] = +d['Adoption Rate'];
+            d['Investment'] = +d['Investment'];
+            d['Number of Users'] = +d['Number of Users'];
+            d['Market Share'] = +d['Market Share'];
+        });
+
+        const svg = d3.select(""svg"");
+        const gridSize = (dataKeys.length - 1) * size;
+
+        // Create scales for each axis
+        dataKeys.forEach((key, i) => {
+            xScales[key] = d3.scaleLinear()
+                              .domain(d3.extent(data, d => d[key]))
+                              .range([margin.left, size - margin.right]);
+
+            yScales[key] = d3.scaleLinear()
+                              .domain(d3.extent(data, d => d[key]))
+                              .range([size - margin.bottom, margin.top]);
+        });
+
+        const brush = d3.brush()
+            .extent([[0, 0], [size, size]])
+            .on(""brush end"", brushed);
+
+        function brushed(event) {
+            const selection = event.selection;
+            if (selection) {
+                const [[x0, y0], [x1, y1]] = selection;
+                const selected = data.filter(d => {
+                    return xAccessor([d['Adoption Rate'], d['Investment']]) >= x0 && 
+                           xAccessor([d['Adoption Rate'], d['Investment']]) <= x1 &&
+                           yAccessor([d['Adoption Rate'], d['Investment']]) >= y0 && 
+                           yAccessor([d['Adoption Rate'], d['Investment']]) <= y1;
+                });
+                d3.selectAll('.point').classed('highlight', false);
+                selected.forEach(d => {
+                    d3.select(`.point[data-id='${d['Year']}']`).classed('highlight', true);
+                });
+            }
+        }
+
+        dataKeys.forEach((keyX, i) => {
+            dataKeys.forEach((keyY, j) => {
+                if (i !== j) {
+                    const g = svg.append(""g"")
+                                 .attr(""class"", ""scatterplot"")
+                                 .attr(""transform"", `translate(${i * size}, ${j * size})`);
+
+                    g.append(""g"")
+                     .attr(""class"", ""x axis"")
+                     .attr(""transform"", `translate(0, ${size - margin.bottom})`)
+                     .call(d3.axisBottom(xScales[keyX]));
+
+                    g.append(""g"")
+                     .attr(""class"", ""y axis"")
+                     .attr(""transform"", `translate(${margin.left}, 0)`)
+                     .call(d3.axisLeft(yScales[keyY]));
+
+                    g.append(""g"")
+                     .selectAll(""circle"")
+                     .data(data)
+                     .enter().append(""circle"")
+                     .attr(""class"", ""point"")
+                     .attr(""data-id"", d => d['Year'])
+                     .attr(""cx"", d => xScales[keyX](d[keyX]))
+                     .attr(""cy"", d => yScales[keyY](d[keyY]))
+                     .attr(""r"", 3)
+                     .style(""fill"", (d, i) => color(i));
+
+                    g.append(""g"")
+                     .call(brush);
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a brushable Scatterplot that visualizes the relationship between Adoption Rate and Investment. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Brushable Scatterplot</title>
+    <style>
+        .scatterplot {
+            display: inline-block;
+        }
+        .brush {
+            fill: none;
+            stroke: #000;
+            stroke-width: 1.5px;
+        }
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: 60px;
+            padding: 5px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <svg class=""scatterplot"" width=""800"" height=""400""></svg>
+    <div id=""table-container""></div>
+
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <script>
+        const svg = d3.select('.scatterplot'),
+            margin = {top: 20, right: 20, bottom: 30, left: 40},
+            width = +svg.attr('width') - margin.left - margin.right,
+            height = +svg.attr('height') - margin.top - margin.bottom;
+
+        const x = d3.scaleLinear().range([0, width]);
+        const y = d3.scaleLinear().range([height, 0]);
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        const brush = d3.brush().extent([[0, 0], [width, height]])
+            .on(""end"", brushed);
+
+        svg.append(""g"")
+            .attr(""class"", ""brush"")
+            .call(brush);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            data.forEach(d => {
+                d['Adoption Rate'] = +d['Adoption Rate'];
+                d['Investment'] = +d['Investment'];
+            });
+
+            x.domain(d3.extent(data, d => d['Adoption Rate'])).nice();
+            y.domain(d3.extent(data, d => d['Investment'])).nice();
+
+            g.append(""g"")
+                .attr(""class"", ""x-axis"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .attr(""class"", ""y-axis"")
+                .call(d3.axisLeft(y));
+
+            g.selectAll("".dot"")
+                .data(data)
+                .enter().append(""circle"")
+                .attr(""class"", ""dot"")
+                .attr(""r"", 5)
+                .attr(""cx"", d => x(d['Adoption Rate']))
+                .attr(""cy"", d => y(d['Investment']))
+                .style(""fill"", d => color(d['Technology Type']));
+
+            function brushed(event) {
+                const selection = event.selection;
+                if (!selection) return;
+
+                const [[x0, y0], [x1, y1]] = selection;
+
+                g.selectAll("".dot"")
+                    .classed(""selected"", d => {
+                        const isSelected = x0 <= x(d['Adoption Rate']) && x(d['Adoption Rate']) <= x1 &&
+                                          y1 <= y(d['Investment']) && y(d['Investment']) <= y0;
+                        return isSelected;
+                    });
+
+                const selectedData = data.filter(d => {
+                    return x0 <= x(d['Adoption Rate']) && x(d['Adoption Rate']) <= x1 &&
+                           y1 <= y(d['Investment']) && y(d['Investment']) <= y0;
+                }).slice(0, 20);
+
+                updateTable(selectedData);
+            }
+        });
+
+        function updateTable(data) {
+            const tableContainer = d3.select(""#table-container"");
+            tableContainer.selectAll(""*"").remove();
+
+            const table = tableContainer.append(""table"");
+            const thead = table.append(""thead"");
+            const tbody = table.append(""tbody"");
+
+            thead.append(""tr"")
+                .selectAll(""th"")
+                .data([""Year"", ""Technology Type"", ""Adoption Rate"", ""Investment"", ""Return on Investment"", ""Number of Users"", ""Market Share"", ""Customer Satisfaction Score""])
+                .enter().append(""th"")
+                .text(d => d);
+
+            const rows = tbody.selectAll(""tr"")
+                .data(data)
+                .enter().append(""tr"");
+
+            rows.selectAll(""td"")
+                .data(d => [
+                    d['Year'], d['Technology Type'], d['Adoption Rate'], 
+                    d['Investment'], d['Return on Investment'], 
+                    d['Number of Users'], d['Market Share'], 
+                    d['Customer Satisfaction Score']
+                ])
+                .enter().append(""td"")
+                .text(d => d);
+        }
+    </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a horizontal Bar Chart that shows Technology Type and Adoption Rate, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Bar Chart</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .bar {
+            fill: steelblue;
+        }
+
+        .bar:hover {
+            fill: orange;
+        }
+
+        .axis-label {
+            font-size: 12px;
+        }
+
+        .minimap {
+            fill: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+            margin = {top: 20, right: 40, bottom: 30, left: 60},
+            width = +svg.attr(""width"") - margin.left - margin.right,
+            height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            data.forEach(d => {
+                d[""Adoption Rate""] = +d[""Adoption Rate""];
+            });
+
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d[""Adoption Rate""])])
+                .range([0, width]);
+
+            const y = d3.scaleBand()
+                .domain(data.map(d => d[""Technology Type""]))
+                .range([0, height])
+                .padding(0.1);
+
+            g.append(""g"")
+                .selectAll("".bar"")
+                .data(data)
+                .enter().append(""rect"")
+                .attr(""class"", ""bar"")
+                .attr(""x"", 0)
+                .attr(""y"", d => y(d[""Technology Type""]))
+                .attr(""width"", d => x(d[""Adoption Rate""]))
+                .attr(""height"", y.bandwidth());
+
+            g.append(""g"")
+                .attr(""class"", ""x axis"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .attr(""class"", ""y axis"")
+                .call(d3.axisLeft(y));
+
+            // Minimap
+            const minimap = svg.append(""g"").attr(""transform"", `translate(${width + margin.left + margin.right - 30}, ${margin.top})`);
+
+            const minimapX = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d[""Adoption Rate""])])
+                .range([0, 100]);
+
+            const minimapY = d3.scaleBand()
+                .domain(data.map(d => d[""Technology Type""]))
+                .range([0, 100])
+                .padding(0.1);
+
+            minimap.selectAll("".minimap"")
+                .data(data)
+                .enter().append(""rect"")
+                .attr(""class"", ""minimap"")
+                .attr(""x"", 0)
+                .attr(""y"", d => minimapY(d[""Technology Type""]))
+                .attr(""width"", d => minimapX(d[""Adoption Rate""]))
+                .attr(""height"", minimapY.bandwidth());
+        });
+    </script>
+</body>
+</html>
+```"

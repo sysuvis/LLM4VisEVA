@@ -1,0 +1,977 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",D3,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Units Sold vs Revenue</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            padding: 5px;
+            background: lightsteelblue;
+            border: 1px solid #aaa;
+            border-radius: 4px;
+            pointer-events: none;
+        }
+        .dot {
+            transition: fill 0.3s;
+        }
+        .dot:hover {
+            fill: orange;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const svgWidth = 800;
+        const svgHeight = 400;
+
+        const svg = d3.select(""body"").append(""svg"")
+            .attr(""width"", svgWidth)
+            .attr(""height"", svgHeight);
+
+        const tooltip = d3.select(""body"").append(""div"")
+            .attr(""class"", ""tooltip"")
+            .style(""opacity"", 0);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"").then(data => {
+            data.forEach(d => {
+                d[""Units Sold""] = +d[""Units Sold""];
+                d.Revenue = +d.Revenue;
+            });
+
+            const xScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d[""Units Sold""])])
+                .range([40, svgWidth - 40]);
+
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.Revenue)])
+                .range([svgHeight - 40, 40]);
+
+            svg.append(""g"")
+                .attr(""transform"", `translate(0, ${svgHeight - 40})`)
+                .call(d3.axisBottom(xScale));
+
+            svg.append(""g"")
+                .attr(""transform"", ""translate(40, 0)"")
+                .call(d3.axisLeft(yScale));
+
+            svg.selectAll("".dot"")
+                .data(data)
+                .enter().append(""circle"")
+                .attr(""class"", ""dot"")
+                .attr(""cx"", d => xScale(d[""Units Sold""]))
+                .attr(""cy"", d => yScale(d.Revenue))
+                .attr(""r"", 5)
+                .on(""mouseover"", (event, d) => {
+                    tooltip.transition()
+                        .duration(200)
+                        .style(""opacity"", 0.9);
+                    tooltip.html(`Units Sold: ${d[""Units Sold""]}<br>Revenue: ${d.Revenue}`)
+                        .style(""left"", (event.pageX + 5) + ""px"")
+                        .style(""top"", (event.pageY - 28) + ""px"");
+
+                    d3.select(event.currentTarget)
+                        .transition()
+                        .duration(100)
+                        .attr(""r"", 8);
+                })
+                .on(""mouseout"", (event, d) => {
+                    tooltip.transition()
+                        .duration(500)
+                        .style(""opacity"", 0);
+                    d3.select(event.currentTarget)
+                        .transition()
+                        .duration(100)
+                        .attr(""r"", 5);
+                });
+        });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",D3,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Units Sold vs Revenue</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .point {
+            fill: steelblue;
+            stroke: white;
+            stroke-width: 1.5px;
+        }
+        .selected {
+            fill: orange;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 30, left: 40},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+        const x = d3.scaleLinear().range([0, width]);
+        const y = d3.scaleLinear().range([height, 0]);
+
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"").then(data => {
+            data.forEach(d => {
+                d['Units Sold'] = +d['Units Sold'];
+                d['Revenue'] = +d['Revenue'];
+            });
+
+            x.domain(d3.extent(data, d => d['Units Sold'])).nice();
+            y.domain(d3.extent(data, d => d['Revenue'])).nice();
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+
+            const points = g.selectAll("".point"")
+                .data(data)
+                .enter().append(""circle"")
+                .attr(""class"", ""point"")
+                .attr(""r"", 3)
+                .attr(""cx"", d => x(d['Units Sold']))
+                .attr(""cy"", d => y(d['Revenue']))
+                .on(""mouseover"", function(event, d) {
+                    d3.select(this).transition().duration(100).attr(""r"", 5);
+                })
+                .on(""mouseout"", function(event, d) {
+                    d3.select(this).transition().duration(100).attr(""r"", 3);
+                });
+
+            const brush = d3.brush()
+                .extent([[0, 0], [width, height]])
+                .on(""brush end"", brushed);
+
+            g.append(""g"")
+                .attr(""class"", ""brush"")
+                .call(brush);
+            
+            function brushed(event) {
+                const selection = d3.event.selection;
+                if (selection) {
+                    const [[x0, y0], [x1, y1]] = selection;
+                    points.classed(""selected"", d => {
+                        return x(d['Units Sold']) >= x0 && x(d['Units Sold']) <= x1 && y(d['Revenue']) >= y0 && y(d['Revenue']) <= y1;
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+```"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",D3,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Units Sold vs Revenue</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .scatter {
+            fill: steelblue;
+        }
+        .axis {
+            font: 10px sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script>
+        const margin = {top: 20, right: 30, bottom: 30, left: 40},
+              width = 800 - margin.left - margin.right,
+              height = 600 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"").then(data => {
+            data.forEach(d => {
+                d['Units Sold'] = +d['Units Sold'];
+                d['Revenue'] = +d['Revenue'];
+            });
+
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Units Sold'])])
+                .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Revenue'])])
+                .range([height, 0]);
+
+            const xAxis = d3.axisBottom(x);
+            const yAxis = d3.axisLeft(y);
+
+            svg.append(""g"")
+                .attr(""class"", ""axis"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(xAxis);
+
+            svg.append(""g"")
+                .attr(""class"", ""axis"")
+                .call(yAxis);
+
+            svg.selectAll("".scatter"")
+                .data(data)
+                .enter().append(""circle"")
+                .attr(""class"", ""scatter"")
+                .attr(""cx"", d => x(d['Units Sold']))
+                .attr(""cy"", d => y(d['Revenue']))
+                .attr(""r"", 4);
+
+            const zoom = d3.zoom()
+                .scaleExtent([1, 10])
+                .on(""zoom"", (event) => {
+                    svg.attr(""transform"", event.transform);
+                    svg.select("".axis"").call(xAxis.scale(event.transform.rescaleX(x)));
+                    svg.select("".axis"").call(yAxis.scale(event.transform.rescaleY(y)));
+                    svg.selectAll("".scatter"")
+                        .attr(""cx"", d => event.transform.applyX(x(d['Units Sold'])))
+                        .attr(""cy"", d => event.transform.applyY(y(d['Revenue'])));
+                });
+
+            svg.call(zoom);
+        });
+    </script>
+</body>
+</html>
+```"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",D3,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Units Sold vs Revenue</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .dot {
+            stroke: #fff;
+            stroke-width: 1.5px;
+        }
+        .tooltip {
+            position: absolute;
+            text-align: center;
+            width: 100px;
+            height: auto;
+            padding: 5px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 30, left: 40},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+        const x = d3.scaleLinear().range([0, width]);
+        const y = d3.scaleLinear().range([height, 0]);
+        
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        const tooltip = d3.select(""body"").append(""div"").attr(""class"", ""tooltip"").style(""opacity"", 0);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"").then(data => {
+            data.forEach(d => {
+                d[""Units Sold""] = +d[""Units Sold""];
+                d[""Revenue""] = +d[""Revenue""];
+            });
+
+            x.domain(d3.extent(data, d => d[""Units Sold""])).nice();
+            y.domain(d3.extent(data, d => d[""Revenue""])).nice();
+
+            g.append(""g"")
+              .attr(""class"", ""axis axis--x"")
+              .attr(""transform"", `translate(0,${height})`)
+              .call(d3.axisBottom(x));
+
+            g.append(""g"")
+              .attr(""class"", ""axis axis--y"")
+              .call(d3.axisLeft(y));
+
+            g.selectAll("".dot"")
+              .data(data)
+              .enter().append(""circle"")
+              .attr(""class"", ""dot"")
+              .attr(""cx"", d => x(d[""Units Sold""]))
+              .attr(""cy"", d => y(d[""Revenue""]))
+              .attr(""r"", 5)
+              .style(""fill"", ""steelblue"")
+              .on(""mouseover"", function(event, d) {
+                  tooltip.transition().duration(200).style(""opacity"", .9);
+                  tooltip.html(`Units Sold: ${d[""Units Sold""]}<br>Revenue: ${d[""Revenue""]}`)
+                         .style(""left"", (event.pageX + 5) + ""px"")
+                         .style(""top"", (event.pageY - 28) + ""px"");
+              })
+              .on(""mouseout"", function(d) {
+                  tooltip.transition().duration(500).style(""opacity"", 0);
+              })
+              .on(""click"", function(event, d) {
+                  window.open(`https://www.google.com/search?q=${d.Product}`, '_blank');
+              });
+        });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a Scatterplot with query widgets showing the Units Sold and Revenue of the given dataset. Add a slider to represent the Year.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",D3,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <title>Scatterplot with D3</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .scatter {
+            fill: steelblue;
+        }
+        .axis {
+            font: 10px sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <h1>Units Sold vs Revenue</h1>
+    <label for=""yearSlider"">Year:</label>
+    <input type=""range"" id=""yearSlider"" min=""2015"" max=""2021"" step=""1"" value=""2021"">
+    <div id=""scatterplot""></div>
+    
+    <script>
+        const margin = {top: 20, right: 20, bottom: 30, left: 40},
+              width = 800 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select(""#scatterplot"").append(""svg"")
+            .attr(""width"", width + margin.left + margin.right)
+            .attr(""height"", height + margin.top + margin.bottom)
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"").then(data => {
+            data.forEach(d => {
+                d.Year = +d.Year;
+                d['Units Sold'] = +d['Units Sold'];
+                d.Revenue = +d.Revenue;
+            });
+
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Units Sold'])])
+                .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.Revenue)])
+                .range([height, 0]);
+
+            svg.append(""g"")
+                .attr(""class"", ""axis"")
+                .attr(""transform"", `translate(0, ${height})`)
+                .call(d3.axisBottom(x));
+
+            svg.append(""g"")
+                .attr(""class"", ""axis"")
+                .call(d3.axisLeft(y));
+
+            const updateScatterplot = (year) => {
+                svg.selectAll("".dot"").remove();
+
+                const filteredData = data.filter(d => d.Year === year);
+
+                svg.selectAll("".dot"")
+                    .data(filteredData)
+                    .enter().append(""circle"")
+                    .attr(""class"", ""dot"")
+                    .attr(""cx"", d => x(d['Units Sold']))
+                    .attr(""cy"", d => y(d.Revenue))
+                    .attr(""r"", 5)
+                    .attr(""fill"", ""steelblue"");
+            };
+
+            updateScatterplot(2021); // initial display for the year 2021
+
+            d3.select(""#yearSlider"").on(""input"", function() {
+                const selectedYear = +this.value;
+                updateScatterplot(selectedYear);
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a Scatterplot showing the Units Sold of Clothing. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",D3,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Units Sold Scatterplot</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .point {
+            fill: steelblue;
+        }
+        .line {
+            stroke: lightgray;
+            stroke-width: 2;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 40, left: 40},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom,
+              g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"").then(data => {
+            data.forEach(d => {
+                if (d.Product === ""Clothing"") {
+                    d['Units Sold'] = +d['Units Sold'];
+                    d.Year = +d.Year;
+                }
+            });
+
+            const x = d3.scaleLinear()
+                        .domain(d3.extent(data.filter(d => d.Product === ""Clothing""), d => d.Year)).nice()
+                        .range([0, width]);
+
+            const y = d3.scaleLinear()
+                        .domain([0, d3.max(data.filter(d => d.Product === ""Clothing""), d => d['Units Sold'])]).nice()
+                        .range([height, 0]);
+            
+            const line = d3.line()
+                .x(d => x(d.Year))
+                .y(d => y(d['Units Sold']));
+
+            g.append(""g"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .call(d3.axisLeft(y));
+
+            const filteredData = data.filter(d => d.Product === ""Clothing"");
+
+            g.append(""path"")
+                .datum(filteredData)
+                .attr(""class"", ""line"")
+                .attr(""d"", line)
+                .style(""opacity"", 0)
+                .transition()
+                .duration(2000)
+                .style(""opacity"", 1);
+
+            g.selectAll("".point"")
+                .data(filteredData)
+                .enter().append(""circle"")
+                .attr(""class"", ""point"")
+                .attr(""cx"", d => x(d.Year))
+                .attr(""cy"", height)
+                .attr(""r"", 5)
+                .style(""opacity"", 0)
+                .transition()
+                .duration(2000)
+                .attr(""cy"", d => y(d['Units Sold']))
+                .style(""opacity"", 1);
+        });
+    </script>
+</body>
+</html>
+```"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Units Sold of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",D3,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Multi-series Line Chart</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .line {
+            fill: none;
+            stroke-width: 2px;
+        }
+        .line:hover {
+            stroke-width: 4px;
+            opacity: 0.7;
+        }
+        .axis {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 30, left: 50},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"")
+            .then(data => {
+                // Process and convert data
+                data.forEach(d => {
+                    d.Year = +d.Year;
+                    d['Units Sold'] = +d['Units Sold'];
+                });
+
+                const products = Array.from(d3.group(data, d => d.Product), ([key, value]) => ({key, value}));
+
+                const x = d3.scaleLinear()
+                    .domain(d3.extent(data, d => d.Year))
+                    .range([0, width]);
+                
+                const y = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d['Units Sold'])])
+                    .range([height, 0]);
+
+                const line = d3.line()
+                    .x(d => x(d.Year))
+                    .y(d => y(d['Units Sold']));
+
+                g.append(""g"")
+                    .attr(""class"", ""x-axis"")
+                    .attr(""transform"", `translate(0,${height})`)
+                    .call(d3.axisBottom(x));
+
+                g.append(""g"")
+                    .attr(""class"", ""y-axis"")
+                    .call(d3.axisLeft(y));
+
+                const lines = g.selectAll("".line"")
+                    .data(products)
+                    .enter().append(""path"")
+                    .attr(""class"", ""line"")
+                    .attr(""d"", d => line(d.value))
+                    .style(""stroke"", (d, i) => d3.schemeCategory10[i])
+                    .on(""mouseover"", function() {
+                        d3.select(this).transition().duration(100).style(""opacity"", 0.7).style(""stroke-width"", 4);
+                    })
+                    .on(""mouseout"", function() {
+                        d3.select(this).transition().duration(100).style(""opacity"", 1).style(""stroke-width"", 2);
+                    });
+
+                g.selectAll("".line-label"")
+                    .data(products)
+                    .enter().append(""text"")
+                    .attr(""class"", ""line-label"")
+                    .datum(d => ({key: d.key, value: d.value[d.value.length - 1]}))    
+                    .attr(""transform"", d => `translate(${x(d.value[d.value.length - 1].Year)},${y(d.value[d.value.length - 1]['Units Sold'])})`)
+                    .attr(""x"", 3)
+                    .text(d => d.key);
+            });
+    </script>
+</body>
+</html>
+```"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a Bar Chart that visualizes the Units Sold for each Product in 2020. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",D3,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Bar Chart - Units Sold in 2020</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .bar {
+            fill: steelblue;
+        }
+        .axis--x path,
+        .axis--x line {
+            display: none;
+        }
+        .axis--y .tick line {
+            stroke: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const margin = {top: 20, right: 30, bottom: 30, left: 40},
+              width = 800 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        const x = d3.scaleBand().range([0, width]).padding(0.1);
+        const y = d3.scaleLinear().range([height, 0]);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"").then(data => {
+            data = data.filter(d => d.Year === ""2020"");
+            data.forEach(d => {
+                d['Units Sold'] = +d['Units Sold'];
+            });
+
+            x.domain(data.map(d => d.Product));
+            y.domain([0, d3.max(data, d => d['Units Sold'])]);
+
+            svg.append(""g"")
+                .selectAll("".bar"")
+                .data(data)
+                .enter().append(""rect"")
+                .attr(""class"", ""bar"")
+                .attr(""x"", d => x(d.Product))
+                .attr(""width"", x.bandwidth())
+                .attr(""y"", d => y(d['Units Sold']))
+                .attr(""height"", d => height - y(d['Units Sold']));
+
+            svg.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            svg.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+
+            const zoom = d3.zoom()
+                .scaleExtent([1, 10])
+                .on(""zoom"", (event) => {
+                    svg.attr(""transform"", event.transform);
+                });
+
+            svg.call(zoom);
+        });
+    </script>
+</body>
+</html>
+```"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a Bar Chart that visualizes the Units Sold for each Product in 2020. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",D3,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Bar Chart of Units Sold in 2020</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .bar {
+            fill: steelblue;
+            cursor: move;
+        }
+        .bar:hover {
+            fill: orange;
+        }
+        .axis {
+            font: 10px sans-serif;
+        }
+        .axis--x path {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 40, left: 40},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+        const x = d3.scaleBand().rangeRound([0, width]).padding(0.1),
+              y = d3.scaleLinear().rangeRound([height, 0]);
+
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"").then(data => {
+            data = data.filter(d => d.Year === ""2020"");
+            data.forEach(d => {
+                d[""Units Sold""] = +d[""Units Sold""];
+            });
+
+            x.domain(data.map(d => d.Product));
+            y.domain([0, d3.max(data, d => d[""Units Sold""])]);
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+
+            const bars = g.selectAll("".bar"")
+                .data(data)
+                .enter().append(""rect"")
+                .attr(""class"", ""bar"")
+                .attr(""x"", d => x(d.Product))
+                .attr(""y"", d => y(d[""Units Sold""]))
+                .attr(""width"", x.bandwidth())
+                .attr(""height"", d => height - y(d[""Units Sold""]))
+                .call(d3.drag()
+                    .on(""start"", dragstarted)
+                    .on(""drag"", dragged)
+                    .on(""end"", dragended));
+
+            function dragstarted(event, d) {
+                d3.select(this).raise().classed(""active"", true);
+            }
+
+            function dragged(event, d) {
+                const xPos = x(d.Product);
+                const newIndex = Math.max(0, Math.min(data.length - 1, Math.floor((event.x - margin.left) / x.bandwidth())));
+                if (newIndex !== data.indexOf(d)) {
+                    const newOrder = data.splice(data.indexOf(d), 1)[0];
+                    data.splice(newIndex, 0, newOrder);
+                    updateBars();
+                }
+            }
+
+            function dragended(event, d) {
+                d3.select(this).classed(""active"", false);
+            }
+
+            function updateBars() {
+                x.domain(data.map(d => d.Product));
+                
+                g.selectAll("".bar"")
+                    .data(data, d => d.Product)
+                    .transition()
+                    .duration(200)
+                    .attr(""x"", d => x(d.Product))
+                    .attr(""y"", d => y(d[""Units Sold""]))
+                    .attr(""height"", d => height - y(d[""Units Sold""]));
+
+                g.select("".axis--x"").call(d3.axisBottom(x));
+            }
+        });
+    </script>
+</body>
+</html>
+```"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a Bar Chart that visualizes the Units Sold for each Product in 2020. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Units Sold.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",D3,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Bar Chart - Units Sold in 2020</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .bar {
+            fill: steelblue;
+        }
+        .bar:hover {
+            fill: orange;
+        }
+        .axis--x path,
+        .axis--x line {
+            display: none;
+        }
+        .axis--y line {
+            stroke: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <select id=""sortOrder"">
+        <option value=""asc"">Ascending</option>
+        <option value=""desc"">Descending</option>
+    </select>
+    <svg width=""600"" height=""400""></svg>
+
+    <script>
+        const svg = d3.select(""svg""),
+            margin = {top: 20, right: 30, bottom: 40, left: 40},
+            width = +svg.attr(""width"") - margin.left - margin.right,
+            height = +svg.attr(""height"") - margin.top - margin.bottom,
+            g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+        
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv"").then(data => {
+            data.forEach(d => {
+                d['Units Sold'] = +d['Units Sold'];
+                d['Year'] = +d['Year'];
+            });
+
+            const filteredData = data.filter(d => d['Year'] === 2020);
+            let sortOrder = ""asc"";
+            render(filteredData);
+            
+            d3.select(""#sortOrder"").on(""change"", function() {
+                sortOrder = this.value;
+                render(filteredData);
+            });
+
+            function render(data) {
+                const sortedData = data.sort((a, b) =>
+                    sortOrder === ""asc"" ? a['Units Sold'] - b['Units Sold'] : b['Units Sold'] - a['Units Sold']
+                );
+
+                const x = d3.scaleBand()
+                    .domain(sortedData.map(d => d.Product))
+                    .range([0, width])
+                    .padding(0.1);
+        
+                const y = d3.scaleLinear()
+                    .domain([0, d3.max(sortedData, d => d['Units Sold'])])
+                    .nice()
+                    .range([height, 0]);
+                
+                g.selectAll(""*"").remove();
+                
+                g.append(""g"")
+                    .selectAll("".bar"")
+                    .data(sortedData)
+                    .enter().append(""rect"")
+                    .attr(""class"", ""bar"")
+                    .attr(""x"", d => x(d.Product))
+                    .attr(""y"", d => y(d['Units Sold']))
+                    .attr(""width"", x.bandwidth())
+                    .attr(""height"", d => height - y(d['Units Sold']))
+                    .transition().duration(800)
+                    .attr(""y"", d => y(d['Units Sold']))
+                    .attr(""height"", d => height - y(d['Units Sold']));
+        
+                g.append(""g"")
+                    .attr(""class"", ""axis axis--x"")
+                    .attr(""transform"", `translate(0,${height})`)
+                    .call(d3.axisBottom(x));
+        
+                g.append(""g"")
+                    .attr(""class"", ""axis axis--y"")
+                    .call(d3.axisLeft(y));
+            }
+        });
+    </script>
+</body>
+</html>
+```"

@@ -1,0 +1,1055 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Scatterplot that visualizes the relationship between Adoption Rate and Investment.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Adoption Rate vs Investment</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .scatter circle {
+            fill: steelblue;
+            stroke: black;
+            stroke-width: 1.5px;
+        }
+        .axis--x path,
+        .axis--y path {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""500""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 30, left: 40},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            data.forEach(d => {
+                d['Adoption Rate'] = +d['Adoption Rate'];
+                d['Investment'] = +d['Investment'];
+            });
+
+            const x = d3.scaleLinear()
+                .domain(d3.extent(data, d => d['Investment'])).nice()
+                .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain(d3.extent(data, d => d['Adoption Rate'])).nice()
+                .range([height, 0]);
+
+            const xAxis = d3.axisBottom(x);
+            const yAxis = d3.axisLeft(y);
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(xAxis);
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(yAxis);
+
+            g.append(""g"")
+                .attr(""class"", ""scatter"")
+                .selectAll(""circle"")
+                .data(data)
+                .enter().append(""circle"")
+                .attr(""cx"", d => x(d['Investment']))
+                .attr(""cy"", d => y(d['Adoption Rate']))
+                .attr(""r"", 5);
+        });
+    </script>
+</body>
+</html>
+```"
+2,line chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Line Chart that visualizes the trend of Adoption Rate over the Year for each Technology Type.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Rate</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .line {
+            fill: none;
+            stroke-width: 2px;
+        }
+        .axis {
+            font: 10px sans-serif;
+        }
+        .axis--x path,
+        .axis--x line,
+        .axis--y path,
+        .axis--y line {
+            fill: none;
+            shape-rendering: crispEdges;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const margin = { top: 20, right: 30, bottom: 30, left: 40 },
+              width = 800 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            // Parse the data
+            data.forEach(d => {
+                d.Year = +d.Year;
+                d['Adoption Rate'] = +d['Adoption Rate'];
+            });
+
+            const technologies = Array.from(new Set(data.map(d => d['Technology Type'])));
+
+            const x = d3.scaleLinear()
+                .domain(d3.extent(data, d => d.Year))
+                .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Adoption Rate'])])
+                .range([height, 0]);
+
+            const color = d3.scaleOrdinal(d3.schemeCategory10).domain(technologies);
+
+            svg.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x).ticks(10));
+
+            svg.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y).ticks(10));
+
+            technologies.forEach(tech => {
+                const techData = data.filter(d => d['Technology Type'] === tech);
+
+                const line = d3.line()
+                    .x(d => x(d.Year))
+                    .y(d => y(d['Adoption Rate']));
+
+                svg.append(""path"")
+                    .datum(techData)
+                    .attr(""class"", ""line"")
+                    .attr(""d"", line)
+                    .attr(""stroke"", color(tech))
+                    .attr(""fill"", ""none"");
+            });
+
+            svg.append(""text"")
+                .attr(""x"", width / 2)
+                .attr(""y"", 0 - margin.top / 2)
+                .attr(""text-anchor"", ""middle"")
+                .style(""font-size"", ""16px"")
+                .text(""Adoption Rate of Technology Types Over Years"");
+        });
+    </script>
+</body>
+</html>
+```"
+3,bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Bar Chart that visualizes the Adoption Rate for each Technology Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Rate in 2020</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .bar {
+            fill: steelblue;
+        }
+
+        .bar:hover {
+            fill: orange;
+        }
+
+        .axis--x path {
+            display: none;
+        }
+
+        .axis--y path {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""600"" height=""400""></svg>
+    <script>
+        const margin = {top: 20, right: 30, bottom: 40, left: 40},
+              width = 600 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            const filteredData = data.filter(d => d.Year === ""2020"");
+            const adoptionRates = filteredData.map(d => ({ Technology: d['Technology Type'], AdoptionRate: +d['Adoption Rate'] }));
+
+            const x = d3.scaleBand()
+                .domain(adoptionRates.map(d => d.Technology))
+                .range([0, width])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(adoptionRates, d => d.AdoptionRate)])
+                .nice()
+                .range([height, 0]);
+
+            svg.append(""g"")
+                .selectAll("".bar"")
+                .data(adoptionRates)
+                .enter().append(""rect"")
+                .attr(""class"", ""bar"")
+                .attr(""x"", d => x(d.Technology))
+                .attr(""y"", d => y(d.AdoptionRate))
+                .attr(""width"", x.bandwidth())
+                .attr(""height"", d => height - y(d.AdoptionRate));
+
+            svg.append(""g"")
+                .attr(""class"", ""axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            svg.append(""g"")
+                .attr(""class"", ""axis--y"")
+                .call(d3.axisLeft(y).ticks(10));
+        });
+    </script>
+</body>
+</html>
+```"
+4,pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Pie Chart that visualizes the proportion of Adoption Rate contributed by each Technology Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Rate in 2020</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .arc {
+            stroke: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h2>Technology Adoption Rate by Type in 2020</h2>
+    <svg width=""600"" height=""600""></svg>
+
+    <script>
+        const width = 600;
+        const height = 600;
+        const radius = Math.min(width, height) / 2;
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${width / 2}, ${height / 2})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            data = data.filter(d => d.Year == 2020);
+            data.forEach(d => {
+                d['Adoption Rate'] = +d['Adoption Rate'];
+            });
+
+            const pie = d3.pie()
+                .value(d => d['Adoption Rate']);
+
+            const arc = d3.arc()
+                .innerRadius(0)
+                .outerRadius(radius);
+
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            const pieData = pie(data);
+
+            svg.selectAll("".arc"")
+                .data(pieData)
+                .enter().append(""g"")
+                .attr(""class"", ""arc"")
+                .append(""path"")
+                .attr(""d"", arc)
+                .style(""fill"", (d, i) => color(i));
+
+            svg.selectAll("".arc"")
+                .append(""text"")
+                .attr(""transform"", d => `translate(${arc.centroid(d)})`)
+                .attr(""dy"", "".35em"")
+                .text(d => d.data['Technology Type']);
+        });
+    </script>
+</body>
+</html>
+```"
+5,donut chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Donut Chart that visualizes the distribution of Adoption Rate among Technology Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Donut Chart</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .arc {
+            stroke: #fff;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""600"" height=""600""></svg>
+    <script>
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(function(data) {
+            const filteredData = data.filter(d => d.Year === ""2020"");
+            const adoptionRates = d3.nest()
+                .key(d => d[""Technology Type""])
+                .rollup(v => d3.sum(v, d => +d[""Adoption Rate""]))
+                .entries(filteredData);
+
+            const width = 600, height = 600, margin = 40;
+            const radius = Math.min(width, height) / 2 - margin;
+
+            const svg = d3.select(""svg"")
+                .append(""g"")
+                .attr(""transform"", `translate(${width / 2}, ${height / 2})`);
+
+            const pie = d3.pie()
+                .value(d => d.value);
+
+            const data_ready = pie(adoptionRates);
+
+            const arc = d3.arc()
+                .innerRadius(radius * 0.5)
+                .outerRadius(radius);
+
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            svg.selectAll('.arc')
+                .data(data_ready)
+                .enter()
+                .append('path')
+                .attr('class', 'arc')
+                .attr('d', arc)
+                .attr('fill', (d) => color(d.data.key))
+                .attr('stroke', '#fff')
+                .style('stroke-width', '2px');
+        });
+    </script>
+</body>
+</html>
+```"
+6,coxcomb chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Coxcomb Chart(polar area chart) to compare the Adoption Rate of different Technology Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coxcomb Chart - Technology Adoption</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .arc {
+            fill: steelblue;
+            stroke: white;
+            stroke-width: 1px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""600"" height=""600""></svg>
+    <script>
+        const width = 600, height = 600, radius = Math.min(width, height) / 2;
+        const svg = d3.select(""svg"").attr(""viewBox"", `${-width / 2} ${-height / 2} ${width} ${height}`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            const filteredData = data.filter(d => d.Year == 2020);
+            const adoptionRates = filteredData.map(d => ({
+                TechnologyType: d[""Technology Type""],
+                AdoptionRate: +d[""Adoption Rate""]
+            }));
+
+            const total = d3.sum(adoptionRates, d => d.AdoptionRate);
+            const angleScale = d3.scaleLinear()
+                .domain([0, total])
+                .range([0, 2 * Math.PI]);
+
+            const arc = d3.arc()
+                .innerRadius(0)
+                .outerRadius(d => d.AdoptionRate * 3);
+
+            const pie = d3.pie()
+                .value(d => d.AdoptionRate)
+                .sort(null);
+
+            const arcs = svg.selectAll("".arc"")
+                .data(pie(adoptionRates))
+                .enter().append(""g"")
+                .attr(""class"", ""arc"");
+
+            arcs.append(""path"")
+                .attr(""d"", arc)
+                .attr(""transform"", `translate(0, 0)`)
+                .attr(""fill"", (d, i) => d3.schemeCategory10[i % 10]);
+
+            arcs.append(""text"")
+                .attr(""transform"", d => `translate(${arc.centroid(d)})`)
+                .attr(""dy"", "".35em"")
+                .text(d => d.data.TechnologyType);
+        });
+    </script>
+</body>
+</html>
+```"
+7,radar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Radar Chart to compare the Adoption Rate of different Technology Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Radar Chart</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .radar-chart {
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <svg class=""radar-chart"" width=""600"" height=""600""></svg>
+    <script>
+        const width = 600, height = 600, radius = Math.min(width, height) / 2;
+        const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"")
+            .then(data => {
+                const filteredData = data.filter(d => d.Year === ""2020"");
+                const techTypes = [...new Set(filteredData.map(d => d[""Technology Type""]))];
+
+                const adoptionRates = techTypes.map(t => {
+                    const techData = filteredData.find(d => d[""Technology Type""] === t);
+                    return +techData[""Adoption Rate""];
+                });
+
+                const angles = techTypes.map((t, i) => (i * 2 * Math.PI) / techTypes.length);
+                const radarLine = d3.lineRadial()
+                    .radius((d, i) => (d / 100) * radius)
+                    .angle((d, i) => angles[i]);
+
+                const svg = d3.select("".radar-chart"")
+                    .append(""g"")
+                    .attr(""transform"", `translate(${width / 2}, ${height / 2})`);
+
+                // Draw circles
+                svg.append(""circle"")
+                    .attr(""r"", radius)
+                    .style(""fill"", ""none"")
+                    .style(""stroke"", ""#ccc"");
+
+                // Draw radar chart
+                svg.append(""path"")
+                    .datum(adoptionRates)
+                    .attr(""d"", radarLine)
+                    .style(""fill"", color(0))
+                    .style(""fill-opacity"", 0.5)
+                    .style(""stroke"", color(0))
+                    .style(""stroke-width"", 2);
+
+                // Draw axes
+                techTypes.forEach((type, i) => {
+                    svg.append(""line"")
+                        .attr(""x1"", 0)
+                        .attr(""y1"", 0)
+                        .attr(""x2"", radius * Math.cos(angles[i] - Math.PI / 2))
+                        .attr(""y2"", radius * Math.sin(angles[i] - Math.PI / 2))
+                        .style(""stroke"", ""#ccc"");
+                    
+                    svg.append(""text"")
+                        .attr(""x"", (radius + 10) * Math.cos(angles[i] - Math.PI / 2))
+                        .attr(""y"", (radius + 10) * Math.sin(angles[i] - Math.PI / 2))
+                        .text(type)
+                        .style(""font-size"", ""10px"")
+                        .attr(""text-anchor"", ""middle"");
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+8,streamgraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Streamgraph that visualizes the changes of Adoption Rate over the Year for each Technology Type.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Streamgraph of Technology Adoption</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .stream {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        const margin = { top: 20, right: 30, bottom: 30, left: 50 },
+              width = 800 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select(""body"").append(""svg"")
+            .attr(""viewBox"", `0 0 ${width + margin.left + margin.right} ${height + margin.top + margin.bottom}`)
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            const nestedData = d3.group(data, d => d[""Technology Type""]);
+            const years = Array.from(new Set(data.map(d => d[""Year""]))).sort();
+            
+            const series = Array.from(nestedData, ([key, values]) => {
+                return {
+                    key: key,
+                    values: years.map(year => {
+                        const adoption = values.find(v => v[""Year""] === year);
+                        return {
+                            year: year,
+                            adoptionRate: adoption ? +adoption[""Adoption Rate""] : 0
+                        };
+                    })
+                };
+            });
+
+            const x = d3.scaleLinear()
+                .domain(d3.extent(years))
+                .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(series, s => d3.max(s.values, v => v.adoptionRate))])
+                .range([height, 0]);
+
+            const area = d3.area()
+                .x(d => x(d.year))
+                .y0(height)
+                .y1(d => y(d.adoptionRate));
+
+            const color = d3.scaleOrdinal(d3.schemeCategory10)
+                .domain(series.map(d => d.key));
+
+            svg.selectAll("".stream"")
+                .data(series)
+                .enter().append(""path"")
+                .attr(""class"", ""stream"")
+                .attr(""fill"", d => color(d.key))
+                .attr(""d"", d3.area()
+                    .x(d => x(d.year))
+                    .y0(d => y(d3.max(d.values, v => v.adoptionRate)))
+                    .y1(d => y(0))
+                )
+                .transition()
+                .duration(1000)
+                .attr(""d"", d => area(d.values));
+
+            svg.append(""g"")
+                .attr(""class"", ""axis"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x).ticks(years.length).tickFormat(d3.format(""d"")));
+
+            svg.append(""g"")
+                .attr(""class"", ""axis"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"
+9,slopegraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Slopegraph to compare the Adoption Rate between 2019 and 2020 for each Technology Type.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Slopegraph of Technology Adoption Rates</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .line {
+            fill: none;
+            stroke: steelblue;
+            stroke-width: 2px;
+        }
+        .circle {
+            fill: white;
+            stroke: steelblue;
+            stroke-width: 2px;
+        }
+        .axis {
+            font-size: 12px;
+        }
+        text {
+            font-family: sans-serif;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg"");
+        const margin = {top: 20, right: 30, bottom: 30, left: 100};
+        const width = +svg.attr(""width"") - margin.left - margin.right;
+        const height = +svg.attr(""height"") - margin.top - margin.bottom;
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            const filteredData = data.filter(d => d.Year === '2019' || d.Year === '2020');
+            const adoptionRates = {};
+
+            filteredData.forEach(d => {
+                const technologyType = d['Technology Type'];
+                const year = d.Year;
+                const adoptionRate = +d['Adoption Rate'];
+
+                if (!adoptionRates[technologyType]) {
+                    adoptionRates[technologyType] = {};
+                }
+                adoptionRates[technologyType][year] = adoptionRate;
+            });
+
+            const technologyTypes = Object.keys(adoptionRates);
+            const lineData = technologyTypes.map(type => {
+                return {
+                    technology: type,
+                    year2019: adoptionRates[type]['2019'],
+                    year2020: adoptionRates[type]['2020']
+                };
+            });
+
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(lineData, d => d.year2020)])
+                .range([0, width]);
+
+            const y = d3.scaleBand()
+                .domain(technologyTypes)
+                .range([0, height])
+                .padding(0.1);
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            const line = d3.line()
+                .x(d => x(d.year))
+                .y(d => y(d.technology));
+
+            g.selectAll("".line"")
+                .data(lineData)
+                .enter().append(""path"")
+                .attr(""class"", ""line"")
+                .attr(""d"", d => line([{year: 2019, technology: d.technology}, {year: 2020, technology: d.technology}]))
+                .attr(""transform"", (d) => `translate(0, ${y(d.technology) + y.bandwidth() / 2})`);
+
+            g.selectAll("".circle"")
+                .data(lineData)
+                .enter().append(""circle"")
+                .attr(""class"", ""circle"")
+                .attr(""cx"", d => x(d.year2020))
+                .attr(""cy"", d => y(d.technology) + y.bandwidth() / 2)
+                .attr(""r"", 4);
+
+            g.selectAll("".circle"")
+                .data(lineData)
+                .enter().append(""circle"")
+                .attr(""class"", ""circle"")
+                .attr(""cx"", d => x(d.year2019))
+                .attr(""cy"", d => y(d.technology) + y.bandwidth() / 2)
+                .attr(""r"", 4);
+        });
+    </script>
+</body>
+</html>
+```"
+10,heatmap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Heatmap that visualizes the Adoption Rate across Technology Type and Years.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Rate Heatmap</title>
+    <style>
+        .heatmap rect {
+            stroke: #ccc;
+        }
+        .axis text {
+            font-size: 10px;
+        }
+        .legend rect {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""600"" height=""400"" class=""heatmap""></svg>
+    <div class=""legend""></div>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <script>
+        const margin = {top: 20, right: 20, bottom: 30, left: 40},
+              width = 600 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select('.heatmap')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv').then(data => {
+            const technologyTypes = Array.from(new Set(data.map(d => d['Technology Type'])));
+            const years = Array.from(new Set(data.map(d => d['Year'])));
+
+            const adoptionRates = technologyTypes.map(tt => {
+                return years.map(year => {
+                    const row = data.find(d => d['Technology Type'] === tt && d['Year'] === year);
+                    return row ? +row['Adoption Rate'] : 0;
+                });
+            });
+
+            const x = d3.scaleBand()
+                .domain(years)
+                .range([0, width])
+                .padding(0.05);
+
+            const y = d3.scaleBand()
+                .domain(technologyTypes)
+                .range([0, height])
+                .padding(0.05);
+
+            const colorScale = d3.scaleSequential(d3.interpolateYlGnBu)
+                .domain([0, d3.max(adoptionRates.flat())]);
+
+            svg.selectAll()
+                .data(adoptionRates)
+                .enter().append('g')
+                .attr('transform', (d, i) => 'translate(0,' + y(technologyTypes[i]) + ')')
+                .selectAll('rect')
+                .data(d => d)
+                .enter().append('rect')
+                .attr('x', (d, i) => x(years[i]))
+                .attr('y', 0)
+                .attr('width', x.bandwidth())
+                .attr('height', y.bandwidth())
+                .style('fill', d => colorScale(d));
+
+            const xAxis = d3.axisBottom(x);
+            const yAxis = d3.axisLeft(y);
+
+            svg.append('g')
+                .attr('class', 'axis')
+                .attr('transform', 'translate(0,' + height + ')')
+                .call(xAxis);
+
+            svg.append('g')
+                .attr('class', 'axis')
+                .call(yAxis);
+
+            const legend = d3.select('.legend')
+                .selectAll('div')
+                .data(colorScale.ticks(6))
+                .enter().append('div')
+                .style('background-color', d => colorScale(d))
+                .style('width', '20px')
+                .style('height', '20px')
+                .style('display', 'inline-block');
+        });
+    </script>
+</body>
+</html>
+```"
+11,bar chart+stacked bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Stacked Bar Chart that visualizes the given data table.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Stacked Bar Chart</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .bar {
+            transition: opacity 0.3s;
+        }
+        .axis--x path {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 40, left: 40},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            const keys = [...new Set(data.map(d => d[""Technology Type""]))];
+            const years = [...new Set(data.map(d => d[""Year""]))];
+
+            const stackedData = d3.stack()
+                .keys(keys)
+                (d3.groups(data, d => d[""Year""]).map(([key, values]) => {
+                    return {
+                        Year: key,
+                        ...values.reduce((acc, cur) => {
+                            acc[cur[""Technology Type""]] = +cur[""Adoption Rate""];
+                            return acc;
+                        }, {})
+                    };
+                }));
+
+            const x = d3.scaleBand()
+                .domain(years)
+                .range([0, width])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(stackedData, d => d3.max(d, d => d[1]))])
+                .nice()
+                .range([height, 0]);
+
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            g.selectAll("".serie"")
+                .data(stackedData)
+                .enter().append(""g"")
+                .attr(""class"", ""serie"")
+                .attr(""fill"", (d, i) => color(i))
+                .selectAll(""rect"")
+                .data(d => d)
+                .enter().append(""rect"")
+                .attr(""x"", d => x(d.data.Year))
+                .attr(""y"", d => y(d[1]))
+                .attr(""height"", d => y(d[0]) - y(d[1]))
+                .attr(""width"", x.bandwidth());
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"
+12,bar chart+horizontal bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Horizontal Bar Chart that visualizes the Adoption Rate for each Technology Type in 2020.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Rate Bar Chart</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .bar {
+            fill: steelblue;
+        }
+        .bar:hover {
+            fill: orange;
+        }
+        .axis--x path {
+            display: none;
+        }
+        .axis--y .domain {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+            margin = {top: 20, right: 30, bottom: 30, left: 200},
+            width = +svg.attr(""width"") - margin.left - margin.right,
+            height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv"").then(data => {
+            const filteredData = data.filter(d => d.Year === '2020').map(d => ({
+                TechnologyType: d['Technology Type'],
+                AdoptionRate: +d['Adoption Rate']
+            }));
+
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(filteredData, d => d.AdoptionRate)]).nice()
+                .range([0, width]);
+
+            const y = d3.scaleBand()
+                .domain(filteredData.map(d => d.TechnologyType))
+                .range([0, height])
+                .padding(0.1);
+
+            g.append(""g"")
+                .selectAll("".bar"")
+                .data(filteredData)
+                .enter().append(""rect"")
+                .attr(""class"", ""bar"")
+                .attr(""x"", 0)
+                .attr(""y"", d => y(d.TechnologyType))
+                .attr(""width"", d => x(d.AdoptionRate))
+                .attr(""height"", y.bandwidth());
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x).ticks(10));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"

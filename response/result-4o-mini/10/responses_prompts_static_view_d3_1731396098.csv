@@ -1,0 +1,1005 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Scatterplot that visualizes the relationship between Visitors and Page Views.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Visitors vs Page Views</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .scatter {
+            fill: steelblue;
+            stroke: white;
+            stroke-width: 1.5px;
+        }
+        .axis {
+            font: 10px sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 30, left: 40},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom;
+        
+        const x = d3.scaleLinear().range([0, width]),
+              y = d3.scaleLinear().range([height, 0]);
+        
+        const g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            data.forEach(d => {
+                d.Visitors = +d[""Visitors""];
+                d[""Page Views""] = +d[""Page Views""];
+            });
+
+            x.domain(d3.extent(data, d => d.Visitors)).nice();
+            y.domain([0, d3.max(data, d => d[""Page Views""])]).nice();
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+
+            g.append(""g"")
+                .selectAll("".scatter"")
+                .data(data)
+                .enter().append(""circle"")
+                .attr(""class"", ""scatter"")
+                .attr(""cx"", d => x(d.Visitors))
+                .attr(""cy"", d => y(d[""Page Views""]))
+                .attr(""r"", 3);
+        });
+    </script>
+</body>
+</html>
+```"
+2,line chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Line Chart that visualizes the trend of Visitors over the Week for each Traffic Source.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Website Traffic Visitors Trend</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .line {
+            fill: none;
+            stroke-width: 2px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 30, left: 40},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom,
+              g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            const parse = d3.utcParse(""%Y-%m-%d"");
+            data.forEach(d => {
+                d.Week = parse(d.Week);
+                d.Visitors = +d.Visitors;
+            });
+
+            const x = d3.scaleTime()
+                .domain(d3.extent(data, d => d.Week))
+                .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.Visitors)])
+                .nice()
+                .range([height, 0]);
+
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            const line = d3.line()
+                .x(d => x(d.Week))
+                .y(d => y(d.Visitors));
+            
+            const trafficSources = Array.from(new Set(data.map(d => d['Traffic Source'])));
+            const visitorsBySource = trafficSources.map(source => data.filter(d => d['Traffic Source'] === source));
+
+            const sourceGroup = g.selectAll("".source"")
+                .data(visitorsBySource)
+                .enter().append(""g"")
+                .attr(""class"", ""source"");
+            
+            sourceGroup.append(""path"")
+                .attr(""class"", ""line"")
+                .attr(""d"", d => line(d))
+                .attr(""stroke"", (d, i) => color(i));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x).ticks(5));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"
+3,bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Bar Chart that visualizes the Visitors for each Traffic Source in 2021-W01.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Visitors by Traffic Source</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .bar {
+            fill: steelblue;
+        }
+        .bar:hover {
+            fill: orange;
+        }
+        .axis {
+            font: 10px sans-serif;
+            fill: #333;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""600"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 40, left: 40},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom,
+              g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            const filteredData = data.filter(d => d[""Week""] === ""2021-W01"");
+
+            const visitorsBySource = d3.rollup(filteredData, 
+                v => d3.sum(v, d => +d[""Visitors""]), 
+                d => d[""Traffic Source""]);
+
+            const sources = Array.from(visitorsBySource, ([key]) => key);
+            const visitors = Array.from(visitorsBySource, ([, value]) => value);
+
+            const x = d3.scaleBand()
+                .domain(sources)
+                .range([0, width])
+                .padding(0.1);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(visitors)])
+                .range([height, 0]);
+
+            g.append(""g"")
+                .selectAll("".bar"")
+                .data(visitors)
+                .enter().append(""rect"")
+                .attr(""class"", ""bar"")
+                .attr(""x"", (d, i) => x(sources[i]))
+                .attr(""y"", d => y(d))
+                .attr(""width"", x.bandwidth())
+                .attr(""height"", d => height - y(d));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"
+4,pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Pie Chart that visualizes the proportion of Visitors contributed by each Traffic Source in 2021-W01.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Traffic Source Pie Chart</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .slice {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""500"" height=""500""></svg>
+    <script>
+        const width = 500;
+        const height = 500;
+        const radius = Math.min(width, height) / 2;
+
+        const svg = d3.select(""svg"")
+            .attr(""width"", width)
+            .attr(""height"", height)
+            .append(""g"")
+            .attr(""transform"", `translate(${width / 2}, ${height / 2})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            const filteredData = data.filter(d => d.Week === '2021-W01');
+            const trafficData = d3.nest()
+                .key(d => d['Traffic Source'])
+                .rollup(v => d3.sum(v, d => +d.Visitors))
+                .entries(filteredData);
+
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
+            const pie = d3.pie().value(d => d.value);
+            const arc = d3.arc()
+                .outerRadius(radius - 10)
+                .innerRadius(0);
+
+            const arcs = svg.selectAll("".slice"")
+                .data(pie(trafficData))
+                .enter()
+                .append(""g"")
+                .attr(""class"", ""slice"");
+
+            arcs.append(""path"")
+                .attr(""d"", arc)
+                .attr(""fill"", (d, i) => color(i));
+
+            arcs.append(""text"")
+                .attr(""transform"", d => `translate(${arc.centroid(d)})`)
+                .attr(""dy"", "".35em"")
+                .text(d => d.data.key);
+        });
+    </script>
+</body>
+</html>
+```"
+5,donut chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Donut Chart that visualizes the distribution of Visitors among Traffic Source in 2021-W01.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Donut Chart</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .arc {
+            stroke: #fff;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""600"" height=""600""></svg>
+
+    <script>
+
+    const width = 600;
+    const height = 600;
+    const margin = 40;
+    const radius = Math.min(width, height) / 2 - margin;
+
+    const svg = d3.select(""svg"")
+        .append(""g"")
+        .attr(""transform"", `translate(${width / 2}, ${height / 2})`);
+
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+        const filteredData = data.filter(d => d['Week'] === '2021-W01');
+        
+        const visitorsBySource = d3.sum(filteredData, d => +d['Visitors']);
+        
+        const trafficSourceData = d3.rollup(filteredData, v => d3.sum(v, d => +d['Visitors']), d => d['Traffic Source']);
+        const formattedData = Array.from(trafficSourceData, ([key, value]) => ({ key, value }));
+
+        const color = d3 scaleOrdinal()
+            .domain(formattedData.map(d => d.key))
+            .range(d3.schemeCategory10);
+
+        const pie = d3.pie()
+            .value(d => d.value);
+
+        const arc = d3.arc()
+            .innerRadius(radius * 0.4)
+            .outerRadius(radius);
+
+        const arcs = pie(formattedData);
+
+        svg.selectAll(""arc"")
+            .data(arcs)
+            .enter()
+            .append(""path"")
+            .attr(""class"", ""arc"")
+            .attr(""d"", arc)
+            .attr(""fill"", d => color(d.data.key))
+            .attr(""stroke"", ""#fff"")
+            .attr(""stroke-width"", 1);
+    });
+
+    </script>
+</body>
+</html>
+```"
+6,coxcomb chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Coxcomb Chart(polar area chart) to compare the Visitors of different Traffic Source in 2021-W01.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coxcomb Chart</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .arc {
+            fill: steelblue;
+            stroke: white;
+            stroke-width: 1px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""600"" height=""600""></svg>
+
+    <script>
+        const width = 600;
+        const height = 600;
+        const radius = Math.min(width, height) / 2;
+        const svg = d3.select(""svg"")
+                      .append(""g"")
+                      .attr(""transform"", `translate(${width / 2}, ${height / 2})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            const filteredData = data.filter(d => d[""Week""] === ""2021-W01"");
+            const visitorsBySource = d3.rollup(filteredData, v => d3.sum(v, d => +d[""Visitors""]), d => d[""Traffic Source""]);
+            
+            const trafficSource = Array.from(visitorsBySource, ([source, visitors]) => ({ source, visitors }));
+            const totalVisitors = d3.sum(trafficSource, d => d.visitors);
+
+            const angleScale = d3.scaleBand()
+                                 .domain(trafficSource.map(d => d.source))
+                                 .range([0, 2 * Math.PI]);
+
+            const radiusScale = d3.scaleLinear()
+                                  .domain([0, d3.max(trafficSource, d => d.visitors)])
+                                  .range([0, radius]);
+
+            const arcGenerator = d3.arc()
+                                   .innerRadius(0)
+                                   .outerRadius(d => radiusScale(d.visitors))
+                                   .startAngle(d => angleScale(d.source))
+                                   .endAngle(d => angleScale(d.source) + angleScale.bandwidth());
+
+            svg.selectAll("".arc"")
+               .data(trafficSource)
+               .enter().append(""path"")
+               .attr(""class"", ""arc"")
+               .attr(""d"", arcGenerator)
+               .attr(""transform"", ""rotate(0)"")
+               .attr(""fill"", (d, i) => d3.schemeCategory10[i % 10]);
+        });
+    </script>
+</body>
+</html>
+```"
+7,radar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Radar Chart to compare the Visitors of different Traffic Source in 2021-W01.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Radar Chart</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .radar-chart {
+            position: relative;
+            width: 600px;
+            height: 600px;
+        }
+        .axis {
+            stroke: #ccc;
+        }
+        .area {
+            fill-opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <svg class=""radar-chart""></svg>
+    <script>
+        const width = 600, height = 600, margin = 50;
+        
+        const radarChartOptions = {
+            w: width,
+            h: height,
+            margin: margin,
+            color: d3.scaleOrdinal(d3.schemeCategory10),
+        };
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            const filteredData = data.filter(d => d.Week === '2021-W01');
+            const trafficSources = [...new Set(filteredData.map(d => d[""Traffic Source""]))];
+        
+            const visitorsData = trafficSources.map(source => {
+                const totalVisitors = d3.sum(filteredData.filter(d => d[""Traffic Source""] === source), d => +d.Visitors);
+                return { source: source, visitors: totalVisitors };
+            });
+
+            const angleSlice = Math.PI * 2 / visitorsData.length;
+            const radius = Math.min(radarChartOptions.w / 2, radarChartOptions.h / 2) - radarChartOptions.margin;
+
+            const svg = d3.select('.radar-chart')
+                .attr('width', radarChartOptions.w)
+                .attr('height', radarChartOptions.h)
+                .append('g')
+                .attr('transform', `translate(${radarChartOptions.w / 2}, ${radarChartOptions.h / 2})`);
+
+            const radialScale = d3.scaleLinear()
+                .range([0, radius])
+                .domain([0, d3.max(visitorsData, d => d.visitors)]);
+
+            const radarLine = d3.lineRadial()
+                .radius(d => radialScale(d.visitors))
+                .angle((d, i) => i * angleSlice);
+
+            svg.append('g').selectAll('.area')
+                .data([visitorsData])
+                .enter().append('path')
+                .attr('class', 'area')
+                .attr('d', radarLine)
+                .style('fill', radarChartOptions.color(0));
+
+            const axisGrid = svg.append('g').attr('class', 'axisGrid');
+            for (let i = 0; i <= 5; i++) {
+                const r = radius / 5 * i;
+                axisGrid.selectAll('.gridCircle')
+                    .data(visitorsData)
+                    .enter().append('circle')
+                    .attr('class', 'gridCircle')
+                    .attr('r', r)
+                    .style('fill', 'none')
+                    .style('stroke', '#ccc');
+            }
+
+            const axis = svg.append('g').attr('class', 'axis');
+            trafficSources.forEach((source, i) => {
+                const angle = i * angleSlice;
+                const x = radius * Math.cos(angle - Math.PI / 2);
+                const y = radius * Math.sin(angle - Math.PI / 2);
+                axis.append('line')
+                    .attr('x1', 0)
+                    .attr('y1', 0)
+                    .attr('x2', x)
+                    .attr('y2', y)
+                    .attr('class', 'axis')
+                    .style('stroke', '#ccc');
+
+                axis.append('text')
+                    .attr('x', x * 1.1)
+                    .attr('y', y * 1.1)
+                    .attr('class', 'legend')
+                    .text(source);
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+8,streamgraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Streamgraph that visualizes the changes of Visitors over the Week for each Traffic Source.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Streamgraph Example</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .stream {
+            fill-opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const margin = {top: 20, right: 30, bottom: 30, left: 40},
+              width = 800 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            const processedData = d3.groups(data, d => d[""Traffic Source""])
+                .map(([key, values]) => {
+                    const visitorsByWeek = d3.rollup(values, v => d3.sum(v, d => +d[""Visitors""]), d => d[""Week""]);
+                    return {
+                        source: key,
+                        data: Array.from(visitorsByWeek.entries()).map(([week, visitors]) => ({week, visitors}))
+                    };
+                });
+
+            const series = d3.stack()
+                .keys(processedData.map(d => d.source))
+                (d3.transpose(processedData.map(d => d.data)));
+
+            const x = d3.scaleBand()
+                .domain(processedData[0].data.map(d => d.week))
+                .range([0, width]);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(series[series.length - 1], d => d[1])])
+                .range([height, 0]);
+
+            const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+            svg.append(""g"")
+              .selectAll(""path"")
+              .data(series)
+              .enter().append(""path"")
+              .attr(""class"", ""stream"")
+              .attr(""d"", d3.area()
+                  .x(d => x(d.data.week) + x.bandwidth() / 2)
+                  .y0(d => y(d[0]))
+                  .y1(d => y(d[1]))
+              )
+              .attr(""fill"", (d, i) => color(i));
+
+            svg.append(""g"")
+               .attr(""class"", ""axis--x"")
+               .attr(""transform"", `translate(0,${height})`)
+               .call(d3.axisBottom(x));
+
+            svg.append(""g"")
+               .attr(""class"", ""axis--y"")
+               .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"
+9,slopegraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Slopegraph to compare the Visitors between 2021-W04 and 2021-W05 for each Traffic Source.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Visitors Slopegraph</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .line {
+            stroke: steelblue;
+            stroke-width: 2px;
+        }
+        .circle {
+            fill: white;
+            stroke: steelblue;
+            stroke-width: 2px;
+        }
+        .axis {
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const margin = {top: 50, right: 100, bottom: 50, left: 100},
+              width = 800 - margin.left - margin.right,
+              height = 400 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"").append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            // Filter data for 2021-W04 and 2021-W05
+            const filteredData = data.filter(d => d['Week'] === '2021-W04' || d['Week'] === '2021-W05');
+            
+            // Process data to get visitors for each traffic source
+            const trafficSources = [...new Set(filteredData.map(d => d['Traffic Source']))];
+            const visitors = {};
+
+            trafficSources.forEach(source => {
+                visitors[source] = {
+                    '2021-W04': +filteredData.find(d => d['Week'] === '2021-W04' && d['Traffic Source'] === source)['Visitors'],
+                    '2021-W05': +filteredData.find(d => d['Week'] === '2021-W05' && d['Traffic Source'] === source)['Visitors']
+                };
+            });
+
+            const dataset = trafficSources.map(source => ({
+                source,
+                w04: visitors[source]['2021-W04'],
+                w05: visitors[source]['2021-W05']
+            }));
+
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(dataset, d => Math.max(d.w04, d.w05))])
+                .range([0, width]);
+
+            const y = d3.scaleBand()
+                .domain(dataset.map(d => d.source))
+                .range([0, height])
+                .padding(0.1);
+
+            svg.append(""g"")
+                .attr(""class"", ""axis"")
+                .call(d3.axisLeft(y));
+
+            svg.append(""g"")
+                .attr(""class"", ""axis"")
+                .attr(""transform"", `translate(0, ${height})`)
+                .call(d3.axisBottom(x));
+
+            // Draw lines and circles for each traffic source
+            dataset.forEach(d => {
+                svg.append(""line"")
+                    .attr(""class"", ""line"")
+                    .attr(""x1"", x(d.w04))
+                    .attr(""y1"", y(d.source) + y.bandwidth() / 2)
+                    .attr(""x2"", x(d.w05))
+                    .attr(""y2"", y(d.source) + y.bandwidth() / 2);
+
+                svg.append(""circle"")
+                    .attr(""class"", ""circle"")
+                    .attr(""cx"", x(d.w04))
+                    .attr(""cy"", y(d.source) + y.bandwidth() / 2)
+                    .attr(""r"", 5);
+
+                svg.append(""circle"")
+                    .attr(""class"", ""circle"")
+                    .attr(""cx"", x(d.w05))
+                    .attr(""cy"", y(d.source) + y.bandwidth() / 2)
+                    .attr(""r"", 5);
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+10,heatmap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Heatmap that visualizes the Visitors across Traffic Source and Weeks.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Heatmap of Visitors</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .heatmap {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, 50px);
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ccc;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div id=""heatmap"" class=""heatmap""></div>
+    <script>
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            const visitorsData = {};
+            
+            data.forEach(d => {
+                const week = d['Week'];
+                const source = d['Traffic Source'];
+                const visitors = +d['Visitors'];
+                
+                if (!visitorsData[week]) {
+                    visitorsData[week] = {};
+                }
+                if (!visitorsData[week][source]) {
+                    visitorsData[week][source] = 0;
+                }
+                visitorsData[week][source] += visitors;
+            });
+
+            const weeks = Object.keys(visitorsData);
+            const sources = Array.from(new Set(data.map(d => d['Traffic Source'])));
+        
+            const colorScale = d3.scaleSequential(d3.interpolateBlues)
+                .domain([0, d3.max(data, d => +d['Visitors'])]);
+
+            const heatmap = d3.select(""#heatmap"");
+
+            weeks.forEach(week => {
+                sources.forEach(source => {
+                    const visitors = visitorsData[week][source] || 0;
+                    heatmap.append(""div"")
+                        .attr(""class"", ""cell"")
+                        .style(""background-color"", colorScale(visitors))
+                        .text(visitors);
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>
+```"
+11,bar chart+stacked bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Stacked Bar Chart that visualizes the given data table.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Stacked Bar Chart</title>
+    <script src=""https://d3js.org/d3.v6.min.js""></script>
+    <style>
+        .bar {
+            transition: all 0.3s;
+        }
+        .bar:hover {
+            opacity: 0.7;
+        }
+        .axis--x path {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 40, left: 40},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom,
+              g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            const keys = [""Visitors"", ""Page Views"", ""Bounce Rate"", ""Average Session Duration"", ""Conversion Rate""];
+            data.forEach(d => {
+                keys.forEach(key => {
+                    d[key] = +d[key]; // Convert to numbers
+                });
+            });
+
+            const x0 = d3.scaleBand()
+                .domain(data.map(d => d.Week))
+                .range([0, width])
+                .paddingInner(0.1);
+
+            const x1 = d3.scaleBand()
+                .domain(keys)
+                .range([0, x0.bandwidth()])
+                .padding(0.05);
+
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d3.sum(keys, key => d[key]))])
+                .nice()
+                .range([height, 0]);
+
+            const color = d3.scaleOrdinal()
+                .domain(keys)
+                .range(d3.schemeCategory10);
+
+            g.append(""g"")
+                .selectAll(""g"")
+                .data(data)
+                .enter().append(""g"")
+                .attr(""transform"", d => `translate(${x0(d.Week)}, 0)`)
+                .selectAll(""rect"")
+                .data(d => keys.map(key => ({key: key, value: d[key]})))
+                .enter().append(""rect"")
+                .attr(""x"", d => x1(d.key))
+                .attr(""y"", d => y(d.value))
+                .attr(""width"", x1.bandwidth())
+                .attr(""height"", d => height - y(d.value))
+                .attr(""fill"", d => color(d.key));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--x"")
+                .attr(""transform"", `translate(0, ${height})`)
+                .call(d3.axisBottom(x0));
+
+            g.append(""g"")
+                .attr(""class"", ""axis axis--y"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"
+12,bar chart+horizontal bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Horizontal Bar Chart that visualizes the Visitors for each Traffic Source in 2021-W01.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Visitors by Traffic Source</title>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <style>
+        .bar {
+            fill: steelblue;
+        }
+        .bar:hover {
+            fill: orange;
+        }
+        .axis--x path {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""400""></svg>
+    <script>
+        const svg = d3.select(""svg""),
+              margin = {top: 20, right: 30, bottom: 30, left: 40},
+              width = +svg.attr(""width"") - margin.left - margin.right,
+              height = +svg.attr(""height"") - margin.top - margin.bottom,
+              g = svg.append(""g"").attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            data = data.filter(d => d.Week === '2021-W01');
+            data.forEach(d => {
+                d.Visitors = +d[""Visitors""];
+            });
+
+            const x = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.Visitors)])
+                .range([0, width]);
+
+            const y = d3.scaleBand()
+                .domain(data.map(d => d[""Traffic Source""]))
+                .range([0, height])
+                .padding(0.1);
+
+            g.append(""g"")
+                .selectAll("".bar"")
+                .data(data)
+                .enter().append(""rect"")
+                .attr(""class"", ""bar"")
+                .attr(""x"", 0)
+                .attr(""y"", d => y(d[""Traffic Source""]))
+                .attr(""width"", d => x(d.Visitors))
+                .attr(""height"", y.bandwidth());
+
+            g.append(""g"")
+                .attr(""class"", ""axis--x"")
+                .attr(""transform"", `translate(0,${height})`)
+                .call(d3.axisBottom(x));
+
+            g.append(""g"")
+                .attr(""class"", ""axis--y"")
+                .call(d3.axisLeft(y));
+        });
+    </script>
+</body>
+</html>
+```"

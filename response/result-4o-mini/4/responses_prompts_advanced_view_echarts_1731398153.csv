@@ -1,0 +1,850 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Scatterplot that visualizes the relationship between Enrollment Number and Revenue. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Enrollment Number vs Revenue</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""main""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1); // Remove header
+                const enrollment = [];
+                const revenue = [];
+
+                lines.forEach(line => {
+                    const cols = line.split(',');
+                    if (cols.length === 9) {
+                        const enrollmentNumber = parseFloat(cols[2]);
+                        const revenueValue = parseFloat(cols[3]);
+                        if (!isNaN(enrollmentNumber) && !isNaN(revenueValue)) {
+                            enrollment.push(enrollmentNumber);
+                            revenue.push(revenueValue);
+                        }
+                    }
+                });
+
+                const myChart = echarts.init(document.getElementById('main'));
+
+                const option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function (params) {
+                            return `Enrollment Number: ${params.data[0]}<br/>Revenue: ${params.data[1]}`;
+                        }
+                    },
+                    xAxis: {
+                        type: 'value',
+                        name: 'Enrollment Number',
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: 'Revenue',
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: enrollment.map((enroll, index) => [enroll, revenue[index]]),
+                        symbolSize: 10,
+                        itemStyle: {
+                            color: '#29a329'
+                        }
+                    }]
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Scatterplot that visualizes the relationship between Enrollment Number and Revenue. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Enrollment Number vs Revenue</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.2.0/echarts.min.js""></script>
+    <style>
+        .chart {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart"" class=""chart""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const enrollmentNumbers = [];
+                const revenues = [];
+                
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns.length >= 4) {
+                        enrollmentNumbers.push(parseFloat(columns[2]));
+                        revenues.push(parseFloat(columns[3]));
+                    }
+                });
+
+                const myChart = echarts.init(document.getElementById('chart'));
+                const option = {
+                    title: {
+                        text: 'Enrollment Number vs Revenue'
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        name: 'Enrollment Number'
+                    },
+                    yAxis: {
+                        name: 'Revenue'
+                    },
+                    dataZoom: [{
+                        type: 'inside',
+                        start: 0,
+                        end: 100
+                    }],
+                    series: [{
+                        name: 'Data Points',
+                        type: 'scatter',
+                        data: enrollmentNumbers.map((enrollment, index) => [enrollment, revenues[index]]),
+                        itemStyle: {
+                            color: '#5470C6'
+                        }
+                    }]
+                };
+
+                myChart.setOption(option);
+
+                myChart.on('brush', (params) => {
+                    // Handle brush selection
+                    const selectedPoints = params.batch[0].areas.map(area => area.dataIndex);
+                    console.log('Selected Points:', selectedPoints);
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Scatterplot that visualizes the relationship between Enrollment Number and Revenue. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Enrollment vs Revenue Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const enrollmentNumbers = [];
+                const revenues = [];
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if(columns.length === 9) {
+                        enrollmentNumbers.push(parseFloat(columns[2]));
+                        revenues.push(parseFloat(columns[3]));
+                    }
+                });
+
+                const scatterData = enrollmentNumbers.map((num, index) => {
+                    return [num, revenues[index]];
+                });
+
+                const chart = echarts.init(document.getElementById('main'));
+                const option = {
+                    title: {
+                        text: 'Scatterplot of Enrollment Number vs Revenue',
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        name: 'Enrollment Number',
+                    },
+                    yAxis: {
+                        name: 'Revenue',
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: scatterData,
+                        symbolSize: 10,
+                    }]
+                };
+
+                chart.setOption(option);
+                window.addEventListener('resize', function() {
+                    chart.resize();
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Enrollment Number and Revenue. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Enrollment vs Revenue Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+        .then(response => response.text())
+        .then(data => {
+            const lines = data.split('\n').slice(1);
+            const points = lines.map(line => {
+                const [quarter, educationLevel, enrollmentNumber, revenue] = line.split(',');
+                return {
+                    quarter,
+                    educationLevel,
+                    enrollmentNumber: parseInt(enrollmentNumber),
+                    revenue: parseFloat(revenue)
+                };
+            }).filter(point => !isNaN(point.enrollmentNumber) && !isNaN(point.revenue));
+
+            const chartDom = document.getElementById('main');
+            const myChart = echarts.init(chartDom);
+
+            const option = {
+                tooltip: {
+                    trigger: 'item',
+                    formatter: function (params) {
+                        return `${params.data.quarter}<br/>Enrollment: ${params.data.enrollmentNumber}<br/>Revenue: ${params.data.revenue}`;
+                    }
+                },
+                xAxis: {
+                    type: 'value',
+                    name: 'Enrollment Number'
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'Revenue'
+                },
+                series: [{
+                    symbolSize: 10,
+                    data: points,
+                    type: 'scatter',
+                    itemStyle: {
+                        color: '#36a2eb'
+                    }
+                }]
+            };
+
+            myChart.setOption(option);
+
+            myChart.on('click', function (params) {
+                if (params.data) {
+                    const query = `${params.data.quarter} ${params.data.educationLevel}`;
+                    window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}`, '_blank');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Scatterplot with query widgets showing the Enrollment Number and Revenue of the given dataset. Add a slider to represent the Quarter.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Enrollment vs Revenue Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 600px;
+        }
+        #quarter-slider {
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <input type=""range"" id=""quarter-slider"" min=""1"" max=""4"" value=""1"">
+    <div id=""main""></div>
+
+    <script>
+        const url = ""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"";
+        
+        async function fetchData() {
+            const response = await fetch(url);
+            const data = await response.text();
+            processData(data);
+        }
+
+        function processData(data) {
+            const rows = data.split(""\n"").slice(1);
+            const enrollmentData = [];
+
+            rows.forEach(row => {
+                const columns = row.split("","");
+                if (columns.length >= 9) {
+                    const quarter = parseInt(columns[0].trim());
+                    const enrollmentNumber = parseFloat(columns[2].trim());
+                    const revenue = parseFloat(columns[3].trim());
+
+                    enrollmentData.push({ quarter, enrollmentNumber, revenue });
+                }
+            });
+
+            createChart(enrollmentData);
+        }
+
+        function createChart(enrollmentData) {
+            const myChart = echarts.init(document.getElementById('main'));
+            const quarterSlider = document.getElementById('quarter-slider');
+
+            function updateChart(quarter) {
+                const filteredData = enrollmentData.filter(data => data.quarter === quarter);
+                const enrollmentNumbers = filteredData.map(data => data.enrollmentNumber);
+                const revenues = filteredData.map(data => data.revenue);
+
+                const option = {
+                    title: {
+                        text: 'Enrollment Number vs Revenue'
+                    },
+                    xAxis: {
+                        name: 'Enrollment Number'
+                    },
+                    yAxis: {
+                        name: 'Revenue'
+                    },
+                    series: [{
+                        symbolSize: 10,
+                        data: filteredData.map(data => [data.enrollmentNumber, data.revenue]),
+                        type: 'scatter'
+                    }]
+                };
+                myChart.setOption(option);
+            }
+
+            quarterSlider.addEventListener('input', () => {
+                updateChart(parseInt(quarterSlider.value));
+            });
+
+            updateChart(parseInt(quarterSlider.value)); // Initial load
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Scatterplot showing the Enrollment Number of Graduate. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Enrollment Number Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1); // skip header
+            const graduateEnrollments = [];
+
+            rows.forEach(row => {
+                const cols = row.split(',');
+                if (cols[1] === ""Graduate"") {
+                    graduateEnrollments.push({
+                        quarter: cols[0],
+                        enrollment: parseInt(cols[2]),
+                    });
+                }
+            });
+
+            const option = {
+                xAxis: {
+                    type: 'category',
+                    data: graduateEnrollments.map(item => item.quarter),
+                    name: 'Quarter'
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'Enrollment Number'
+                },
+                series: [{
+                    name: 'Graduate Enrollment',
+                    type: 'line',
+                    data: graduateEnrollments.map(item => item.enrollment),
+                    smooth: true,
+                    lineStyle: {
+                        width: 2
+                    },
+                    animationDuration: 1000,
+                    animationEasing: 'cubicOut',
+                }, {
+                    name: 'Scatter',
+                    type: 'scatter',
+                    data: graduateEnrollments.map(item => item.enrollment),
+                    symbolSize: 10,
+                    animationDuration: 1000,
+                    animationEasing: 'cubicOut',
+                }]
+            };
+
+            const myChart = echarts.init(document.getElementById('main'));
+            myChart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Enrollment Number of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Enrollment Line Chart</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.3/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1);
+                const parsedData = lines.map(line => {
+                    const columns = line.split(',');
+                    return {
+                        Quarter: columns[0],
+                        EducationLevel: columns[1],
+                        EnrollmentNumber: parseFloat(columns[2])
+                    };
+                }).filter(row => !isNaN(row.EnrollmentNumber));
+
+                const enrollmentData = {};
+                parsedData.forEach(row => {
+                    if (!enrollmentData[row.EducationLevel]) {
+                        enrollmentData[row.EducationLevel] = { name: row.EducationLevel, data: [] };
+                    }
+                    enrollmentData[row.EducationLevel].data.push(row.EnrollmentNumber);
+                });
+
+                const series = Object.values(enrollmentData).map(level => ({
+                    name: level.name,
+                    type: 'line',
+                    data: level.data,
+                    smooth: true,
+                    emphasis: {
+                        focus: 'series'
+                    }
+                }));
+
+                const option = {
+                    title: {
+                        text: 'Enrollment Numbers by Education Level'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'cross'
+                        }
+                    },
+                    legend: {
+                        data: Object.keys(enrollmentData)
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: parsedData.map(row => row.Quarter),
+                        boundaryGap: false
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: series
+                };
+
+                const chart = echarts.init(document.getElementById('main'));
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Bar Chart that visualizes the Enrollment Number for each Education Level in Q2-2021. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Educational Enrollment Bar Chart</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.3/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""main""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const filteredData = rows.filter(row => row[0] === 'Q2-2021');
+                
+                const educationLevels = filteredData.map(row => row[1]);
+                const enrollmentNumbers = filteredData.map(row => parseInt(row[2]));
+
+                const chartDom = document.getElementById('main');
+                const myChart = echarts.init(chartDom);
+
+                const option = {
+                    title: {
+                        text: 'Enrollment Number by Education Level in Q2-2021'
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        type: 'category',
+                        data: educationLevels
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        name: 'Enrollment Number',
+                        type: 'bar',
+                        data: enrollmentNumbers
+                    }]
+                };
+
+                myChart.setOption(option);
+
+                // Enable zoom and pan functionality
+                myChart.on('dataZoom', function (params) {
+                    const zoomData = myChart.getOption().dataZoom[0];
+                    myChart.dispatchAction({
+                        type: 'dataZoom',
+                        start: zoomData.start,
+                        end: zoomData.end
+                    });
+                });
+
+                myChart.on('mousedown', function (event) {
+                    if (event.event.button === 0) {
+                        const startPoint = myChart.convertFromPixel({ seriesIndex: 0 }, [event.offsetX, event.offsetY]);
+                        const moveHandler = function (moveEvent) {
+                            const currentPoint = myChart.convertFromPixel({ seriesIndex: 0 }, [moveEvent.offsetX, moveEvent.offsetY]);
+                            const dx = currentPoint[0] - startPoint[0];
+                            myChart.dispatchAction({
+                                type: 'dataZoom',
+                                start: Math.max(0, Math.min(100, zoomData.start + dx)),
+                                end: Math.max(0, Math.min(100, zoomData.end + dx))
+                            });
+                        };
+                        const upHandler = function () {
+                            myChart.getDom().removeEventListener('mousemove', moveHandler);
+                            myChart.getDom().removeEventListener('mouseup', upHandler);
+                        };
+                        myChart.getDom().addEventListener('mousemove', moveHandler);
+                        myChart.getDom().addEventListener('mouseup', upHandler);
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Bar Chart that visualizes the Enrollment Number for each Education Level in Q2-2021. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Enrollment Number Bar Chart</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.2.2/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""main""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const q2_2021_data = rows.filter(row => row.includes('Q2-2021'));
+                
+                const educationLevels = [];
+                const enrollmentNumbers = [];
+
+                q2_2021_data.forEach(row => {
+                    const cols = row.split(',');
+                    educationLevels.push(cols[1]);
+                    enrollmentNumbers.push(parseInt(cols[2], 10));
+                });
+
+                const chartDom = document.getElementById('main');
+                const myChart = echarts.init(chartDom);
+
+                const option = {
+                    title: {
+                        text: 'Enrollment Number for each Education Level in Q2-2021'
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        type: 'category',
+                        data: educationLevels,
+                        axisLabel: {
+                            interval: 0,
+                            rotate: 45
+                        }
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        name: 'Enrollment Number',
+                        type: 'bar',
+                        data: enrollmentNumbers,
+                        draggable: true
+                    }]
+                };
+
+                // Enable draggable function
+                myChart.on('mousedown', function (params) {
+                    if (params.componentType === 'series') {
+                        myChart.dispatchAction({
+                            type: 'downplay',
+                            seriesIndex: params.seriesIndex,
+                            dataIndex: params.dataIndex
+                        });
+                    }
+                });
+
+                myChart.on('mouseup', function (params) {
+                    if (params.componentType === 'series') {
+                        myChart.dispatchAction({
+                            type: 'highlight',
+                            seriesIndex: params.seriesIndex,
+                            dataIndex: params.dataIndex
+                        });
+                    }
+                });
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Bar Chart that visualizes the Enrollment Number for each Education Level in Q2-2021. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Enrollment Number.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Enrollment Number by Education Level</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 100%; height: 600px;""></div>
+    <select id=""sortOrder"" onchange=""updateChart()"">
+        <option value=""desc"">Descending</option>
+        <option value=""asc"">Ascending</option>
+    </select>
+
+    <script>
+        let data = [];
+        
+        fetch('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+            .then(response => response.text())
+            .then(text => {
+                const rows = text.split('\n').slice(1);
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns[0] === 'Q2-2021') {
+                        data.push({
+                            educationLevel: columns[1],
+                            enrollmentNumber: parseInt(columns[2])
+                        });
+                    }
+                });
+                updateChart();
+            });
+
+        function updateChart() {
+            const sortOrder = document.getElementById('sortOrder').value;
+            const sortedData = data.sort((a, b) => 
+                sortOrder === 'asc' ? a.enrollmentNumber - b.enrollmentNumber : b.enrollmentNumber - a.enrollmentNumber
+            );
+
+            const educationLevels = sortedData.map(item => item.educationLevel);
+            const enrollmentNumbers = sortedData.map(item => item.enrollmentNumber);
+
+            const chart = echarts.init(document.getElementById('chart'));
+            const option = {
+                title: {
+                    text: 'Enrollment Number by Education Level in Q2-2021'
+                },
+                tooltip: {},
+                xAxis: {
+                    type: 'category',
+                    data: educationLevels,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 30
+                    }
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: 'Enrollment Number',
+                    type: 'bar',
+                    data: enrollmentNumbers,
+                    animationDuration: 1000,
+                    animationEasing: 'cubicInOut'
+                }],
+                toolbox: {
+                    feature: {
+                        saveAsImage: {}
+                    }
+                }
+            };
+
+            chart.setOption(option);
+        }
+    </script>
+</body>
+</html>
+```"

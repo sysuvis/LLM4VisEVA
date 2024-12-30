@@ -1,0 +1,649 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Net Income and Revenue, and a Bar Chart on the right that displays Company versus Net Income.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Financial Data Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.8.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.2""></script>
+    <style>
+        #vis {
+            display: flex;
+            justify-content: space-between;
+        }
+        #scatterplot, #barchart {
+            width: 45%;
+        }
+    </style>
+</head>
+<body>
+    <div id=""vis"">
+        <div id=""scatterplot""></div>
+        <div id=""barchart""></div>
+    </div>
+
+    <script>
+        const scatterplotSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""mark"": ""point"",
+            ""encoding"": {
+                ""x"": {""field"": ""Revenue"", ""type"": ""quantitative""},
+                ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""},
+                ""color"": {""field"": ""Company"", ""type"": ""nominal""}
+            },
+            ""width"": 400,
+            ""height"": 300
+        };
+
+        const barchartSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""x"": {""field"": ""Company"", ""type"": ""ordinal""},
+                ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""}
+            },
+            ""width"": 400,
+            ""height"": 300
+        };
+
+        vegaEmbed('#scatterplot', scatterplotSpec);
+        vegaEmbed('#barchart', barchartSpec);
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Net Income and Revenue, and a Bar Chart on the right that displays Company versus Net Income. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Financial Data Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.13.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.3""></script>
+    <style>
+        #vis {
+            display: flex;
+        }
+        .chart {
+            width: 50%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""vis"">
+        <div class=""chart"" id=""scatterPlot""></div>
+        <div class=""chart"" id=""barChart""></div>
+    </div>
+    <script>
+        const scatterPlotSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""mark"": ""point"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Revenue"",
+                    ""type"": ""quantitative""
+                },
+                ""y"": {
+                    ""field"": ""Net Income"",
+                    ""type"": ""quantitative""
+                },
+                ""color"": {
+                    ""field"": ""Company"",
+                    ""type"": ""nominal""
+                },
+                ""tooltip"": [
+                    {""field"": ""Company"", ""type"": ""nominal""},
+                    {""field"": ""Net Income"", ""type"": ""quantitative""},
+                    {""field"": ""Revenue"", ""type"": ""quantitative""}
+                ]
+            },
+            ""selection"": {
+                ""brush"": {
+                    ""type"": ""interval"", ""encodings"": [""x"", ""y""]
+                }
+            }
+        };
+
+        const barChartSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""transform"": [
+                {
+                    ""filter"": {""selection"": ""brush""}
+                }
+            ],
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Company"",
+                    ""type"": ""ordinal"",
+                    ""axis"": { ""labelAngle"": 45 }
+                },
+                ""y"": {
+                    ""field"": ""Net Income"",
+                    ""type"": ""quantitative""
+                },
+                ""color"": {
+                    ""field"": ""Company"",
+                    ""type"": ""nominal""
+                }
+            }
+        };
+
+        vegaEmbed('#scatterPlot', scatterPlotSpec).then(function (result) {
+            vegaEmbed('#barChart', barChartSpec);
+        });
+    </script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Net Income , while the pie chart represents the distribution of Revenue.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Financial Data Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.3.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.1""></script>
+</head>
+<body>
+
+<div id=""line-chart""></div>
+<div id=""pie-chart""></div>
+
+<script>
+    const lineChartSpec = {
+        ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+        ""description"": ""A line chart showing the trend of Net Income."",
+        ""data"": {
+            ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+            ""format"": { ""type"": ""csv"" }
+        },
+        ""mark"": ""line"",
+        ""encoding"": {
+            ""x"": { ""field"": ""Quarter"", ""type"": ""ordinal"", ""title"": ""Quarter"" },
+            ""y"": { ""field"": ""Net Income"", ""type"": ""quantitative"", ""title"": ""Net Income"" },
+            ""color"": { ""field"": ""Company"", ""type"": ""nominal"", ""title"": ""Company"" }
+        }
+    };
+
+    const pieChartSpec = {
+        ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+        ""description"": ""A pie chart showing the distribution of Revenue."",
+        ""data"": {
+            ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+            ""format"": { ""type"": ""csv"" }
+        },
+        ""mark"": {
+            ""type"": ""arc"",
+            ""tooltip"": true
+        },
+        ""encoding"": {
+            ""theta"": { ""field"": ""Revenue"", ""type"": ""quantitative"" },
+            ""color"": { ""field"": ""Company"", ""type"": ""nominal"" }
+        }
+    };
+
+    vegaEmbed('#line-chart', lineChartSpec).then(function(result) {
+        // Success, do nothing
+    }).catch(console.error);
+
+    vegaEmbed('#pie-chart', pieChartSpec).then(function(result) {
+        // Success, do nothing
+    }).catch(console.error);
+</script>
+
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Net Income , while the pie chart represents the distribution of Revenue. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Revenue for the selected group.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Financial Data Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+<body>
+    <h1>Financial Data Visualization</h1>
+    <div id=""lineChart""></div>
+    <div id=""pieChart""></div>
+    
+    <script>
+        const dataUrl = ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"";
+
+        const lineChartSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {""url"": dataUrl},
+            ""mark"": ""line"",
+            ""encoding"": {
+                ""x"": {""field"": ""Quarter"", ""type"": ""temporal""},
+                ""y"": {""field"": ""Net Income"", ""type"": ""quantitative""},
+                ""tooltip"": [
+                    {""field"": ""Quarter"", ""type"": ""temporal""},
+                    {""field"": ""Net Income"", ""type"": ""quantitative""}
+                ]
+            },
+            ""selection"": {
+                ""brush"": {
+                    ""type"": ""interval"", ""encodings"": [""x""]
+                }
+            }
+        };
+
+        const pieChartSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {""url"": dataUrl},
+            ""transform"": [
+                {
+                    ""filter"": {""field"": ""Quarter"", ""selection"": ""brush""}
+                },
+                {
+                    ""aggregate"": [
+                        {""op"": ""sum"", ""field"": ""Revenue"", ""as"": ""Total Revenue""}
+                    ],
+                    ""groupby"": [""Company""]
+                }
+            ],
+            ""mark"": ""arc"",
+            ""encoding"": {
+                ""theta"": {""field"": ""Total Revenue"", ""type"": ""quantitative""},
+                ""color"": {""field"": ""Company"", ""type"": ""nominal""}
+            }
+        };
+
+        vegaEmbed('#lineChart', lineChartSpec).then(function(result) {
+            const lineView = result.view;
+
+            vegaEmbed('#pieChart', pieChartSpec);
+
+            lineView.addSignalListener('brush', function(name, value) {
+                lineView.signal('brush', value);
+                lineView.run();
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Revenue, Expenses, Employee Count, and Stock Price. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Brushable Scatterplot Matrix</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.8.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.2""></script>
+    <style>
+        .scatterplot-matrix {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+        }
+    </style>
+</head>
+<body>
+
+<div id=""vis"" class=""scatterplot-matrix""></div>
+
+<script type=""text/javascript"">
+    const dataUrl = ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"";
+
+    const fields = [""Revenue"", ""Expenses"", ""Employee Count"", ""Stock Price""];
+    const marks = [];
+
+    fields.forEach((xField, xIndex) => {
+        fields.forEach((yField, yIndex) => {
+            marks.push({
+                ""type"": ""point"",
+                ""x"": { ""field"": xField },
+                ""y"": { ""field"": yField },
+                ""tooltip"": [
+                    { ""field"": ""Company"" },
+                    { ""field"": xField },
+                    { ""field"": yField }
+                ],
+                ""fill"": { ""value"": ""lightgray"" },
+                ""stroke"": { ""value"": ""black"" },
+                ""strokeWidth"": { ""value"": 1 },
+                ""opacity"": { ""expr"": ""datum.selected ? 1 : 0.5"" },
+                ""select"": {
+                    ""type"": ""point"",
+                    ""on"": ""mouseover"",
+                    ""clear"": ""mouseout"",
+                    ""encodings"": [""x"", ""y""]
+                }
+            });
+        });
+    });
+
+    const scatterplotMatrixSpec = {
+        ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+        ""data"": { ""url"": dataUrl },
+        ""layer"": marks,
+        ""encoding"": {
+            ""opacity"": { ""condition"": { ""selection"": ""brush"", ""value"": 1 }, ""value"": 0.5 }
+        },
+        ""resolve"": { ""scale"": { ""x"": ""independently"", ""y"": ""independently"" } },
+        ""scales"": [
+            {
+                ""name"": ""x"",
+                ""type"": ""linear"",
+                ""domain"": { ""data"": ""source"", ""field"": ""x"" },
+                ""range"": ""width""
+            },
+            {
+                ""name"": ""y"",
+                ""type"": ""linear"",
+                ""domain"": { ""data"": ""source"", ""field"": ""y"" },
+                ""range"": ""height""
+            }
+        ],
+        ""selection"": {
+            ""brush"": {
+                ""type"": ""interval"",
+                ""on"": ""mouseover"",
+                ""encodings"": [""x"", ""y""]
+            }
+        },
+        ""height"": 300,
+        ""width"": 300
+    };
+
+    vegaEmbed('#vis', scatterplotMatrixSpec);
+</script>
+
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a brushable Scatterplot that visualizes the relationship between Net Income and Revenue. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Brushable Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.5.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.18.0""></script>
+</head>
+<body>
+    <div id=""scatterplot""></div>
+    <div id=""table""></div>
+
+    <script type=""text/javascript"">
+        const dataUrl = ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"";
+
+        const scatterplotSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": dataUrl,
+                ""format"": {""type"": ""csv""}
+            },
+            ""width"": 500,
+            ""height"": 300,
+            ""transform"": [
+                {
+                    ""filter"": {""selection"": ""brush""}
+                }
+            ],
+            ""selection"": {
+                ""brush"": {
+                    ""type"": ""interval"",
+                    ""encodings"": [""x"", ""y""]
+                }
+            },
+            ""mark"": ""point"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Revenue"",
+                    ""type"": ""quantitative""
+                },
+                ""y"": {
+                    ""field"": ""Net Income"",
+                    ""type"": ""quantitative""
+                },
+                ""tooltip"": [
+                    {""field"": ""Company"", ""type"": ""nominal""},
+                    {""field"": ""Net Income"", ""type"": ""quantitative""},
+                    {""field"": ""Revenue"", ""type"": ""quantitative""},
+                    {""field"": ""Expenses"", ""type"": ""quantitative""},
+                    {""field"": ""Employee Count"", ""type"": ""quantitative""},
+                    {""field"": ""Industry"", ""type"": ""nominal""},
+                    {""field"": ""Stock Price"", ""type"": ""quantitative""}
+                ]
+            }
+        };
+
+        vegaEmbed('#scatterplot', scatterplotSpec).then(result => {
+            const view = result.view;
+
+            view.addEventListener('click', () => {
+                const selectedData = view.data('table')
+                    .filter(d => {
+                        const brush = view.transforms[""brush""];
+                        return brush && brush.filter.some(b => b[0] <= d.Revenue && d.Revenue <= b[1] && b[2] <= d['Net Income'] && d['Net Income'] <= b[3]);
+                    })
+                    .slice(0, 20); // Limit to first 20 results
+                renderTable(selectedData);
+            });
+
+            view.run();
+        });
+
+        function renderTable(data) {
+            const tableDiv = document.getElementById('table');
+            tableDiv.innerHTML = '';
+            if (data.length > 0) {
+                const table = document.createElement('table');
+                table.innerHTML = `<tr>
+                    <th>Company</th>
+                    <th>Net Income</th>
+                    <th>Revenue</th>
+                    <th>Expenses</th>
+                    <th>Employee Count</th>
+                    <th>Industry</th>
+                    <th>Stock Price</th>
+                </tr>`;
+                data.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${row.Company}</td>
+                                    <td>${row['Net Income']}</td>
+                                    <td>${row.Revenue}</td>
+                                    <td>${row.Expenses}</td>
+                                    <td>${row['Employee Count']}</td>
+                                    <td>${row.Industry}</td>
+                                    <td>${row['Stock Price']}</td>`;
+                    table.appendChild(tr);
+                });
+                tableDiv.appendChild(table);
+            }
+        }
+    </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a horizontal Bar Chart that shows all the data concerning Net Income, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Horizontal Bar Chart with Minimap</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.4.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.0""></script>
+</head>
+<body>
+    <div id=""main-chart""></div>
+    <div id=""minimap""></div>
+
+    <script type=""text/javascript"">
+        const mainChartSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+                ""format"": {""type"": ""csv""}
+            },
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Net Income"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Net Income""
+                },
+                ""y"": {
+                    ""field"": ""Company"",
+                    ""type"": ""nominal"",
+                    ""title"": ""Company"",
+                    ""sort"": ""-x""
+                },
+                ""color"": {
+                    ""field"": ""Industry"",
+                    ""type"": ""nominal"",
+                    ""legend"": {""title"": ""Industry""}
+                }
+            },
+            ""width"": 400,
+            ""height"": 300
+        };
+
+        const minimapSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"",
+                ""format"": {""type"": ""csv""}
+            },
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Net Income"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Net Income""
+                },
+                ""y"": {
+                    ""field"": ""Company"",
+                    ""type"": ""nominal"",
+                    ""title"": ""Company"",
+                    ""sort"": ""-x""
+                }
+            },
+            ""width"": 150,
+            ""height"": 150,
+            ""config"": {
+                ""mark"": {""opacity"": 0.5}
+            }
+        };
+
+        vegaEmbed('#main-chart', mainChartSpec);
+        vegaEmbed('#minimap', minimapSpec);
+    </script>
+</body>
+</html>
+```"

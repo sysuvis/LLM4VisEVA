@@ -1,0 +1,882 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\n\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production
+Your task is to create a Scatterplot that visualizes the relationship between Domestic Consumption and Exports. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\\n\\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coffee Consumption Scatterplot</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.3/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const domesticConsumption = [];
+                const exports = [];
+                const countries = [];
+
+                rows.forEach(row => {
+                    const cols = row.split(',');
+                    if (cols.length > 1) {
+                        countries.push(cols[1]);
+                        domesticConsumption.push(parseFloat(cols[2]));
+                        exports.push(parseFloat(cols[3]));
+                    }
+                });
+
+                const chartDom = document.getElementById('main');
+                const myChart = echarts.init(chartDom);
+
+                const option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function(params) {
+                            return `${params.name}<br/>Domestic Consumption: ${params.value[0]}<br/>Exports: ${params.value[1]}`;
+                        }
+                    },
+                    xAxis: {
+                        name: 'Domestic Consumption',
+                        type: 'value'
+                    },
+                    yAxis: {
+                        name: 'Exports',
+                        type: 'value'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        symbolSize: 10,
+                        data: domesticConsumption.map((value, index) => [value, exports[index], countries[index]]),
+                        encode: {
+                            // Use the data 0 as X, and data 1 as Y.
+                            x: 0,
+                            y: 1,
+                            tooltip: [0, 1, 2]
+                        }
+                    }]
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\n\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production
+Your task is to create a Scatterplot that visualizes the relationship between Domestic Consumption and Exports. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\\n\\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coffee Consumption Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""main""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const domesticConsumption = [];
+                const exports = [];
+                rows.forEach(row => {
+                    const cols = row.split(',');
+                    if (cols.length > 1) {
+                        domesticConsumption.push(parseFloat(cols[2]));
+                        exports.push(parseFloat(cols[3]));
+                    }
+                });
+
+                const option = {
+                    title: {
+                        text: 'Coffee Consumption vs Exports'
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        name: 'Domestic Consumption',
+                        type: 'value'
+                    },
+                    yAxis: {
+                        name: 'Exports',
+                        type: 'value'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: domesticConsumption.map((value, index) => [value, exports[index]]),
+                        itemStyle: {
+                            color: '#5470C6'
+                        }
+                    }],
+                    brush: {
+                        toolbox: ['rect', 'polygon', 'keep', 'clear'],
+                        outOfBrush: {
+                            opacity: 0.1,
+                            z: 0
+                        },
+                        brushStyles: [
+                            {
+                                type: 'line',
+                                stroke: '#000',
+                                fill: 'rgba(255, 255, 255, 0.2)'
+                            }
+                        ]
+                    }
+                };
+
+                const chart = echarts.init(document.getElementById('main'));
+                chart.setOption(option);
+                chart.on('brushSelected', function (params) {
+                    const selectedPoints = []
+                    const brushInfo = params.batch[0]
+                    brushInfoAreas = brushInfo. Areas;
+                    for (let area of brushInfoAreas) {
+                        const start = area.rect[0];
+                        const end = area.rect[1];
+                        for (let i = 0; i < domesticConsumption.length; i++) {
+                            if (domesticConsumption[i] >= start[0] && domesticConsumption[i] <= end[0] && 
+                                exports[i] >= start[1] && exports[i] <= end[1]) {
+                                selectedPoints.push([domesticConsumption[i], exports[i]]);
+                            }
+                        }
+                    }
+                    console.log(""Selected Points: "", selectedPoints);
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\n\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production
+Your task is to create a Scatterplot that visualizes the relationship between Domestic Consumption and Exports. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\\n\\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coffee Consumption Scatterplot</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.3/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""scatterplot"" style=""width: 100%; height: 500px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const consumption = [];
+                const exports = [];
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns.length >= 4) {
+                        consumption.push(parseFloat(columns[2]) || 0);
+                        exports.push(parseFloat(columns[3]) || 0);
+                    }
+                });
+
+                const scatterplot = echarts.init(document.getElementById('scatterplot'));
+
+                const option = {
+                    title: {
+                        text: 'Scatterplot of Domestic Consumption vs Exports'
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        name: 'Domestic Consumption',
+                        type: 'value'
+                    },
+                    yAxis: {
+                        name: 'Exports',
+                        type: 'value'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        symbolSize: 10,
+                        data: consumption.map((consump, index) => [consump, exports[index]])
+                    }]
+                };
+
+                scatterplot.setOption(option);
+                
+                window.addEventListener('resize', function() {
+                    scatterplot.resize();
+                });
+                
+                scatterplot.on('dataZoom', (params) => {
+                    scatterplot.dispatchAction({
+                        type: 'dataZoom',
+                        start: params.start,
+                        end: params.end
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\n\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Domestic Consumption and Exports. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\\n\\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coffee Consumption Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 800px;height:600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const chartData = [];
+                
+                rows.forEach(row => {
+                    const cols = row.split(',');
+                    if (cols.length >= 3) {
+                        const year = cols[0];
+                        const country = cols[1];
+                        const domesticConsumption = parseFloat(cols[2]);
+                        const exports = parseFloat(cols[3]);
+                        if (!isNaN(domesticConsumption) && !isNaN(exports)) {
+                            chartData.push({ year, country, domesticConsumption, exports });
+                        }
+                    }
+                });
+
+                const chart = echarts.init(document.getElementById('main'));
+
+                chart.setOption({
+                    title: {
+                        text: 'Domestic Consumption vs Exports of Coffee'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function (params) {
+                            return `Country: ${params.data.country}<br/>
+                                    Year: ${params.data.year}<br/>
+                                    Domestic Consumption: ${params.data.domesticConsumption}<br/>
+                                    Exports: ${params.data.exports}`;
+                        }
+                    },
+                    xAxis: {
+                        type: 'value',
+                        name: 'Domestic Consumption'
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: 'Exports'
+                    },
+                    series: [{
+                        symbolSize: 10,
+                        data: chartData.map(item => ({
+                            value: [item.domesticConsumption, item.exports],
+                            country: item.country,
+                            year: item.year
+                        })),
+                        type: 'scatter'
+                    }]
+                });
+
+                chart.on('click', function (params) {
+                    const country = params.data.country;
+                    if (country) {
+                        window.open(`https://www.google.com/search?q=${encodeURIComponent(country + "" Coffee Consumption"")}`, '_blank');
+                    }
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\n\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production
+Your task is to create a Scatterplot with query widgets showing the Domestic Consumption and Exports of the given dataset. Add a slider to represent the Year, the value should be between 2015 to 2019.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\\n\\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coffee Consumption Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <input type=""range"" id=""yearSlider"" min=""2015"" max=""2019"" value=""2015"" step=""1""/>
+    <label for=""yearSlider"">Year: <span id=""yearValue"">2015</span></label>
+    
+    <script>
+        const url = 'https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv';
+
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).filter(row => row);
+                const parsedData = rows.map(row => {
+                    const [year, country, domesticConsumption, exports] = row.split(',');
+                    return {
+                        year: parseInt(year),
+                        country,
+                        domesticConsumption: parseFloat(domesticConsumption),
+                        exports: parseFloat(exports),
+                    };
+                });
+
+                const yearSlider = document.getElementById('yearSlider');
+                const yearValue = document.getElementById('yearValue');
+                const myChart = echarts.init(document.getElementById('main'));
+
+                function updateChart(year) {
+                    const filteredData = parsedData.filter(d => d.year === year);
+                    const domesticConsumptions = filteredData.map(d => d.domesticConsumption);
+                    const exports = filteredData.map(d => d.exports);
+                    
+                    myChart.setOption({
+                        title: {
+                            text: `Coffee Consumption vs Exports in ${year}`
+                        },
+                        tooltip: {},
+                        xAxis: {
+                            name: 'Domestic Consumption',
+                            type: 'value'
+                        },
+                        yAxis: {
+                            name: 'Exports',
+                            type: 'value'
+                        },
+                        series: [{
+                            symbolSize: 10,
+                            data: filteredData.map(d => [d.domesticConsumption, d.exports]),
+                            type: 'scatter'
+                        }]
+                    });
+                }
+
+                // Initial render
+                updateChart(parseInt(yearSlider.value));
+
+                yearSlider.addEventListener('input', function() {
+                    const year = parseInt(this.value);
+                    yearValue.innerText = year;
+                    updateChart(year);
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\n\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production
+Your task is to create a Scatterplot showing the Domestic Consumption of USA. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\\n\\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Domestic Coffee Consumption in USA</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const usaConsumption = rows
+                    .map(row => {
+                        const columns = row.split(',');
+                        return {
+                            year: columns[0],
+                            domesticConsumption: columns[2] ? parseFloat(columns[2]) : 0
+                        };
+                    })
+                    .filter(item => item.year && item.domesticConsumption > 0);
+                
+                const years = usaConsumption.map(item => item.year);
+                const consumption = usaConsumption.map(item => item.domesticConsumption);
+
+                const chart = echarts.init(document.getElementById('main'));
+                
+                chart.setOption({
+                    xAxis: {
+                        type: 'category',
+                        data: years,
+                        axisLabel: {
+                            rotate: 45
+                        }
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: 'Domestic Consumption'
+                    },
+                    series: [{
+                        type: 'line',
+                        data: consumption,
+                        smooth: true,
+                        lineStyle: {
+                            width: 2,
+                            color: '#46b7de'
+                        },
+                        itemStyle: {
+                            borderColor: '#46b7de',
+                            borderWidth: 2
+                        },
+                        animationDuration: 1000,
+                        animationEasing: 'cubicInOut',
+                        markLine: {
+                            data: [
+                                {
+                                    type: 'average',
+                                    name: 'Average',
+                                    lineStyle: {
+                                        type: 'solid',
+                                        color: '#ff4500'
+                                    }
+                                }
+                            ]
+                        }
+                    }]
+                });
+
+                const updateChartData = () => {
+                    const dataCount = years.length;
+                    for (let i = 0; i < dataCount; i++) {
+                        chart.dispatchAction({
+                            type: 'highlight',
+                            seriesIndex: 0,
+                            dataIndex: i
+                        });
+                        chart.dispatchAction({
+                            type: 'showTip',
+                            seriesIndex: 0,
+                            dataIndex: i
+                        });
+                        if (i < dataCount - 1) {
+                            setTimeout(() => {
+                                chart.dispatchAction({
+                                    type: 'downplay',
+                                    seriesIndex: 0,
+                                    dataIndex: i
+                                });
+                            }, 1000);
+                        }
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                };
+                updateChartData();
+            });
+    </script>
+</body>
+</html>
+```"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\n\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Domestic Consumption of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\\n\\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coffee Consumption</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const years = new Set();
+                const consumptionData = {};
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    const year = columns[0];
+                    const country = columns[1];
+                    const consumption = parseFloat(columns[2]);
+
+                    years.add(year);
+                    if (!consumptionData[country]) {
+                        consumptionData[country] = [];
+                    }
+                    consumptionData[country].push({ year, consumption });
+                });
+
+                const seriesData = Object.keys(consumptionData).map(country => {
+                    return {
+                        name: country,
+                        type: 'line',
+                        data: consumptionData[country].sort((a, b) => a.year - b.year).map(item => item.consumption),
+                        smooth: true
+                    };
+                });
+
+                const option = {
+                    title: {
+                        text: 'Domestic Coffee Consumption by Country'
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                    },
+                    legend: {
+                        data: Object.keys(consumptionData),
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: Array.from(years).sort(),
+                    },
+                    yAxis: {
+                        type: 'value',
+                    },
+                    series: seriesData
+                };
+
+                const myChart = echarts.init(document.getElementById('main'));
+                myChart.setOption(option);
+
+                myChart.on('mouseover', function (params) {
+                    if (params.componentType === 'series') {
+                        myChart.setOption({
+                            series: seriesData.map((series, index) => ({
+                                ...series,
+                                itemStyle: {
+                                    color: series.name === params.seriesName ? '#FF0000' : undefined
+                                }
+                            })),
+                        });
+                    }
+                });
+
+                myChart.on('mouseout', function () {
+                    myChart.setOption({
+                        series: seriesData.map(series => ({
+                            ...series,
+                            itemStyle: {
+                                color: undefined
+                            }
+                        })),
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\n\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production
+Your task is to create a Bar Chart that visualizes the Domestic Consumption for each Country in 2017. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\\n\\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coffee Consumption 2017</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.2/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%;height:400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1);
+                const consumptionData = [];
+
+                lines.forEach(line => {
+                    const cols = line.split(',');
+                    if (cols[0] === '2017') {
+                        consumptionData.push({
+                            country: cols[1],
+                            consumption: parseFloat(cols[2])
+                        });
+                    }
+                });
+
+                const countries = consumptionData.map(item => item.country);
+                const values = consumptionData.map(item => item.consumption);
+
+                const chartDom = document.getElementById('main');
+                const myChart = echarts.init(chartDom);
+                const option = {
+                    title: {
+                        text: 'Coffee Domestic Consumption by Country in 2017'
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        type: 'category',
+                        data: countries
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        name: 'Domestic Consumption',
+                        type: 'bar',
+                        data: values
+                    }]
+                };
+
+                myChart.setOption(option);
+
+                // Enable mouse wheel zoom
+                myChart.on('dataZoom', function (params) {
+                    myChart.dispatchAction({
+                        type: 'dataZoom',
+                        areas: [{ start: 0, end: 100 }]
+                    });
+                });
+
+                // Enable dragging to pan
+                myChart.on('mousedown', function (params) {
+                    if (params.componentType === 'xAxis' || params.componentType === 'series') {
+                        myChart.dispatchAction({
+                            type: 'dataZoom',
+                            start: Math.max(0, params.dataIndex - 10),
+                            end: Math.min(100, params.dataIndex + 10)
+                        });
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\n\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production
+Your task is to create a Bar Chart that visualizes the Domestic Consumption for each Country in 2017. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\\n\\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coffee Consumption 2017</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""main""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1);
+                const consumptionData = {};
+
+                lines.forEach(line => {
+                    const [year, country, domesticConsumption] = line.split(',');
+                    if (year.trim() === '2017') {
+                        consumptionData[country.trim()] = parseFloat(domesticConsumption);
+                    }
+                });
+
+                const countries = Object.keys(consumptionData);
+                const consumptionValues = countries.map(country => consumptionData[country]);
+
+                const chartData = countries.map((country, index) => ({
+                    name: country,
+                    value: consumptionValues[index]
+                }));
+
+                const myChart = echarts.init(document.getElementById('main'));
+                myChart.setOption({
+                    title: {
+                        text: 'Coffee Domestic Consumption by Country in 2017',
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        type: 'category',
+                        data: countries,
+                        axisLabel: {
+                            interval: 0,
+                            rotate: 45
+                        }
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        name: 'Domestic Consumption',
+                        type: 'bar',
+                        data: consumptionValues,
+                        draggable: true,
+                        animation: true
+                    }],
+                    graphic: {
+                        type: 'text',
+                        left: 'center',
+                        top: '20%',
+                        style: {
+                            text: 'Drag to reorder bars',
+                            fill: '#000',
+                            font: '16px Microsoft YaHei'
+                        }
+                    }
+                });
+
+                myChart.on('dragend', function (params) {
+                    const index = params.dataIndex;
+                    const draggedValue = consumptionValues.splice(index, 1)[0];
+                    consumptionValues.push(draggedValue);
+                    myChart.setOption({
+                        series: [{
+                            data: consumptionValues
+                        }]
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\n\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production
+Your task is to create a Bar Chart that visualizes the Domestic Consumption for each Country in 2017. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Domestic Consumption.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv\\n\\nThe data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coffee Consumption 2017</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.0/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""main""></div>
+    <select id=""sortOrder"" onchange=""updateChart()"">
+        <option value=""desc"">Descending</option>
+        <option value=""asc"">Ascending</option>
+    </select>
+
+    <script>
+        let data = [];
+        let chartInstance;
+
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv')
+            .then(response => response.text())
+            .then(csv => {
+                const rows = csv.split('\n').slice(1);
+                rows.forEach(row => {
+                    const cols = row.split(',');
+                    if (cols[0] == '2017') {
+                        data.push({
+                            country: cols[1],
+                            consumption: +cols[2]
+                        });
+                    }
+                });
+                createChart();
+            });
+
+        function createChart() {
+            const option = {
+                title: {
+                    text: 'Coffee Domestic Consumption by Country (2017)',
+                },
+                tooltip: {},
+                xAxis: {
+                    type: 'category',
+                    data: data.map(item => item.country),
+                },
+                yAxis: {
+                    name: 'Domestic Consumption (kg per capita)'
+                },
+                series: [{
+                    name: 'Consumption',
+                    type: 'bar',
+                    data: data.map(item => item.consumption),
+                    animationDuration: 1000,
+                }]
+            };
+
+            chartInstance = echarts.init(document.getElementById('main'));
+            chartInstance.setOption(option);
+        }
+
+        function updateChart() {
+            const order = document.getElementById('sortOrder').value;
+            const sortedData = data.sort((a, b) => order === 'asc' ? a.consumption - b.consumption : b.consumption - a.consumption);
+
+            chartInstance.setOption({
+                xAxis: {
+                    data: sortedData.map(item => item.country),
+                },
+                series: [{
+                    data: sortedData.map(item => item.consumption),
+                }]
+            });
+        }
+    </script>
+</body>
+</html>
+```"

@@ -1,0 +1,890 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Units Sold vs Revenue</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const units = [];
+                const revenue = [];
+                
+                rows.forEach(row => {
+                    const cols = row.split(',');
+                    if (cols.length > 1) {
+                        units.push(parseFloat(cols[2]));
+                        revenue.push(parseFloat(cols[3]));
+                    }
+                });
+
+                const myChart = echarts.init(document.getElementById('main'));
+
+                const option = {
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function (params) {
+                            return `Units Sold: ${params.data[0]}<br/>Revenue: ${params.data[1]}`;
+                        }
+                    },
+                    xAxis: {
+                        name: 'Units Sold',
+                        type: 'value'
+                    },
+                    yAxis: {
+                        name: 'Revenue',
+                        type: 'value'
+                    },
+                    series: [{
+                        symbolSize: 10,
+                        data: units.map((unit, index) => [unit, revenue[index]]),
+                        type: 'scatter'
+                    }]
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Units Sold vs Revenue</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1);
+                const unitsSold = [];
+                const revenue = [];
+
+                lines.forEach(line => {
+                    const cols = line.split(',');
+                    if (cols.length > 1) {
+                        unitsSold.push(Number(cols[2])); // Units Sold
+                        revenue.push(Number(cols[3])); // Revenue
+                    }
+                });
+
+                const scatterData = unitsSold.map((us, index) => {
+                    return { value: [us, revenue[index]] };
+                });
+
+                const myChart = echarts.init(document.getElementById('main'));
+                const option = {
+                    title: {
+                        text: 'Scatterplot of Units Sold vs Revenue'
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        name: 'Units Sold',
+                        type: 'value'
+                    },
+                    yAxis: {
+                        name: 'Revenue',
+                        type: 'value'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: scatterData,
+                        symbolSize: 10,
+                        itemStyle: {
+                            color: 'blue'
+                        }
+                    }]
+                };
+
+                myChart.setOption(option);
+
+                myChart.on('brushSelected', function (params) {
+                    const brushedPoints = [];
+                    const selected = params.batch[0].selected;
+
+                    for (const series of selected) {
+                        series.data.forEach(dataIndex => {
+                            brushedPoints.push(scatterData[dataIndex]);
+                        });
+                    }
+                    
+                    console.log('Brushed Points:', brushedPoints);
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Units Sold vs Revenue Scatterplot</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.1.2/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""scatterplot"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const unitsSold = [];
+                const revenue = [];
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns.length > 1) {
+                        unitsSold.push(parseFloat(columns[2]));
+                        revenue.push(parseFloat(columns[3]));
+                    }
+                });
+
+                const scatterplot = echarts.init(document.getElementById('scatterplot'));
+                scatterplot.setOption({
+                    title: {
+                        text: 'Units Sold vs Revenue',
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                    },
+                    xAxis: {
+                        name: 'Units Sold',
+                    },
+                    yAxis: {
+                        name: 'Revenue',
+                    },
+                    series: [{
+                        symbolSize: 10,
+                        data: unitsSold.map((us, index) => [us, revenue[index]]),
+                        type: 'scatter',
+                    }],
+                    dataZoom: [{
+                        type: 'inside',
+                        xAxisIndex: [0],
+                        rangeStart: 0,
+                        rangeEnd: 100,
+                    }],
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Units Sold vs Revenue Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%;height:600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1);
+                const points = lines.map(line => {
+                    const [date, storeLocation, unitsSold, revenue, profit, operatingHours, customerVisits, productCategory] = line.split(',');
+                    return {
+                        name: `${storeLocation} on ${date}`,
+                        unitsSold: parseFloat(unitsSold),
+                        revenue: parseFloat(revenue)
+                    };
+                }).filter(point => !isNaN(point.unitsSold) && !isNaN(point.revenue));
+                
+                const chartDom = document.getElementById('main');
+                const myChart = echarts.init(chartDom);
+                
+                const option = {
+                    title: {
+                        text: 'Units Sold vs Revenue'
+                    },
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function (params) {
+                            return `${params.data.name}<br/>Units Sold: ${params.data.unitsSold}<br/>Revenue: $${params.data.revenue}`;
+                        }
+                    },
+                    xAxis: {
+                        name: 'Units Sold',
+                        type: 'value'
+                    },
+                    yAxis: {
+                        name: 'Revenue',
+                        type: 'value'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: points.map(point => ({
+                            name: point.name,
+                            value: [point.unitsSold, point.revenue],
+                            unitsSold: point.unitsSold,
+                            revenue: point.revenue
+                        })),
+                        symbolSize: 10,
+                        itemStyle: {
+                            color: '#5470C6'
+                        }
+                    }]
+                };
+                
+                myChart.setOption(option);
+                
+                myChart.on('click', function (params) {
+                    if (params.data) {
+                        const searchQuery = `${params.data.unitsSold} Units Sold ${params.data.revenue} Revenue`;
+                        window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`, '_blank');
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot with query widgets showing the Units Sold and Revenue of the given dataset. Add a slider to represent the Date.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot with Date Slider</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 600px;
+        }
+        #dateSlider {
+            width: 100%;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div id=""main""></div>
+<input type=""range"" id=""dateSlider"" min=""0"" max=""0"" value=""0"" step=""1"">
+
+<script>
+    async function fetchData() {
+        const response = await fetch('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv');
+        const data = await response.text();
+        const parsedData = parseCSV(data);
+        initChart(parsedData);
+    }
+
+    function parseCSV(data) {
+        const lines = data.split('\n').slice(1);
+        const result = [];
+        for (const line of lines) {
+            const columns = line.split(',');
+            if (columns.length < 8) continue; // skip invalid rows
+            result.push({
+                date: new Date(columns[0]),
+                unitsSold: parseFloat(columns[2]),
+                revenue: parseFloat(columns[3])
+            });
+        }
+        return result;
+    }
+
+    function initChart(data) {
+        const chart = echarts.init(document.getElementById('main'));
+        let currentData = data;
+
+        const option = {
+            title: {
+                text: 'Units Sold vs Revenue'
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            xAxis: {
+                name: 'Units Sold'
+            },
+            yAxis: {
+                name: 'Revenue'
+            },
+            series: [{
+                type: 'scatter',
+                data: currentData.map(d => [d.unitsSold, d.revenue]),
+                symbolSize: 10
+            }]
+        };
+
+        chart.setOption(option);
+        setupDateSlider(data);
+    }
+
+    function setupDateSlider(data) {
+        const dateSlider = document.getElementById('dateSlider');
+        dateSlider.max = data.length - 1;
+        
+        dateSlider.addEventListener('input', (event) => {
+            const index = event.target.value;
+            const filteredData = data.slice(0, parseInt(index) + 1);
+            const chart = echarts.init(document.getElementById('main'));
+            const option = {
+                series: [{
+                    data: filteredData.map(d => [d.unitsSold, d.revenue]),
+                }]
+            };
+            chart.setOption(option);
+        });
+    }
+
+    fetchData();
+</script>
+
+</body>
+</html>
+```"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot showing the Units Sold of Phoenix. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Units Sold Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const unitsSold = [];
+                const dates = [];
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns[1] === 'Phoenix') {
+                        dates.push(columns[0]);
+                        unitsSold.push(parseInt(columns[2], 10));
+                    }
+                });
+
+                const chartDom = document.getElementById('main');
+                const myChart = echarts.init(chartDom);
+                const option = {
+                    title: {
+                        text: 'Units Sold in Phoenix'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: dates,
+                        axisLabel: {
+                            interval: 0,
+                            rotate: 45
+                        }
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        name: 'Units Sold',
+                        type: 'line',
+                        smooth: true,
+                        data: unitsSold,
+                        markPoint: {
+                            data: [
+                                { type: 'max', name: 'Max Units Sold' },
+                                { type: 'min', name: 'Min Units Sold' }
+                            ]
+                        },
+                        animationDuration: 2000,
+                        animationEasing: 'cubicInOut'
+                    }]
+                };
+                
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Units Sold of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Multi-series Line Chart with ECharts</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        async function fetchData(url) {
+            const response = await fetch(url);
+            const data = await response.text();
+            const rows = data.split('\n').slice(1);
+            const salesData = rows.map(row => {
+                const cols = row.split(',');
+                return {
+                    date: cols[0],
+                    storeLocation: cols[1],
+                    unitsSold: parseFloat(cols[2]),
+                    revenue: parseFloat(cols[3]),
+                    profit: parseFloat(cols[4]),
+                    operatingHours: parseFloat(cols[5]),
+                    customerVisits: parseFloat(cols[6]),
+                    productCategory: cols[7]
+                };
+            });
+            return salesData;
+        }
+
+        function processData(data) {
+            const seriesData = {};
+            const categories = [...new Set(data.map(item => item.storeLocation))];
+
+            categories.forEach(category => {
+                seriesData[category] = [];
+            });
+
+            data.forEach(item => {
+                seriesData[item.storeLocation].push({
+                    name: item.date,
+                    value: item.unitsSold
+                });
+            });
+
+            return categories.map(category => ({
+                name: category,
+                type: 'line',
+                data: seriesData[category].map(item => item.value),
+                smooth: true
+            }));
+        }
+
+        async function initChart() {
+            const data = await fetchData('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv');
+            const categories = [...new Set(data.map(item => item.storeLocation))];
+            const series = processData(data);
+
+            const chart = echarts.init(document.getElementById('main'));
+
+            const option = {
+                title: {
+                    text: 'Units Sold by Store Location',
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross',
+                        label: {
+                            backgroundColor: '#6a7985'
+                        }
+                    }
+                },
+                legend: {
+                    data: categories,
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: [...new Set(data.map(item => item.date))],
+                },
+                yAxis: {
+                    type: 'value',
+                },
+                series: series,
+            };
+
+            chart.setOption(option);
+
+            chart.on('mouseover', function (params) {
+                if (params.seriesType === 'line') {
+                    const highlightedSeries = params.seriesName;
+                    chart.dispatchAction({
+                        type: 'highlight',
+                        seriesName: highlightedSeries,
+                    });
+                }
+            });
+
+            chart.on('mouseout', function (params) {
+                if (params.seriesType === 'line') {
+                    const highlightedSeries = params.seriesName;
+                    chart.dispatchAction({
+                        type: 'downplay',
+                        seriesName: highlightedSeries,
+                    });
+                }
+            });
+        }
+
+        initChart();
+    </script>
+</body>
+</html>
+```"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Bar Chart that visualizes the Units Sold for each Store Location in 2021-01-01. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Bar Chart Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const filteredData = rows.filter(row => row).map(row => {
+                    const columns = row.split(',');
+                    return {
+                        Date: columns[0],
+                        StoreLocation: columns[1],
+                        UnitsSold: parseInt(columns[2]),
+                        Revenue: parseFloat(columns[3]),
+                        Profit: parseFloat(columns[4]),
+                        OperatingHours: parseFloat(columns[5]),
+                        CustomerVisits: parseInt(columns[6]),
+                        ProductCategory: columns[7],
+                    };
+                }).filter(item => item.Date === '2021-01-01');
+
+                const storeLocations = [...new Set(filteredData.map(item => item.StoreLocation))];
+                const unitsSold = storeLocations.map(location => {
+                    const totalUnits = filteredData
+                        .filter(item => item.StoreLocation === location)
+                        .reduce((sum, item) => sum + item.UnitsSold, 0);
+                    return totalUnits;
+                });
+
+                const myChart = echarts.init(document.getElementById('main'));
+                const options = {
+                    title: {
+                        text: 'Units Sold for Each Store Location on 2021-01-01',
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        type: 'category',
+                        data: storeLocations,
+                    },
+                    yAxis: {
+                        type: 'value',
+                    },
+                    series: [{
+                        name: 'Units Sold',
+                        type: 'bar',
+                        data: unitsSold,
+                    }],
+                    dataZoom: [{
+                        type: 'slider',
+                        xAxisIndex: [0],
+                        start: 0,
+                        end: 100,
+                    }, {
+                        type: 'inside',
+                        xAxisIndex: [0],
+                    }],
+                    toolbox: {
+                        feature: {
+                            saveAsImage: {},
+                        },
+                    },
+                };
+                myChart.setOption(options);
+            });
+    </script>
+</body>
+</html>
+```"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Bar Chart that visualizes the Units Sold for each Store Location in 2021-01-01. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Bar Chart - Units Sold</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.1.2/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""main""></div>
+    <script>
+        async function fetchData() {
+            const response = await fetch('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv');
+            const data = await response.text();
+            return parseCSV(data);
+        }
+
+        function parseCSV(data) {
+            const lines = data.split('\n').slice(1);
+            const result = [];
+            lines.forEach(line => {
+                const [date, storeLocation, unitsSold, revenue, profit, operatingHours, customerVisits, productCategory] = line.split(',');
+                if (date === '2021-01-01') {
+                    result.push({ storeLocation, unitsSold: parseInt(unitsSold) });
+                }
+            });
+            return result;
+        }
+
+        function renderChart(data) {
+            const chart = echarts.init(document.getElementById('main'));
+            const storeLocations = data.map(item => item.storeLocation);
+            const unitsSold = data.map(item => item.unitsSold);
+
+            const option = {
+                title: {
+                    text: 'Units Sold in Store Locations on 2021-01-01'
+                },
+                tooltip: {},
+                xAxis: {
+                    type: 'category',
+                    data: storeLocations,
+                    axisLabel: {
+                        interval: 0,
+                        rotate: 30
+                    }
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [{
+                    name: 'Units Sold',
+                    type: 'bar',
+                    data: unitsSold,
+                    draggable: true
+                }],
+                animation: false
+            };
+
+            chart.setOption(option);
+
+            chart.on('finished', function() {
+                chart.dispatchAction({
+                    type: 'dataZoom',
+                    start: 0,
+                    end: 100
+                });
+            });
+
+            chart.on('dataZoom', function() {
+                const currentData = chart.getOption().series[0].data.map((d, i) => ({ storeLocation: storeLocations[i], unitsSold: d }));
+                const sortedData = currentData.sort((a, b) => b.unitsSold - a.unitsSold);
+                const updatedStoreLocations = sortedData.map(d => d.storeLocation);
+                const updatedUnitsSold = sortedData.map(d => d.unitsSold);
+                chart.setOption({
+                    xAxis: {
+                        data: updatedStoreLocations
+                    },
+                    series: [{
+                        data: updatedUnitsSold
+                    }]
+                });
+            });
+        }
+
+        fetchData().then(data => renderChart(data));
+    </script>
+</body>
+</html>
+```"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Bar Chart that visualizes the Units Sold for each Store Location in 2021-01-01. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Units Sold.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Store Units Sold Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <select id=""sortOrder"" onchange=""updateChart()"">
+        <option value=""descending"">Descending</option>
+        <option value=""ascending"">Ascending</option>
+    </select>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+
+    <script>
+        let chartData = [];
+        let sortedData = [];
+
+        async function fetchData() {
+            const response = await fetch('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv');
+            const text = await response.text();
+            const rows = text.split('\n').slice(1);
+            rows.forEach(row => {
+                const columns = row.split(',');
+                const date = new Date(columns[0]);
+                if (columns[1] && date.toISOString().slice(0, 10) === '2021-01-01') {
+                    chartData.push({
+                        storeLocation: columns[1],
+                        unitsSold: parseInt(columns[2])
+                    });
+                }
+            });
+            updateChart();
+        }
+
+        function updateChart() {
+            const sortOrder = document.getElementById('sortOrder').value;
+            sortedData = chartData.sort((a, b) => sortOrder === 'ascending' ? a.unitsSold - b.unitsSold : b.unitsSold - a.unitsSold);
+            renderChart();
+        }
+
+        function renderChart() {
+            const myChart = echarts.init(document.getElementById('main'));
+            const option = {
+                title: { text: 'Units Sold for Each Store Location on 2021-01-01' },
+                tooltip: {},
+                xAxis: {
+                    type: 'category',
+                    data: sortedData.map(item => item.storeLocation),
+                    axisLabel: { rotate: 30 }
+                },
+                yAxis: { type: 'value' },
+                series: [{
+                    type: 'bar',
+                    data: sortedData.map(item => item.unitsSold),
+                    animationDuration: 1000,
+                }]
+            };
+            myChart.setOption(option);
+        }
+
+        fetchData();
+    </script>
+</body>
+</html>
+```"

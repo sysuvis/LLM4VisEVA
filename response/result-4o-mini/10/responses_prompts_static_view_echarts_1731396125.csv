@@ -1,0 +1,999 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Scatterplot that visualizes the relationship between Visitors and Page Views.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Visitors vs Page Views</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%;height:400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+        .then(response => response.text())
+        .then(data => {
+            const lines = data.split('\n').slice(1);
+            const visitors = [];
+            const pageViews = [];
+
+            lines.forEach(line => {
+                const columns = line.split(',');
+                if (columns.length > 0) {
+                    const visitorsValue = parseInt(columns[2], 10);
+                    const pageViewsValue = parseInt(columns[3], 10);
+                    if (!isNaN(visitorsValue) && !isNaN(pageViewsValue)) {
+                        visitors.push(visitorsValue);
+                        pageViews.push(pageViewsValue);
+                    }
+                }
+            });
+
+            const chartDom = document.getElementById('main');
+            const myChart = echarts.init(chartDom);
+            const option = {
+                title: {
+                    text: 'Scatterplot of Visitors vs Page Views'
+                },
+                tooltip: {},
+                xAxis: {
+                    name: 'Visitors',
+                    type: 'value'
+                },
+                yAxis: {
+                    name: 'Page Views',
+                    type: 'value'
+                },
+                series: [{
+                    symbolSize: 10,
+                    data: visitors.map((v, i) => [v, pageViews[i]]),
+                    type: 'scatter'
+                }]
+            };
+            myChart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
+2,line chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Line Chart that visualizes the trend of Visitors over the Week for each Traffic Source.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Visitors Trend by Traffic Source</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const visitorsData = {};
+                
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    const week = columns[0];
+                    const trafficSource = columns[1];
+                    const visitors = parseInt(columns[2]);
+
+                    if (!visitorsData[trafficSource]) {
+                        visitorsData[trafficSource] = [];
+                    }
+
+                    visitorsData[trafficSource].push({ week, visitors });
+                });
+
+                const series = [];
+                const weeks = Array.from(new Set(rows.map(row => row.split(',')[0])));
+
+                for (const [trafficSource, values] of Object.entries(visitorsData)) {
+                    const dataPoints = weeks.map(week => {
+                        const point = values.find(v => v.week === week);
+                        return point ? point.visitors : 0;
+                    });
+                    series.push({
+                        name: trafficSource,
+                        type: 'line',
+                        data: dataPoints
+                    });
+                }
+
+                const option = {
+                    title: {
+                        text: 'Visitors Trend by Traffic Source'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: Object.keys(visitorsData)
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: weeks
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: series
+                };
+
+                const chart = echarts.init(document.getElementById('main'));
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+3,bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Bar Chart that visualizes the Visitors for each Traffic Source in 2021-W01.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Website Traffic Visitors Bar Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 600px;height:400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const visitorsData = {};
+                
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    const week = columns[0].trim();
+                    const trafficSource = columns[1].trim();
+                    const visitors = parseInt(columns[2].trim(), 10);
+                    
+                    if (week === '2021-W01') {
+                        if (!visitorsData[trafficSource]) {
+                            visitorsData[trafficSource] = 0;
+                        }
+                        visitorsData[trafficSource] += visitors;
+                    }
+                });
+
+                const trafficSources = Object.keys(visitorsData);
+                const visitors = Object.values(visitorsData);
+
+                const chartDom = document.getElementById('main');
+                const myChart = echarts.init(chartDom);
+                const option = {
+                    title: {
+                        text: 'Visitors by Traffic Source in 2021-W01'
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        type: 'category',
+                        data: trafficSources
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        name: 'Visitors',
+                        type: 'bar',
+                        data: visitors
+                    }]
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+4,pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Pie Chart that visualizes the proportion of Visitors contributed by each Traffic Source in 2021-W01.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Traffic Source Pie Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 600px; height: 400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n');
+                const headers = lines[0].split(',');
+                const trafficSourceIndex = headers.indexOf('Traffic Source');
+                const visitorsIndex = headers.indexOf('Visitors');
+                const weekIndex = headers.indexOf('Week');
+                
+                const trafficData = {};
+                
+                lines.slice(1).forEach(line => {
+                    const cols = line.split(',');
+                    if (cols[weekIndex] === '2021-W01') {
+                        const source = cols[trafficSourceIndex];
+                        const visitors = parseInt(cols[visitorsIndex], 10);
+                        if (trafficData[source]) {
+                            trafficData[source] += visitors;
+                        } else {
+                            trafficData[source] = visitors;
+                        }
+                    }
+                });
+
+                const pieData = Object.entries(trafficData).map(([key, value]) => ({ name: key, value }));
+
+                const chartDom = document.getElementById('main');
+                const myChart = echarts.init(chartDom);
+                
+                const option = {
+                    title: {
+                        text: 'Visitors by Traffic Source (2021-W01)',
+                        subtext: 'Source: Website Traffic Data',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    series: [
+                        {
+                            name: 'Traffic Source',
+                            type: 'pie',
+                            radius: '50%',
+                            data: pieData,
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            },
+                            itemStyle: {
+                                borderColor: '#fff',
+                                borderWidth: 1
+                            },
+                        }
+                    ]
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+5,donut chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Donut Chart that visualizes the distribution of Visitors among Traffic Source in 2021-W01.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Donut Chart - Visitors by Traffic Source</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 600px;height:400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const visitorsData = {};
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns.length > 1) {
+                        const week = columns[0];
+                        const trafficSource = columns[1];
+                        const visitors = parseInt(columns[2]);
+
+                        if (week === '2021-W01') {
+                            if (!visitorsData[trafficSource]) {
+                                visitorsData[trafficSource] = 0;
+                            }
+                            visitorsData[trafficSource] += visitors;
+                        }
+                    }
+                });
+
+                const seriesData = Object.entries(visitorsData).map(([source, visitors]) => ({
+                    name: source,
+                    value: visitors
+                }));
+
+                const myChart = echarts.init(document.getElementById('main'));
+                const option = {
+                    title: {
+                        text: 'Visitors by Traffic Source (2021-W01)',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left'
+                    },
+                    series: [
+                        {
+                            name: 'Traffic Source',
+                            type: 'pie',
+                            radius: ['40%', '70%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                show: true,
+                                position: 'outside'
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    fontSize: '18',
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            labelLine: {
+                                show: true
+                            },
+                            data: seriesData
+                        }
+                    ]
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+6,coxcomb chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Coxcomb Chart(polar area chart) to compare the Visitors of different Traffic Source in 2021-W01.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coxcomb Chart Example</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 600px; height: 400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const visitorsData = rows
+                    .filter(row => row.includes('2021-W01'))
+                    .map(row => {
+                        const columns = row.split(',');
+                        return {
+                            trafficSource: columns[1],
+                            visitors: +columns[2]
+                        };
+                    });
+
+                const trafficSources = visitorsData.map(item => item.trafficSource);
+                const visitors = visitorsData.map(item => item.visitors);
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const option = {
+                    title: {
+                        text: 'Visitors by Traffic Source (2021-W01)',
+                        left: 'center'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        right: '10%',
+                        data: trafficSources
+                    },
+                    series: [{
+                        name: 'Visitors',
+                        type: 'pie',
+                        radius: ['30%', '70%'],
+                        center: ['50%', '50%'],
+                        roseType: 'area',
+                        data: trafficSources.map((source, index) => ({
+                            value: visitors[index],
+                            name: source
+                        })),
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }]
+                };
+
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+7,radar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Radar Chart to compare the Visitors of different Traffic Source in 2021-W01.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Radar Chart - Visitors by Traffic Source</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 600px; height: 400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1);
+                const visitorsBySource = {};
+
+                lines.forEach(line => {
+                    const entries = line.split(',');
+                    const week = entries[0].trim();
+                    const source = entries[1].trim();
+                    const visitors = parseInt(entries[2].trim(), 10);
+
+                    if (week === '2021-W01') {
+                        if (!visitorsBySource[source]) {
+                            visitorsBySource[source] = 0;
+                        }
+                        visitorsBySource[source] += visitors;
+                    }
+                });
+
+                const sources = Object.keys(visitorsBySource);
+                const visitors = sources.map(source => visitorsBySource[source]);
+
+                const option = {
+                    title: {
+                        text: 'Visitors by Traffic Source (2021-W01)'
+                    },
+                    tooltip: {},
+                    legend: {
+                        data: ['Visitors']
+                    },
+                    radar: {
+                        indicator: sources.map(source => ({ name: source, max: Math.max(...visitors) + 100 }))
+                    },
+                    series: [{
+                        name: 'Visitors',
+                        type: 'radar',
+                        data: [{
+                            value: visitors,
+                            name: 'Visitors'
+                        }]
+                    }]
+                };
+
+                const myChart = echarts.init(document.getElementById('main'));
+                myChart.setOption(option);
+            })
+            .catch(error => console.error('Error fetching the data: ', error));
+    </script>
+</body>
+</html>
+```"
+8,streamgraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Streamgraph that visualizes the changes of Visitors over the Week for each Traffic Source.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Streamgraph of Website Traffic</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const weeks = [];
+                const trafficSources = new Set();
+                const visitorsData = {};
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    const week = columns[0].trim();
+                    const trafficSource = columns[1].trim();
+                    const visitors = parseInt(columns[2].trim(), 10);
+
+                    if (!weeks.includes(week)) {
+                        weeks.push(week);
+                    }
+                    trafficSources.add(trafficSource);
+
+                    if (!visitorsData[trafficSource]) {
+                        visitorsData[trafficSource] = Array(weeks.length).fill(0);
+                    }
+
+                    const weekIndex = weeks.indexOf(week);
+                    visitorsData[trafficSource][weekIndex] += visitors;
+                });
+
+                const seriesData = [];
+                trafficSources.forEach(source => {
+                    seriesData.push({
+                        name: source,
+                        type: 'line',
+                        smooth: true,
+                        data: visitorsData[source]
+                    });
+                });
+
+                const option = {
+                    title: {
+                        text: 'Website Visitors by Traffic Source',
+                        subtext: 'Streamgraph visualization'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: Array.from(trafficSources)
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: weeks,
+                        boundaryGap: false
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: seriesData.map(source => ({
+                        name: source.name,
+                        type: 'line',
+                        areaStyle: {},
+                        data: source.data
+                    }))
+                };
+
+                const chart = echarts.init(document.getElementById('main'));
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+9,slopegraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Slopegraph to compare the Visitors between 2021-W04 and 2021-W05 for each Traffic Source.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Visitors Slopegraph</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%;height:400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1);
+            const visitorsData = {};
+
+            rows.forEach(row => {
+                const columns = row.split(',');
+                const week = columns[0];
+                const trafficSource = columns[1];
+                const visitors = parseInt(columns[2], 10);
+
+                if (week === '2021-W04' || week === '2021-W05') {
+                    if (!visitorsData[trafficSource]) {
+                        visitorsData[trafficSource] = { '2021-W04': 0, '2021-W05': 0 };
+                    }
+                    visitorsData[trafficSource][week] = visitors;
+                }
+            });
+
+            const trafficSources = Object.keys(visitorsData);
+            const seriesData = trafficSources.map(source => {
+                return [
+                    { name: source, value: visitorsData[source]['2021-W04'] },
+                    { name: source, value: visitorsData[source]['2021-W05'] }
+                ];
+            }).flat();
+
+            const option = {
+                title: {
+                    text: 'Visitors Slopegraph (2021-W04 vs 2021-W05)',
+                    left: 'center'
+                },
+                tooltip: {},
+                xAxis: {
+                    type: 'value',
+                    position: 'top',
+                    splitLine: { show: false }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: trafficSources,
+                    inverse: true,
+                },
+                series: [{
+                    name: 'Visitors',
+                    type: 'line',
+                    data: seriesData,
+                    smooth: true,
+                    lineStyle: {
+                        width: 2
+                    },
+                    symbol: 'circle',
+                    symbolSize: 8,
+                }]
+            };
+
+            const chart = echarts.init(document.getElementById('main'));
+            chart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
+10,heatmap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Heatmap that visualizes the Visitors across Traffic Source and Weeks.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Traffic Source Heatmap</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""heatmap"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1);
+                const weeks = [];
+                const trafficSources = [];
+                const visitorData = {};
+
+                lines.forEach(line => {
+                    const [week, trafficSource, visitors] = line.split(',');
+                    if (week && trafficSource && visitors) {
+                        if (!weeks.includes(week)) weeks.push(week);
+                        if (!trafficSources.includes(trafficSource)) trafficSources.push(trafficSource);
+                        visitorData[`${week}-${trafficSource}`] = parseInt(visitors) || 0;
+                    }
+                });
+
+                const heatmapData = [];
+                trafficSources.forEach((source, i) => {
+                    weeks.forEach((week, j) => {
+                        heatmapData.push([j, i, visitorData[`${week}-${source}`] || 0]);
+                    });
+                });
+
+                const myChart = echarts.init(document.getElementById('heatmap'));
+
+                const option = {
+                    tooltip: {
+                        position: 'top'
+                    },
+                    grid: {
+                        height: '50%',
+                        width: '70%',
+                        top: '10%'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: weeks,
+                        silent: true,
+                        splitLine: {
+                            show: false
+                        }
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: trafficSources,
+                        silent: true,
+                        splitLine: {
+                            show: false
+                        }
+                    },
+                    visualMap: {
+                        min: 0,
+                        max: Math.max(...heatmapData.map(item => item[2])),
+                        calculable: true,
+                        orient: 'vertical',
+                        left: 'right',
+                        top: 'middle',
+                        inRange: {
+                            color: ['#ffffff', '#ff0000']
+                        }
+                    },
+                    series: [{
+                        name: 'Visitors',
+                        type: 'heatmap',
+                        data: heatmapData,
+                        label: {
+                            show: true
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                borderColor: '#333',
+                                borderWidth: 1
+                            }
+                        }
+                    }]
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+11,bar chart+stacked bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Stacked Bar Chart that visualizes the given data table.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Stacked Bar Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const weeks = [];
+                const sources = {};
+                const seriesData = {};
+
+                rows.forEach(row => {
+                    const cols = row.split(',');
+                    const week = cols[0];
+                    const source = cols[1];
+                    const visitors = parseFloat(cols[2]);
+
+                    if (!weeks.includes(week)) {
+                        weeks.push(week);
+                    }
+
+                    if (!sources[source]) {
+                        sources[source] = true;
+                        seriesData[source] = new Array(weeks.length).fill(0);
+                    }
+                    
+                    const index = weeks.indexOf(week);
+                    seriesData[source][index] += visitors;
+                });
+
+                const legend = Object.keys(seriesData);
+                const series = legend.map(source => ({
+                    name: source,
+                    type: 'bar',
+                    stack: 'total',
+                    data: seriesData[source]
+                }));
+
+                const option = {
+                    title: {
+                        text: 'Website Traffic by Source',
+                        subtext: 'Stacked Bar Chart',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                    },
+                    legend: {
+                        data: legend,
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: weeks,
+                    },
+                    yAxis: {
+                        type: 'value',
+                    },
+                    series: series,
+                };
+
+                const chart = echarts.init(document.getElementById('main'));
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+12,bar chart+horizontal bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Horizontal Bar Chart that visualizes the Visitors for each Traffic Source in 2021-W01.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Traffic Source Visitors - ECharts</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const visitorsData = {};
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    const week = columns[0].trim();
+                    const trafficSource = columns[1].trim();
+                    const visitors = parseInt(columns[2].trim());
+
+                    if (week === '2021-W01') {
+                        if (!visitorsData[trafficSource]) {
+                            visitorsData[trafficSource] = 0;
+                        }
+                        visitorsData[trafficSource] += visitors;
+                    }
+                });
+
+                const trafficSources = Object.keys(visitorsData);
+                const visitorsCount = trafficSources.map(source => visitorsData[source]);
+
+                const chart = echarts.init(document.getElementById('main'));
+                const option = {
+                    title: {
+                        text: 'Visitors for Traffic Sources in 2021-W01',
+                        subtext: 'Data Source: Website Traffic'
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        type: 'value'
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: trafficSources
+                    },
+                    series: [{
+                        name: 'Visitors',
+                        type: 'bar',
+                        data: visitorsCount,
+                        label: {
+                            show: true,
+                            position: 'insideRight'
+                        }
+                    }]
+                };
+
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"

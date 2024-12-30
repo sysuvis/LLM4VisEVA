@@ -1,0 +1,927 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Scatterplot that visualizes the relationship between Adoption Rate and Investment.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const adoptionRates = [];
+                const investments = [];
+                
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns.length > 1) {
+                        const adoptionRate = parseFloat(columns[2]);
+                        const investment = parseFloat(columns[3]);
+                        if (!isNaN(adoptionRate) && !isNaN(investment)) {
+                            adoptionRates.push(adoptionRate);
+                            investments.push(investment);
+                        }
+                    }
+                });
+
+                const chart = echarts.init(document.getElementById('main'));
+                const option = {
+                    title: {
+                        text: 'Scatterplot of Adoption Rate vs Investment',
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        name: 'Investment',
+                        type: 'value'
+                    },
+                    yAxis: {
+                        name: 'Adoption Rate',
+                        type: 'value'
+                    },
+                    series: [{
+                        symbolSize: 10,
+                        data: adoptionRates.map((adoptionRate, index) => [investments[index], adoptionRate]),
+                        type: 'scatter'
+                    }]
+                };
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+2,line chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Line Chart that visualizes the trend of Adoption Rate over the Year for each Technology Type.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Rate</title>
+    <!-- ECharts CDN -->
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.1.3/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1);
+                const adoptionData = {};
+                
+                lines.forEach(line => {
+                    const [year, techType, adoptionRate] = line.split(',');
+                    if (!adoptionData[techType]) {
+                        adoptionData[techType] = [];
+                    }
+                    adoptionData[techType].push({ year: year.trim(), adoptionRate: parseFloat(adoptionRate.trim()) });
+                });
+
+                const years = [...new Set(lines.map(line => line.split(',')[0].trim()))];
+                const seriesData = Object.keys(adoptionData).map(techType => ({
+                    name: techType,
+                    type: 'line',
+                    data: years.map(year => {
+                        const entry = adoptionData[techType].find(e => e.year === year);
+                        return entry ? entry.adoptionRate : null;
+                    })
+                }));
+
+                const option = {
+                    title: {
+                        text: 'Technology Adoption Rate Over the Years'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        data: Object.keys(adoptionData)
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: years
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: 'Adoption Rate (%)'
+                    },
+                    series: seriesData
+                };
+
+                const chart = echarts.init(document.getElementById('main'));
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+3,bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Bar Chart that visualizes the Adoption Rate for each Technology Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Rate in 2020</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 600px;height:400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const adoptionData = [];
+                const technologyTypes = [];
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns[0] === '2020') {
+                        technologyTypes.push(columns[1]);
+                        adoptionData.push(parseFloat(columns[2]));
+                    }
+                });
+
+                const option = {
+                    title: {
+                        text: 'Technology Adoption Rate in 2020'
+                    },
+                    tooltip: {},
+                    xAxis: {
+                        type: 'category',
+                        data: technologyTypes
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        name: 'Adoption Rate',
+                        type: 'bar',
+                        data: adoptionData
+                    }]
+                };
+
+                const myChart = echarts.init(document.getElementById('main'));
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+4,pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Pie Chart that visualizes the proportion of Adoption Rate contributed by each Technology Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Rate Pie Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 600px;height:400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const adoptionData = {};
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    const year = columns[0].trim();
+                    const techType = columns[1].trim();
+                    const adoptionRate = parseFloat(columns[2].trim());
+
+                    if (year === '2020') {
+                        if (!adoptionData[techType]) {
+                            adoptionData[techType] = 0;
+                        }
+                        adoptionData[techType] += adoptionRate;
+                    }
+                });
+
+                const chartData = Object.entries(adoptionData).map(([name, value]) => ({ name, value }));
+
+                const myChart = echarts.init(document.getElementById('main'));
+                const option = {
+                    title: {
+                        text: 'Technology Adoption Rate in 2020',
+                        subtext: 'Proportion by Technology Type',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left'
+                    },
+                    series: [
+                        {
+                            name: 'Adoption Rate',
+                            type: 'pie',
+                            radius: '50%',
+                            data: chartData,
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+5,donut chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Donut Chart that visualizes the distribution of Adoption Rate among Technology Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Donut Chart - Technology Adoption 2020</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.3/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""donutChart"" style=""width: 600px; height: 400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const adoptionData = {};
+                
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    const year = columns[0].trim();
+                    const technologyType = columns[1].trim();
+                    const adoptionRate = parseFloat(columns[2].trim());
+                    
+                    if (year === '2020') {
+                        if (!adoptionData[technologyType]) {
+                            adoptionData[technologyType] = 0;
+                        }
+                        adoptionData[technologyType] += adoptionRate;
+                    }
+                });
+
+                const seriesData = Object.entries(adoptionData).map(([name, value]) => ({ name, value }));
+                
+                const option = {
+                    title: {
+                        text: 'Adoption Rate by Technology Type in 2020',
+                        subtext: 'Source: Technology Adoption Dataset',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'item'
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            radius: ['40%', '70%'],
+                            avoidLabelOverlap: false,
+                            label: {
+                                show: true,
+                                position: 'outside'
+                            },
+                            emphasis: {
+                                label: {
+                                    show: true,
+                                    fontSize: '18',
+                                    fontWeight: 'bold'
+                                }
+                            },
+                            labelLine: {
+                                show: true
+                            },
+                            data: seriesData,
+                            roseType: 'angle'
+                        }
+                    ]
+                };
+
+                const donutChart = echarts.init(document.getElementById('donutChart'));
+                donutChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+6,coxcomb chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Coxcomb Chart(polar area chart) to compare the Adoption Rate of different Technology Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Coxcomb Chart - Technology Adoption 2020</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.3/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 800px;height:400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const technologyData = rows.map(row => {
+                    const [year, technologyType, adoptionRate] = row.split(',');
+                    return { year, technologyType, adoptionRate: parseFloat(adoptionRate) };
+                });
+
+                const filteredData = technologyData.filter(item => item.year.trim() === '2020');
+                const technologyTypes = filteredData.map(item => item.technologyType);
+                const adoptionRates = filteredData.map(item => item.adoptionRate);
+
+                const chart = echarts.init(document.getElementById('main'));
+                const option = {
+                    title: {
+                        text: 'Technology Adoption Rates in 2020',
+                        subtext: 'Coxcomb Chart',
+                        left: 'center',
+                    },
+                    polar: {},
+                    angleAxis: {
+                        type: 'category',
+                        data: technologyTypes,
+                    },
+                    radiusAxis: {},
+                    series: [{
+                        type: 'bar',
+                        data: adoptionRates,
+                        coordinateSystem: 'polar',
+                        name: 'Adoption Rate',
+                        itemStyle: {
+                            color: '#ff7f0e',
+                        },
+                        label: {
+                            show: true,
+                            position: 'inside'
+                        }
+                    }],
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function(params) {
+                            return `${params.name}: ${params.value}%`;
+                        }
+                    }
+                };
+
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+7,radar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Radar Chart to compare the Adoption Rate of different Technology Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Radar Chart - Technology Adoption</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.3/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""radarChart"" style=""width: 600px; height: 400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const technologyData = {};
+
+                rows.forEach(row => {
+                    const cols = row.split(',');
+                    if (cols[0] === '2020') {
+                        const techType = cols[1];
+                        const adoptionRate = parseFloat(cols[2]);
+                        technologyData[techType] = adoptionRate;
+                    }
+                });
+
+                const techTypes = Object.keys(technologyData);
+                const adoptionRates = Object.values(technologyData);
+
+                const option = {
+                    title: {
+                        text: 'Adoption Rate of Technology Types in 2020'
+                    },
+                    tooltip: {},
+                    radar: {
+                        indicator: techTypes.map(type => ({ name: type, max: 100 })),
+                    },
+                    series: [{
+                        name: 'Adoption Rate',
+                        type: 'radar',
+                        data: [{
+                            value: adoptionRates,
+                            name: '2020'
+                        }]
+                    }]
+                };
+
+                const chart = echarts.init(document.getElementById('radarChart'));
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+8,streamgraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Streamgraph that visualizes the changes of Adoption Rate over the Year for each Technology Type.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Streamgraph of Technology Adoption Rate</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.0/echarts.min.js""></script>
+    <style>
+        #main {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""main""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1);
+                const years = new Set();
+                const techData = {};
+
+                lines.forEach(line => {
+                    const [year, techType, adoptionRate] = line.split(',');
+                    if (year && techType && adoptionRate) {
+                        years.add(year);
+                        if (!techData[techType]) {
+                            techData[techType] = [];
+                        }
+                        techData[techType].push({ year, adoptionRate: parseFloat(adoptionRate) });
+                    }
+                });
+
+                const yearsArray = Array.from(years).sort();
+                const series = Object.keys(techData).map(techType => {
+                    return {
+                        name: techType,
+                        type: 'line',
+                        stack: 'Adoption',
+                        areaStyle: {},
+                        data: yearsArray.map(year => {
+                            const techYearData = techData[techType].find(item => item.year === year);
+                            return techYearData ? techYearData.adoptionRate : 0;
+                        })
+                    };
+                });
+
+                const chartDom = document.getElementById('main');
+                const myChart = echarts.init(chartDom);
+                const option = {
+                    title: {
+                        text: 'Technology Adoption Rate Over Years',
+                    },
+                    tooltip: {
+                        trigger: 'axis',
+                    },
+                    legend: {
+                        data: Object.keys(techData),
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: yearsArray,
+                    },
+                    yAxis: {
+                        type: 'value',
+                    },
+                    series: series,
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+9,slopegraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Slopegraph to compare the Adoption Rate between 2019 and 2020 for each Technology Type.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Slopegraph - Adoption Rate</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""slopegraph"" style=""width: 800px; height: 600px;""></div>
+
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n').slice(1);
+                const adoptionData = {};
+
+                lines.forEach(line => {
+                    const [year, technologyType, adoptionRate] = line.split(',');
+                    if (year === '2019' || year === '2020') {
+                        if (!adoptionData[technologyType]) {
+                            adoptionData[technologyType] = {};
+                        }
+                        adoptionData[technologyType][year] = parseFloat(adoptionRate);
+                    }
+                });
+
+                const slopeData = Object.keys(adoptionData).map(tech => {
+                    return {
+                        name: tech,
+                        '2019': adoptionData[tech]['2019'] || 0,
+                        '2020': adoptionData[tech]['2020'] || 0
+                    };
+                });
+
+                const option = {
+                    title: {
+                        text: 'Technology Adoption Rate Comparison (2019 vs 2020)',
+                        left: 'center'
+                    },
+                    xAxis: {
+                        type: 'value',
+                        min: 0,
+                        max: 100,
+                        name: 'Adoption Rate (%)',
+                        position: 'top'
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: slopeData.map(item => item.name),
+                        inverse: true
+                    },
+                    series: [{
+                        type: 'line',
+                        data: slopeData.map(item => [item['2019'], item['2020']]),
+                        symbol: 'circle',
+                        lineStyle: {
+                            width: 2
+                        },
+                        itemStyle: {
+                            color: '#4caf50'
+                        }
+                    }],
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: function (params) {
+                            return `${params.name}<br />2019: ${params.value[0]}%<br />2020: ${params.value[1]}%`;
+                        }
+                    }
+                };
+
+                const chart = echarts.init(document.getElementById('slopegraph'));
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+10,heatmap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Heatmap that visualizes the Adoption Rate across Technology Type and Years.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Heatmap</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/echarts/5.3.3/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%; height: 400px;""></div>
+    <script>
+        const url = 'https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv';
+        
+        fetch(url)
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const years = Array.from(new Set(rows.map(row => row[0])));
+                const techTypes = Array.from(new Set(rows.map(row => row[1])));
+                const adoptionRates = rows.map(row => [row[0], row[1], parseFloat(row[2])]);
+
+                const heatmapData = adoptionRates.map(rate => {
+                    const yearIndex = years.indexOf(rate[0]);
+                    const techIndex = techTypes.indexOf(rate[1]);
+                    return [yearIndex, techIndex, rate[2]];
+                });
+
+                const option = {
+                    tooltip: {
+                        position: 'bottom'
+                    },
+                    grid: {
+                        height: '50%',
+                        width: '70%',
+                        left: '10%',
+                        top: '10%'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        name: 'Year',
+                        boundaryGap: false,
+                        data: years
+                    },
+                    yAxis: {
+                        type: 'category',
+                        name: 'Technology Type',
+                        data: techTypes
+                    },
+                    visualMap: {
+                        min: 0,
+                        max: 100,
+                        calculable: true,
+                        orient: 'horizontal',
+                        left: 'center',
+                        top: 'top',
+                        inRange: {
+                            color: ['blue', 'green']
+                        }
+                    },
+                    series: [{
+                        name: 'Adoption Rate',
+                        type: 'heatmap',
+                        data: heatmapData,
+                        label: {
+                            show: true
+                        },
+                        emphasis: {
+                            itemStyle: {
+                                borderColor: '#333',
+                                borderWidth: 1
+                            }
+                        }
+                    }]
+                };
+
+                const chart = echarts.init(document.getElementById('main'));
+                chart.setOption(option);
+            })
+            .catch(error => console.error('Error fetching the data:', error));
+    </script>
+</body>
+</html>
+```"
+11,bar chart+stacked bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Stacked Bar Chart that visualizes the given data table.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Stacked Bar Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 100%;height:400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const lines = data.split('\n');
+                const categories = [];
+                const seriesData = {};
+
+                lines.forEach((line, index) => {
+                    if (index === 0) return; // skip header
+                    const [year, techType, adoptionRate] = line.split(',');
+                    if (!categories.includes(year)) categories.push(year);
+                    if (!seriesData[techType]) seriesData[techType] = new Array(categories.length).fill(0);
+                    const yearIndex = categories.indexOf(year);
+                    seriesData[techType][yearIndex] += parseFloat(adoptionRate);
+                });
+
+                const series = Object.keys(seriesData).map(techType => ({
+                    name: techType,
+                    type: 'bar',
+                    stack: 'total',
+                    data: seriesData[techType],
+                }));
+
+                const option = {
+                    tooltip: {
+                        trigger: 'item',
+                    },
+                    legend: {
+                        data: Object.keys(seriesData),
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: categories,
+                    },
+                    yAxis: {
+                        type: 'value',
+                    },
+                    series: series,
+                };
+
+                const chart = echarts.init(document.getElementById('main'));
+                chart.setOption(option);
+            })
+            .catch(error => console.error('Error fetching the data:', error));
+    </script>
+</body>
+</html>
+```"
+12,bar chart+horizontal bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Horizontal Bar Chart that visualizes the Adoption Rate for each Technology Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Technology Adoption Rate in 2020</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 100%; height: 600px;""></div>
+
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const adoptionData = rows.map(row => {
+                    const cols = row.split(',');
+                    return {
+                        year: cols[0],
+                        technologyType: cols[1],
+                        adoptionRate: parseFloat(cols[2])
+                    };
+                }).filter(item => item.year === '2020');
+
+                const technologyTypes = adoptionData.map(item => item.technologyType);
+                const adoptionRates = adoptionData.map(item => item.adoptionRate);
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const option = {
+                    title: {
+                        text: 'Adoption Rate of Technology Types in 2020',
+                        subtext: 'Source: Technology Adoption Dataset',
+                        left: 'center'
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    xAxis: {
+                        type: 'value',
+                        name: 'Adoption Rate (%)'
+                    },
+                    yAxis: {
+                        type: 'category',
+                        data: technologyTypes
+                    },
+                    series: [{
+                        name: 'Adoption Rate',
+                        type: 'bar',
+                        data: adoptionRates,
+                        itemStyle: {
+                            color: '#4cabce'
+                        }
+                    }]
+                };
+
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"

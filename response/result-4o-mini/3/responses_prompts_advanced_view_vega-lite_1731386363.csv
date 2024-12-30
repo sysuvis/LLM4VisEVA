@@ -1,0 +1,861 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.7.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.2""></script>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script type=""text/javascript"">
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""description"": ""A scatterplot showing the relationship between Units Sold and Revenue."",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""mark"": {
+                ""type"": ""point"",
+                ""tooltip"": true
+            },
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Units Sold"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Units Sold""
+                },
+                ""y"": {
+                    ""field"": ""Revenue"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Revenue"",
+                    ""axis"": {
+                        ""title"": ""Revenue ($)"",
+                        ""labelExpr"": ""datum.value""
+                    }
+                },
+                ""tooltip"": [
+                    {""field"": ""Units Sold"", ""type"": ""quantitative"", ""title"": ""Units Sold""},
+                    {""field"": ""Revenue"", ""type"": ""quantitative"", ""title"": ""Revenue""}
+                ]
+            },
+            ""config"": {
+                ""tooltip"": {
+                    ""content"": ""encoding""
+                }
+            }
+        };
+
+        vegaEmbed('#vis', spec).then(function(result) {
+            // Access the Vega view instance
+            const view = result.view;
+
+            // Add interactivity: highlight the value on hover
+            view.addEventListener('mousemove', function(event) {
+                view.hover(event);
+            });
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Units Sold vs Revenue</title>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/vega/5.20.2/vega.min.js""></script>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/vega-lite/5.4.0/vega-lite.min.js""></script>
+    <script src=""https://cdnjs.cloudflare.com/ajax/libs/vega-embed/6.20.0/vega-embed.min.js""></script>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script>
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""description"": ""A scatter plot for Units Sold vs Revenue."",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""selection"": {
+                ""brush"": {
+                    ""type"": ""interval"",
+                    ""encodings"": [""x"", ""y""]
+                }
+            },
+            ""mark"": ""point"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Units Sold"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Units Sold""
+                },
+                ""y"": {
+                    ""field"": ""Revenue"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Revenue""
+                },
+                ""color"": {
+                    ""condition"": {
+                        ""param"": ""brush"",
+                        ""field"": ""Product Category"",
+                        ""type"": ""nominal""
+                    },
+                    ""value"": ""lightgray""
+                },
+                ""opacity"": {
+                    ""condition"": {
+                        ""param"": ""brush"",
+                        ""test"": ""datum !== null"",
+                        ""value"": 1
+                    },
+                    ""value"": 0.2
+                }
+            }
+        };
+
+        vegaEmbed('#vis', spec).then(function(result) {
+            // Visualization successfully created
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Units Sold vs Revenue</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+<body>
+
+<div id=""vis""></div>
+
+<script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""description"": ""A scatter plot showing the relationship between Units Sold and Revenue."",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"",
+        ""format"": {
+          ""type"": ""csv""
+        }
+      },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {
+          ""field"": ""Units Sold"",
+          ""type"": ""quantitative"",
+          ""title"": ""Units Sold""
+        },
+        ""y"": {
+          ""field"": ""Revenue"",
+          ""type"": ""quantitative"",
+          ""title"": ""Revenue""
+        },
+        ""tooltip"": [
+          {""field"": ""Date"", ""type"": ""temporal"", ""title"": ""Date""},
+          {""field"": ""Store Location"", ""type"": ""nominal"", ""title"": ""Store Location""},
+          {""field"": ""Units Sold"", ""type"": ""quantitative"", ""title"": ""Units Sold""},
+          {""field"": ""Revenue"", ""type"": ""quantitative"", ""title"": ""Revenue""},
+          {""field"": ""Profit"", ""type"": ""quantitative"", ""title"": ""Profit""},
+          {""field"": ""Operating Hours"", ""type"": ""quantitative"", ""title"": ""Operating Hours""},
+          {""field"": ""Customer Visits"", ""type"": ""quantitative"", ""title"": ""Customer Visits""},
+          {""field"": ""Product Category"", ""type"": ""nominal"", ""title"": ""Product Category""}
+        ]
+      },
+      ""config"": {
+        ""view"": {
+          ""continuousWidth"": 400,
+          ""continuousHeight"": 300,
+          ""zoom"": true
+        }
+      }
+    };
+
+    vegaEmbed('#vis', spec).then(() => {
+      // Embed succeeded
+    }).catch(console.error);
+</script>
+
+</body>
+</html>
+```"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot of Units Sold vs Revenue</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.2.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.2""></script>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script>
+        const spec = {
+          ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+          ""description"": ""A scatter plot showing the relationship between Units Sold and Revenue."",
+          ""data"": {
+            ""url"": ""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"",
+            ""format"": {""type"": ""csv""}
+          },
+          ""mark"": ""point"",
+          ""encoding"": {
+            ""x"": {
+              ""field"": ""Units Sold"",
+              ""type"": ""quantitative"",
+              ""title"": ""Units Sold""
+            },
+            ""y"": {
+              ""field"": ""Revenue"",
+              ""type"": ""quantitative"",
+              ""title"": ""Revenue""
+            },
+            ""tooltip"": [
+              {""field"": ""Date"", ""title"": ""Date""},
+              {""field"": ""Store Location"", ""title"": ""Store Location""},
+              {""field"": ""Units Sold"", ""title"": ""Units Sold""},
+              {""field"": ""Revenue"", ""title"": ""Revenue""},
+              {""field"": ""Profit"", ""title"": ""Profit""},
+              {""field"": ""Operating Hours"", ""title"": ""Operating Hours""},
+              {""field"": ""Customer Visits"", ""title"": ""Customer Visits""},
+              {""field"": ""Product Category"", ""title"": ""Product Category""}
+            ]
+          },
+          ""selection"": {
+            ""point"": {
+              ""type"": ""single"",
+              ""on"": ""click"",
+              ""encodings"": [""x"", ""y""]
+            }
+          },
+          ""config"": {
+            ""view"": {
+              ""stroke"": ""transparent""
+            }
+          }
+        };
+
+        vegaEmbed('#vis', spec).then((result) => {
+          const view = result.view;
+          view.addEventListener('click', function(event) {
+              const item = view.data('point');
+              if (item) {
+                const searchQuery = `${item[0].Units Sold} ${item[0].Revenue}`;
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(searchQuery)}`);
+              }
+          });
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot with query widgets showing the Units Sold and Revenue of the given dataset. Add a slider to represent the Date.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot with Vega-Lite</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.10.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.2""></script>
+    <style>
+        #vis {
+            width: 800px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""vis""></div>
+    <input type=""range"" id=""dateSlider"" min=""0"" max=""29"" value=""0"">
+    <script>
+        const dataUrl = ""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"";
+        
+        const spec = {
+            $schema: 'https://vega.github.io/schema/vega-lite/v5.json',
+            data: {
+                url: dataUrl,
+                format: { type: 'csv' }
+            },
+            params: [
+                {
+                    name: ""dateFilter"",
+                    value: 0,
+                    select: { 
+                        type: ""point"", 
+                        fields: [""Date""],
+                        bind: { 
+                            input: ""range"", 
+                            min: 0, 
+                            max: 29 
+                        }
+                    }
+                }
+            ],
+            mark: 'circle',
+            encoding: {
+                x: { field: 'Units Sold', type: 'quantitative', title: 'Units Sold' },
+                y: { field: 'Revenue', type: 'quantitative', title: 'Revenue' },
+                tooltip: [
+                    { field: 'Date', type: 'temporal' },
+                    { field: 'Units Sold', type: 'quantitative' },
+                    { field: 'Revenue', type: 'quantitative' }
+                ]
+            },
+            transform: [
+                {
+                    filter: {
+                        field: 'Date',
+                        oneOf: {
+                            param: 'dateFilter'
+                        }
+                    }
+                }
+            ]
+        };
+
+        vegaEmbed('#vis', spec).then(function(result) {
+            const slider = document.getElementById('dateSlider');
+            slider.addEventListener('input', () => {
+                result.view.signal('dateFilter', parseInt(slider.value)).run();
+            });
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot showing the Units Sold of Phoenix. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Units Sold in Phoenix - Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vue@2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script>
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""transform"": [
+                {
+                    ""filter"": ""datum['Store Location'] === 'Phoenix'""
+                },
+                {
+                    ""calculate"": ""datum['Date']"",
+                    ""as"": ""date""
+                }
+            ],
+            ""mark"": {
+                ""type"": ""point"",
+                ""filled"": true,
+                ""size"": 100
+            },
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""date"",
+                    ""type"": ""temporal"",
+                    ""title"": ""Date""
+                },
+                ""y"": {
+                    ""field"": ""Units Sold"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Units Sold""
+                },
+                ""tooltip"": [
+                    {""field"": ""Date"", ""type"": ""temporal""},
+                    {""field"": ""Units Sold"", ""type"": ""quantitative""},
+                    {""field"": ""Revenue"", ""type"": ""quantitative""},
+                    {""field"": ""Profit"", ""type"": ""quantitative""}
+                ]
+            },
+            ""config"": {
+                ""view"": {
+                    ""stroke"": ""transparent""
+                }
+            },
+            ""resolve"": {
+                ""scale"": {
+                    ""y"": ""independent""
+                }
+            }
+        };
+
+        vegaEmbed('#vis', spec).then(result => {
+            const vlSpec = {
+                ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+                ""data"": {
+                    ""url"": ""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"",
+                    ""format"": {
+                        ""type"": ""csv""
+                    }
+                },
+                ""transform"": [
+                    {
+                        ""filter"": ""datum['Store Location'] === 'Phoenix'""
+                    }
+                ],
+                ""layer"": [
+                    {
+                        ""mark"": ""line"",
+                        ""encoding"": {
+                            ""x"": {
+                                ""field"": ""Date"",
+                                ""type"": ""temporal""
+                            },
+                            ""y"": {
+                                ""field"": ""Units Sold"",
+                                ""type"": ""quantitative""
+                            }
+                        }
+                    },
+                    {
+                        ""mark"": {
+                            ""type"": ""point"",
+                            ""filled"": true,
+                            ""size"": 100
+                        },
+                        ""encoding"": {
+                            ""x"": {
+                                ""field"": ""Date"",
+                                ""type"": ""temporal""
+                            },
+                            ""y"": {
+                                ""field"": ""Units Sold"",
+                                ""type"": ""quantitative""
+                            },
+                            ""tooltip"": [
+                                {""field"": ""Date"", ""type"": ""temporal""},
+                                {""field"": ""Units Sold"", ""type"": ""quantitative""},
+                                {""field"": ""Revenue"", ""type"": ""quantitative""},
+                                {""field"": ""Profit"", ""type"": ""quantitative""}
+                            ]
+                        }
+                    }
+                ],
+                ""config"": {
+                    ""view"": {
+                        ""stroke"": ""transparent""
+                    }
+                }
+            };
+
+            vegaEmbed('#vis', vlSpec);
+        }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Units Sold of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Units Sold Line Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.19.1""></script>
+</head>
+<body>
+    <h1>Units Sold Line Chart</h1>
+    <div id=""vis""></div>
+
+    <script type=""text/javascript"">
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""mark"": {
+                ""type"": ""line"",
+                ""tooltip"": true,
+                ""opacity"": 0.8
+            },
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Date"",
+                    ""type"": ""temporal"",
+                    ""title"": ""Date""
+                },
+                ""y"": {
+                    ""field"": ""Units Sold"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Units Sold""
+                },
+                ""color"": {
+                    ""field"": ""Store Location"",
+                    ""type"": ""nominal"",
+                    ""title"": ""Store Location""
+                }
+            },
+            ""config"": {
+                ""mark"": {
+                    ""tooltip"": true,
+                    ""strokeWidth"": 2
+                }
+            },
+            ""selection"": {
+                ""highlight"": {
+                    ""type"": ""single"",
+                    ""fields"": [""Store Location""],
+                    ""on"": ""mouseover"",
+                    ""empty"": ""none"",
+                    ""encodings"": [""color""]
+                }
+            }
+        };
+
+        vegaEmbed('#vis', spec)
+            .then(result => {
+                const view = result.view;
+                view.addSignalListener('highlight', (name, value) => {
+                    if (value) {
+                        view.tooltip.text = `Store Location: ${value['Store Location']}`;
+                        view.tooltip.show();
+                    } else {
+                        view.tooltip.hide();
+                    }
+                });
+            })
+            .catch(err => console.error(err));
+    </script>
+</body>
+</html>
+```"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Bar Chart that visualizes the Units Sold for each Store Location in 2021-01-01. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Units Sold Bar Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.21.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.1.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.19.2""></script>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script type=""text/javascript"">
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""transform"": [
+                {
+                    ""filter"": ""datum.Date === '2021-01-01'""
+                }
+            ],
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Store Location"",
+                    ""type"": ""ordinal"",
+                    ""axis"": {""labelAngle"": 45}
+                },
+                ""y"": {
+                    ""field"": ""Units Sold"",
+                    ""type"": ""quantitative""
+                }
+            },
+            ""config"": {
+                ""view"": {
+                    ""continuousWidth"": 400,
+                    ""continuousHeight"": 300,
+                    ""zoom"": true,
+                    ""pan"": true
+                }
+            }
+        };
+
+        vegaEmbed('#vis', spec, { actions: false }).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Bar Chart that visualizes the Units Sold for each Store Location in 2021-01-01. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <title>Interactive Bar Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.8.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""> </script>
+    <style>
+        #vis {
+            width: 600px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script>
+        const vegaSpec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"",
+                ""format"": {
+                    ""type"": ""csv""
+                }
+            },
+            ""transform"": [
+                {
+                    ""filter"": {
+                        ""field"": ""Date"",
+                        ""equal"": ""2021-01-01""
+                    }
+                },
+                {
+                    ""calculate"": ""datum.Units Sold"",
+                    ""as"": ""Units_Sold""
+                }
+            ],
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Store Location"",
+                    ""type"": ""ordinal"",
+                    ""title"": ""Store Location""
+                },
+                ""y"": {
+                    ""field"": ""Units_Sold"",
+                    ""type"": ""quantitative"",
+                    ""title"": ""Units Sold""
+                },
+                ""order"": {
+                    ""field"": ""Units_Sold"",
+                    ""type"": ""quantitative""
+                }
+            },
+            ""config"": {
+                ""mark"": {
+                    ""drag"": ""y"",
+                    ""clip"": true
+                }
+            }
+        };
+
+        vegaEmbed('#vis', vegaSpec).catch(console.error);
+    </script>
+</body>
+</html>
+```"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Bar Chart that visualizes the Units Sold for each Store Location in 2021-01-01. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Units Sold.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",Vega-Lite,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Bar Chart of Units Sold</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5.20.2""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.8.0""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.20.0""></script>
+    <style>
+        #vis {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script>
+        const spec = {
+            ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+            ""data"": {
+                ""url"": ""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"",
+                ""format"": {""type"": ""csv""}
+            },
+            ""transform"": [
+                {
+                    ""filter"": ""datum.Date == '2021-01-01'""
+                },
+                {
+                    ""calculate"": ""datum['Units Sold']"",
+                    ""as"": ""Units Sold""
+                }
+            ],
+            ""mark"": ""bar"",
+            ""encoding"": {
+                ""x"": {
+                    ""field"": ""Store Location"",
+                    ""type"": ""ordinal"",
+                    ""sort"": ""x"",
+                    ""axis"": {""labelAngle"": 45}
+                },
+                ""y"": {
+                    ""field"": ""Units Sold"",
+                    ""type"": ""quantitative""
+                },
+                ""tooltip"": [
+                    {""field"": ""Store Location"", ""type"": ""ordinal""},
+                    {""field"": ""Units Sold"", ""type"": ""quantitative""}
+                ]
+            },
+            ""config"": {
+                ""view"": {""stroke"": ""transparent""}
+            }
+        };
+
+        const sortOptions = {
+            ""options"": [
+                { ""label"": ""Ascending"", ""value"": ""ascending"" },
+                { ""label"": ""Descending"", ""value"": ""descending"" }
+            ]
+        };
+
+        const updateSpec = (order) => {
+            spec.encoding.x.sort = {""field"": ""Units Sold"", ""order"": order};
+            vegaEmbed('#vis', spec).then(({ view }) => {
+                view.run();
+            });
+        };
+
+        vegaEmbed('#vis', spec).then(({ view }) => {
+            view.addSignalListener('sortOrder', (name, value) => {
+                updateSpec(value);
+            });
+        });
+
+        // Set the default sort order
+        updateSpec('ascending');
+    </script>
+</body>
+</html>
+```"
