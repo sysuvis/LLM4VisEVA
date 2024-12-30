@@ -35,8 +35,6 @@ This repository contains the code package for the paper "Can Large Languages Mod
   * **app.py**: The code to run the server.
   * **templates & static:** These are the front-end files that manage the user interface.
 
-  Except for the source, other files are in the "others.zip".
-
 
 ## Usage
 
