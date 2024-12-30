@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>File Upload and Process</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- File upload -->
+    <div class="container">
+        <h2>Response Viewer</h2>
+        <form id="upload-form" enctype="multipart/form-data">
+            <div class="upload-box" id="upload-box" onclick="document.getElementById('file-input').click();">
+                <div class="file-box" id="file-box">
+                    <p>Drag and drop or click to select CSV files</p>
+                </div>
+                <button type="button" id="select-files-button" >
+                    Select Files
+                </button>
+            </div>
+            <input type="file" id="file-input" accept=".csv" multiple style="display:none;" onchange="handleFiles()">  <!-- 确保 multiple 属性 -->
+            
+        </form>        
+        
+        <!-- Upload button -->
+        <button type="submit" form="upload-form" id="upload-files-buttun">Upload and Process</button>
+    </div>
+
+    <div id="filters" style="display: none;">
+        <div id="viewtype-filter"></div>
+        <div id="library-filter"></div>
+    </div>
+
+    <h2 id="result-rendering-title" style="display:none;">Result Rendering</h2>
+    <!-- Results -->
+    <div id="results"></div>
+
+    <div id="submit-evaluation-container" style="display: none;">
+        <button id="submit-evaluation">Submit Evaluation</button>
+    </div>
+
+    <!-- Finish All button -->
+    <div id="finish-all-container" style="display: none;">
+        <button id="finish-all">Finish All and Download File</button>
+    </div>
+
+    <div id="show-evaluation-container" style="display: none; justify-content: center; align-items: center; margin-top: 20px;">
+        <button id="show-evaluation-button">Show Evaluation</button>
+    </div>
+
+    <div id="evaluation-summary" style="display: none;">
+        <h2>Evaluation Summary</h2>
+
+        <div id="row">
+
+            <!-- Filters -->
+            <div class="col-md-left">
+                <div class="mb-3">
+                    <h5>View Type</h5>
+                    <div id="viewTypeFilter" class="form-check">
+                        <!-- Dynamic checkboxes will be added here -->
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <h5>Library</h5>
+                    <div id="libraryFilter" class="form-check">
+                        <!-- Dynamic checkboxes will be added here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <!-- Chart for evaluation statistics -->
+                <canvas id="evaluationChart"></canvas>
+            </div>
+
+            <div class="col-md-right">
+                <div>
+                    <h3>Error Rates</h3>
+                    <div class="error-rate-item">
+                        <strong>Initialization Error: </strong><span id="initErrorRate">0%</span>
+                        <div class="progress-bar">
+                            <div class="progress" id="initErrorProgress"></div>
+                        </div>
+                    </div>
+                    <div class="error-rate-item">
+                        <strong>Unexpected Initial Result: </strong><span id="unexpectedInitRate">0%</span>
+                        <div class="progress-bar">
+                            <div class="progress" id="unexpectedInitProgress"></div>
+                        </div>
+                    </div>
+                    <div class="error-rate-item">
+                        <strong>Execution Error: </strong><span id="execErrorRate">0%</span>
+                        <div class="progress-bar">
+                            <div class="progress" id="execErrorProgress"></div>
+                        </div>
+                    </div>
+                    <div class="error-rate-item">
+                        <strong>Correct: </strong><span id="correctRate">0%</span>
+                        <div class="progress-bar">
+                            <div class="progress" id="correctRateProgress"></div>
+                        </div>
+                    </div>
+                    <div class="error-rate-item">
+                        <strong>Unexpected Execution Result: </strong><span id="unexpectedExecRate">0%</span>
+                        <div class="progress-bar">
+                            <div class="progress" id="unexpectedExecProgress"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='chart.js') }}"></script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>File Upload and Process</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inconsolata:wght@200..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Prompts Generator</h1>
+    </header>
+
+    <div id="app">
+        <div id="user-input-area">
+            <label for="dataset-description">Dataset Description:</label>
+            <textarea v-model="datasetDescription" rows="4" cols="50" placeholder="Enter a brief description of your dataset..."></textarea>
+            
+            <label for="library-select">Select Visualization Library:</label>
+            <select v-model="selectedLibrary" class="form-control">
+                <option value="">--Select a Library--</option>
+                <option value="D3">D3</option>
+                <option value="ECharts">ECharts</option>
+                <option value="Vega-Lite">Vega-Lite</option>
+            </select>
+        
+            <label for="view-select">Select View Type:</label>
+            <select v-model="selectedView" class="form-control">
+                <option value="">--Select a View Type--</option>
+                <option value="static view">Static View</option>
+                <option value="interactive view">Interactive View</option>
+                <option value="multiple view">Multiple View</option>
+            </select>
+
+            <button type="button" class="btn" @click="generateConfig">Confirm</button>
+        </div>
+
+        <!-- Modal for editing config -->
+        <div v-if="showModal" class="modal">
+            <div class="modal-content">
+                <span class="close" @click="closeModal">&times;</span>
+                <h5>Generated Config</h5>
+                <textarea v-model="configOutput" rows="20" cols="80" class="form-control"></textarea>
+                <button @click="saveConfig" class="btn">Save Config</button>
+            </div>
+        </div>
+
+        <h2>Download Prompts</h2>
+
+        <form id="upload-form" @submit.prevent="uploadFile">
+            <button @click="downloadPrompts" class="btn">Download Prompts CSV</button><br>
+            <input type="file" id="file-input" name="file" accept=".csv" @change="handleFileUpload" required>
+            <button type="submit">Upload and Process</button>
+            <br>
+            <div id="response-download-link" v-if="responseFileName">
+                <a :href="responseDownloadLink" class="btn" download>Download Processed Responses CSV</a>
+            </div>
+        </form>
+    </div>
+
+</body>
+</html>
