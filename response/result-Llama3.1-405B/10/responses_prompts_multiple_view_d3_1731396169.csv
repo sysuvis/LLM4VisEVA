@@ -1,0 +1,1230 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Visitors and Page Views, and a Bar Chart on the right that displays Traffic Source versus Visitors.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Website Traffic Visualization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .chart-container {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .scatterplot-container, .bar-chart-container {
+      width: 45%;
+      height: 500px;
+      border: 1px solid #ddd;
+      padding: 20px;
+    }
+    
+    .scatterplot-container svg, .bar-chart-container svg {
+      width: 100%;
+      height: 100%;
+    }
+    
+    circle {
+    	fill-opacity:.5; 
+    	stroke-width:.5; 
+    	stroke:black
+  	}
+  	
+  	.bar{
+  		fill:#4682B4
+  	}
+  	
+  	.axis path,
+.axis line{
+	fill:none; 
+	stroke:black; 
+	stroke-width:.7
+}
+
+.axis text{
+	font-size:.9em
+}
+
+.label{
+	font-size:.9em
+}
+  	
+  	
+  	
+  
+</style>
+
+</head>
+
+<body>
+
+<div class=""chart-container"">
+<div class=""scatterplot-container"" id=""scatterplot""></div>
+<div class=""bar-chart-container"" id=""bar-chart""></div></div><script src='https://d3js.org/d3.v7.min.js'></script><script>let margin = {top :50,right :50,bottom :70,left :70},width =500-margin.left-margin.right,height =400-margin.top-margin.bottom;
+
+let xScaleScatter=d3.scaleLinear().domain([0,d3.max(data,function(d){return d['Visitors']})]).range([0,width]);
+let yScaleScatter=d3.scaleLinear().domain([0,d3.max(data,function(d){return d['Page Views']})]).range([height,0]);
+
+let scatterG=d3.select('#scatterplot').append('svg').attr('width',width+margin.left+margin.right).attr('height',height+margin.top+margin.bottom).append('g').attr(""transform"",""translate(""+margin.left+"",""+margin.top+"")"");
+
+scatterG.append(""g"").attr(""transform"",""translate(0,""+height+"")"").call(d3.axisBottom(xScaleScatter));
+scatterG.append(""g"").call(d3.axisLeft(yScaleScatter));
+
+
+
+var div = d3.select(""#scatterplot"")
+            .append(""div"")
+            .attr(""class"", ""tooltip"")
+            .style(""opacity"", -1);
+
+var dots= scatterG.selectAll("".dot"")
+.data(data)
+.enter()
+.append('circle')
+.attr('cx',function(d){
+	return xScaleScatter(d['Visitors'])
+})
+.attr('cy',function(d){
+	return yScaleScatter(d['Page Views'])
+})
+.attr('r','10')
+.on( 'mouseover', function ( event,d ) {
+
+	div.transition()
+       			.duration(200)
+       			.style(""opacity"",1);
+	div.html(""<b>Region:</b>""+d[""Region""]+""<br>""+
+			 ""<b>Traffic Source:</b>""+d[""Traffic Source""]+""<br>""+
+			 ""<b>Visitors:</b>""+d[""Visitors""]+""<br>""+
+			 ""<b>Page Views:</b>""+d[""Page Views""])
+      		
+      		
+      		.style (""left"",(event.pageX)+""px"")	
+      		.style (""top"",(event.pageY-28)+""px"");
+})
+
+.on( 'mouseout', function ( event,d ) {
+
+	div.transition()
+       			.duration(200)
+       			.style (""opacity"",-1);
+});
+
+
+
+
+
+//Bar Chart
+
+const marginBar={top :50,right :50,bottom :70,left :70},
+	widthBar=500-marginBar.left-marginBar.right,
+	heightBar=400-marginBar.top-marginBar.bottom;
+
+const xScale=d3.scaleBand().domain(data.map(function (d){return d['Traffic Source']})).range ([0,widthBar]).padding(.2),
+	yScale=d3.scaleLinear().domain ([0,d3.max(data,function (d){return +[d ['Visitors']]})*1.05]).range ([height Bar,0]);
+
+const barG=d3.select('#bar-chart')
+.append ('svg')
+.attr ('width ',width Bar+ margin Bar. left + margin Bar. right )
+.attr ('height ', height Bar + margin Bar. top + margin Bar. bottom )
+.append ('g ')
+.attr ("" transform "","" translate ("" + margin Bar. left + "","" + margin Bar. top +"" ) "");
+
+const bars= bar G.selectAll('. bar ')
+.data (data)
+.enter ()
+.append ('rect ')
+.classed (' bar ', true )
+.attr ('x ', function ( d ){
+	return x Scale ( d ['Traffic Source']);
+})
+.at tr ('y' ,function ( d ){
+	return y Scale (+[ d [' Visitors ']]);
+})
+.at tr ({' width ':x Scale.band width (),
+' height ':function { return heig ht Ba r-y Scale (+[ data [i][' Visitors ']])};
+});
+
+bars.on( 'mouseover', function(event,data) {
+
+	div.transition()
+       		.duration(200)	
+       		.style (""opacity"",1);
+	div.html(""<span style='font-weight:bold'>""+data[""Traffic Source""]+""</span><hr>""+
+			 ""Visitors:""+data [""Visitors""])
+      		
+      		
+      		style=(""left"",(event.pageX)+""px"")	
+      		style=(""top"",(event.pageY-28)+""px"");
+})
+
+on.( 'mouseout' ,function(event,data){
+
+	div.transition()	
+       		duration=(500)	
+       		style=(""opacity"",-1);
+});
+
+
+
+
+//load data
+
+async function drawChart(){
+	const dataset=await fetch(
+'https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1'
+).then(response=>response.text());
+	const data=await dataset.then(text=>text.split('\n'));
+	data.shift();
+	data.forEach((row,i)=>{
+	row=row.split(',');
+	data[i]=Object.assign({},{'Week':row[O],'Traffic Souce':row[l],'Vistors':Number(row[2]),'Page Veiws':Number(row[4]),'Bounce Rate':Number(row[4]),'Average Session Duration':Number(row[S]),Conversion Rate:Number(rowl6l,'Region)row17]'Device Type)row18]});
+});
+drawChart();</script></body></html>"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Visitors and Page Views, and a Bar Chart on the right that displays Traffic Source versus Visitors. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Website Traffic Visualization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      display: flex;
+      flex-direction: row;
+    }
+    
+    .scatterplot {
+      width: 50%;
+      height: 500px;
+      border: 1px solid #ddd;
+    }
+    
+    .bar-chart {
+      width: 50%;
+      height: 500px;
+      border: 1px solid #ddd;
+    }
+    
+    .brush {
+      fill-opacity: .125;
+    	stroke-width :0.5; 
+    	stroke :#ccc; 
+    	fill :#ccc; 
+    	pointer-events :all
+  	}
+  	
+  	.selected{
+  		fill-opacity:.75
+  	}
+  	
+  	.bar{
+  		fill-opacity:.75
+  	}
+  	
+  	div.tooltip {	
+			position:absolute;			
+			text-align:center;			
+			width:auto ;					
+			height:auto ;					
+			padding:.2em ;				
+			font-size:.9em ;		
+			background-color:#fff ;
+		    border-radius:.25em ;
+		    box-shadow:
+		        -2px -2px -2px rgba(255,255,255,.1),
+		        -1.5px -1.5px rgba(255,255,255,.3),
+		        rgba(0,0,0,.4) -.3em -.3em -.3em -.3rem,
+		        rgba(0,0,0,.2) -.125rem -.125rem,
+		        rgba(255 ,255 ,255 ,.5);
+        pointer-events:none;
+
+        z-index:-10000
+
+        opacity:;
+        
+       }
+
+       div.tooltip::after {
+
+          content:"""";
+          position:absolute;
+
+          top:-10% ;
+          left:-10% ;
+
+          margin-left:;
+          
+          
+          
+
+          
+
+          
+
+
+         }
+
+         div.tooltip::before{
+
+            content:"""";
+            position:absolute;
+
+            top:-10% ;
+            left:-10% ;
+
+            
+            
+
+            
+            
+
+
+         } 
+
+         
+         
+         
+         
+         
+         
+       
+       
+       
+       
+       
+       
+       
+
+</style>
+
+</head>
+
+<body>
+
+<div class=""container"">
+
+<svg class=""scatterplot""></svg>
+
+<svg class=""bar-chart""></svg>
+
+<div id='tooltip' class='tooltip'></div> 
+
+</div>
+
+
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+let scatterplotSvg = d3.select("".scatterplot"");
+
+let barChartSvg = d3.select("".bar-chart"");
+
+let tooltip=d3.select('#tooltip')
+
+const margin = {top:20,right :20,bottom :30,left :40}
+
+const scatterWidth=+scatterplotSvg.attr('width')-margin.left-margin.right,
+
+scatteHeight=+scatterplotSvg.attr('height')-margin.top-margin.bottom
+
+
+
+const barWidth=+barChartSvg.attr('width')-margin.left-margin.right,
+
+barHeight=+barChartSvg.attr('height')-margin.top-margin.bottom
+
+
+
+const scatterG=scatterplotSvg.append(""g"")
+
+.attr(""transform"",`translate(${margin.left},${margin.top})`)
+
+
+
+const barG=barChartSvg.append(""g"")
+
+.attr(""transform"",`translate(${margin.left},${margin.top})`)
+
+
+
+//load data
+
+d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data=>{
+
+data.forEach(d=>{
+
+d['Visitors']=+d['Visitors'];
+
+d['Page Views']=+d['Page Views'];
+
+})
+
+//scales for scatter plot
+
+xScale.domain([20000,d3.max(data,d=>Math.ceil(d[""Visitors""]))])
+
+.range([100000,d30000])
+
+yScale.domain([200000,d300000(d,""Page Views"")])
+
+.range([scatteHeight])
+
+//scales for bar chart
+
+xBarScale.domain(data.map(d=>{return d[""Traffic Source""]})) //traffic source is a string so no need to convert to number like visitors and page views.
+
+.range(barWidth)
+
+yBarScale.domain([-100000,d300000(d,""Visitors"")]) //negative value is used here because we want the bars to start from bottom of the svg.
+
+.range(barHeight)
+
+drawScatter()
+
+drawBar()
+
+})
+
+function drawScatter(){
+
+var brush=d33.brushX(scatterWidth,[10000,xscale.invert(scatterWidth)])
+
+.on('brush',brushed)
+
+.on('end',brushEnd)
+
+var gBrush=g.selectAll('.brush')
+
+.data([{type:'selection'}])
+
+.join(
+
+enter => enter.append(g).attr(class,'brush'),
+
+update => update,
+
+exit => exit.remove()
+
+);
+
+gBrush.selectAll(rect).attr(x,(p,i)=>i?xscale(p[01]):xscale(p[01]))
+
+.style(fill,(p,i)=>i?'red':'green')
+
+.style(opacity,p=>p.type=='selection'?'.75':'.45')
+
+.call(gBrush.selectAll(rect))
+
+.call(gBrush.selectAll(rect))
+
+.call(gBrush.selectAll(rect))
+
+.call(gBrush.selectAll(rect))
+
+.scatterG.append(""rect"")
+
+.datum(function(){return{x:xscale.invert(scatterWidth),y:yScale.invert(scatteHeight)}})
+
+.call(brush.move,xscale.invert(scatterWidth));
+
+}
+
+function brushed(event){
+
+if(event.selection){
+
+var selection=event.selection.map(xScale.invert,xScale);
+
+console.log(selection);
+
+selectedData=data.filter(function(d){return (selection[01]<=xsdcale(+dxsxale(+dxsxale(+dxsxale(+dxsxale(+dxsxale(+dxsxale(+dxsxale(+dsxsxsxsxsxsxsxsxsxsxsxxsssss)))))))))
+
+updateBar(selectedData);
+
+}else{
+
+clearSelection();
+
+}
+
+}
+
+function brushEnd(event){
+
+if(!event.selection){
+
+clearSelection();
+
+}
+
+}
+
+function clearSelection(){
+
+selectedData=[];
+
+updateBar(selectedData);
+
+}    
+
+function drawBar(){
+
+bars=gBars.selectAll(.bars).data(data).join(
+enter => enter.append(rect)
+.merge(bars)
+.transition()
+.duration(duration)
+.delay(delay)
+.ease(easeCircleIn)
+.ease(easeElasticOut))
+.transition()
+.duration(duration)
+.delay(delay)
+.ease(easeCircleIn)
+.ease(easeElasticOut))
+.transition()
+.duration(duration)
+.delay(delay))
+.merge(bars.exit())
+.remove();
+  
+bars.exit().remove();
+  
+bars.enter().append(rect);
+  
+bars.merge(bars);
+  
+bars.exit().remove();
+  
+bars.enter().append(circle);
+  
+rects.exit().remove();
+  
+
+}
+
+
+ function updateBar(newData){
+   
+   
+   
+   
+   
+   
+   
+   
+   
+
+ }
+
+
+ const xScalescalleLinear()
+ 
+ 
+ const yScalescalleLinear()
+
+
+ const xBarscalPoint()
+
+
+ const yBarscalLinear()
+
+
+ let selectedDatarray() 
+
+
+ let durationtransitionDuration
+ 
+ let delaytransitionDelay
+ 
+ let easeCubicInOuteaseCircleeaseElasticOut
+ 
+ </script></body></html>"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Visitors , while the pie chart represents the distribution of Page Views.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Website Traffic Visualization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .chart-container {
+      width: 800px;
+      margin: 40px auto;
+    }
+    
+    .line-chart {
+      height: 400px;
+      border-bottom: 1px solid #ccc;
+    }
+    
+    .pie-chart {
+      height: 400px;
+    }
+  </style>
+</head>
+<body>
+<div class=""chart-container"">
+<svg class=""line-chart""></svg><svg class=""pie-chart""></svg></div><script src=""https://d3js.org/d3.v7.min.js""></script><script>let margin = {top:20,right:20,bottom30,left40},width=800-margin.left-margin.right,height=400-margin.top-margin.bottom;let lineChart=d3.select('.line-chart').append('g').attr('transform',`translate(${margin.left},${margin.top})`);let pieChart=d3.select('.pie-chart').append('g').attr('transform',`translate(${width/2},${height/2})`);d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data=>{data.forEach(d=>{d.Visitors=+d['Visitors'];});let xScale=d3.scalePoint().domain(data.map(d=>+d['Week'])).range([0,width]);let yScale=d3.scaleLinear().domain([0,d3.max(data,d=>+d['Visitors'])]).range([height,0]);lineChart.append('g').attr('transform',`translate(0,${height})`).call(d3.axisBottom(xScale));lineChart.append('g').call(d3.axisLeft(yScale));let lineGen=d3.line().x((_,i)=>xScale(i)).y(d=>yScale(+d['Visitors']));lineChart.append(""path"").datum(data).attr(""fill"",""none"").attr(""stroke"",""steelblue"").attr(""stroke-width"",1.5).attr(""stroke-linejoin"",""round"").attr(""stroke-linecap"",""round"").attr(""id"",""visitors-trend"").transition().duration(1000).delay(500).ease(d => d * d * d).onStart(function(){this._value=+this.getAttributeNS(null,""length"");}).tween(function(){return function(t){var i=t*this._value;this.setAttributeNS(null,""length"",i);};}).onEnd(function(){delete this._value;}).remove();data.forEach((item,i)=>{item.index=i;});const pieData=data.reduce((acc,currentValue)=>acc.concat(currentValue),[]);const pieGen=d3.pie()(pieData.map(item=>item[""Page Views""]));const arcGen=d3.arc().innerRadius(50).outerRadius(Math.min(width,height)/2-10);pieChart.selectAll("".arc"")//.data(pie(pieData))//.enter()//.append()//.merge(pie)/*.transition()*//*.duration(100)*//*.delay((_,i)=>i*10)*//*.ease(easeCircleInOut)*//*.onStart(function(){console.log(this.getTotalLength());})*///*.tween(function(){return function(t){var i=t*this.getTotalLength();this.setAttributeNS(null,""length"",i);};})*///*.onEnd(function(){delete this._value;})*///*.remove()*//*;.exit()*/;.selectAll("".arc"")/*/.exit()*//*;.remove()*//*;.selectAll("".arc"")*//*;.enter()*//*;.append(""*"")*//*.merge(pie)*//*;(function selection_change(selection){selection.selectAll("".slice"")/*/.exit()*//*;(function selection_change(selection){selection.remove();})*(selection.exit())*(selection.enter())*(selection.merge(selection))*;(function selection_change(selection){selection.attrTween("""",function(_,index,nodeList){nodeList[index].setAttributeNS(null,""cx"",(nodeList[index].getAttributeNS(null,""cx"")));nodeList[index].setAttributeNS(null,""cy"",(nodeList[index].getAttributeNS(null,""cy"")));});})*(selection.merge(selection))*;//}(pie.selectAll("".slice""));//}(pie.selectAll("".slice""));//}(arcGen.selectAll(""*""));}.catch(error => console.error(error));</script></body></html>"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Visitors , while the pie chart represents the distribution of Page Views. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Page Views for the selected group.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Website Traffic Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .brush {
+            fill-opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div id=""vis""></div>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        // Set up the visualization container
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+        const vis = d3.select(""#vis"")
+            .append(""svg"")
+            .attr(""width"", width + margin.left + margin.right)
+            .attr(""height"", height + margin.top + margin.bottom)
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+        
+        // Load the data
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            data.forEach(d => {
+                d.Week = +d.Week;
+                d.Visitors = +d[""Visitors""];
+                d[""Page Views""] = +d[""Page Views""];
+            });
+            
+            // Set up the scales
+            const xScale = d3.scaleLinear()
+                .domain(d3.extent(data, d => d.Week))
+                .range([0, width]);
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.Visitors)])
+                .range([height / 2, 0]);
+            const colorScale = d3.scaleOrdinal()
+                .domain(data.map(d => d.Region))
+                .range(d3.schemeCategory10);
+            
+            // Create the line chart
+            const lineChart = vis.append(""g"")
+                .attr(""transform"", `translate(0, 0)`);
+            const line = d3.line()
+                .x(d => xScale(d.Week))
+                .y(d => yScale(d.Visitors));
+            lineChart.append(""path"")
+                .datum(data)
+                .attr(""fill"", ""none"")
+                .attr(""stroke"", ""steelblue"")
+                .attr(""stroke-width"", 1.5)
+                .attr(""d"", line);
+            
+            // Add a brush to the line chart
+            const brush = d3.brushX()
+                .extent([[0, 0], [width, height / 2]])
+                .on(""brush"", brushed)
+                .on(""end"", brushended);
+            lineChart.append(""g"")
+                .attr(""class"", ""brush"")
+                .call(brush)
+                .selectAll(""rect"")
+                .attr(""height"", height / 2);
+            
+            // Create the pie chart
+            const pieChart = vis.append(""g"")
+                .attr(""transform"", `translate(0, ${height / 2 + 20})`);
+            const pie = d3.pie()
+                .value(d => d[""Page Views""]);
+            const arc = d3.arc()
+                .outerRadius(Math.min(width, height / 2) / 2 - 10)
+                .innerRadius(0);
+            const arcs = pieChart.selectAll(""arc"")
+                .data(pie(data))
+                .enter()
+                .append(""path"")
+                .attr(""fill"", (d, i) => colorScale(i))
+                .attr(""d"", arc);
+            
+            // Update the pie chart when the brush is moved
+            function brushed(event) {
+                const selection = event.selection;
+                if (selection) {
+                    const start = xScale.invert(selection[0]);
+                    const end = xScale.invert(selection[1]);
+                    const filteredData = data.filter(d => d.Week >= start && d.Week <= end);
+                    const pieData = pie(filteredData);
+                    arcs.data(pieData)
+                        .transition()
+                        .duration(500)
+                        .attr(""d"", arc);
+                }
+            }
+            
+            // Clear the brush when it's ended
+            function brushended(event) {
+                if (!event.sourceEvent) return;
+                const selection = event.selection;
+                if (!selection) return;
+                d3.select(this).transition().call(brush.move, null);
+            }
+        });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Visitors, Page Views, and Bounce Rate. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Scatterplot Matrix</title>
+    <style>
+        .matrix {
+            font: 10px sans-serif;
+        }
+        
+        .matrix .axis path,
+        .matrix .axis line {
+            fill: none;
+            stroke: #ddd;
+            shape-rendering: crispEdges;
+        }
+        
+        .matrix .axis text {
+            text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+            cursor: move;
+        }
+        
+        .matrix .brush .extent {
+            stroke: #fff;
+            fill-opacity: .125;
+            shape-rendering: crispEdges;
+        }
+        
+        .matrix .frame {
+            fill: none;
+            stroke: #ddd;
+        }
+        
+        .matrix circle {
+            fill-opacity: .7;
+        }
+        
+        .matrix .selected circle {
+            fill: red;
+        }
+    </style>
+</head>
+<body>
+    <div id=""matrix""></div>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 150, right: 100, bottom: 150, left: 100 },
+            width = 800 - margin.left - margin.right,
+            height = 800 - margin.top - margin.bottom,
+            padding = 20,
+            size = 200;
+        
+        const x = d3.scaleLinear()
+            .range([padding / 2, size - padding / 2]);
+        
+        const y = d3.scaleLinear()
+            .range([size - padding / 2, padding / 2]);
+        
+        const xAxis = d3.axisBottom()
+            .scale(x)
+            .ticks(6);
+        
+        const yAxis = d3.axisLeft()
+            .scale(y)
+            .ticks(6);
+        
+        const brush = d3.brush()
+            .extent([[0, 0], [size, size]])
+            .on(""start"", brushstart)
+            .on(""brush"", brushmove)
+            .on(""end"", brushend);
+        
+        const svg = d3.select(""#matrix"")
+            .append(""svg"")
+            .attr(""width"", width + margin.left + margin.right)
+            .attr(""height"", height + margin.top + margin.bottom)
+            .append(""g"")
+            .attr(""transform"", ""translate("" + margin.left + "","" + margin.top + "")"");
+        
+        const matrix = svg.selectAll("".matrix"")
+            .data([""Visitors"", ""Page Views"", ""Bounce Rate""])
+            .enter()
+            .append(""g"")
+            .attr(""class"", ""matrix"")
+            .attr(""transform"", function (d, i) {
+                return ""translate("" + (i * (size + padding)) + "",0)"";
+            });
+        
+        matrix.selectAll("".x.axis"")
+            .data([""Visitors"", ""Page Views"", ""Bounce Rate""])
+            .enter()
+            .append(""g"")
+            .attr(""class"", ""x axis"")
+            .attr(""transform"", function (d, i) {
+                return ""translate(0,"" + (i * (size + padding)) + "")"";
+            });
+        
+        matrix.selectAll("".y.axis"")
+            .data([""Visitors"", ""Page Views"", ""Bounce Rate""])
+            .enter()
+            .append(""g"")
+            .attr(""class"", ""y axis"")
+            .attr(""transform"", function (d, i) {
+                return ""translate("" + (i * (size + padding)) + "",0)"";
+            });
+        
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"", function (data) {
+            data.forEach(function (d) {
+                d[""Visitors""] = +d[""Visitors""];
+                d[""Page Views""] = +d[""Page Views""];
+                d[""Bounce Rate""] = +d[""Bounce Rate""];
+            });
+            
+            const domainByTrait = {};
+            const traits = [""Visitors"", ""Page Views"", ""Bounce Rate""];
+            traits.forEach(function (trait) {
+                domainByTrait[trait] = d3.extent(data, function (d) {
+                    return d[trait];
+                });
+            });
+            
+            const cells = svg.selectAll("".cell"")
+                .data(cross(traits, traits))
+                .enter()
+                .append(""g"")
+                .attr(""class"", ""cell"")
+                .attr(""transform"", function (d) {
+                    return ""translate("" + (d.i * (size + padding)) + "","" + (d.j * (size + padding)) + "")"";
+                })
+                .each(plot);
+            
+            cells.call(brush);
+            
+            function plot(p) {
+                const cell = d3.select(this);
+                
+                x.domain(domainByTrait[p.x]);
+                y.domain(domainByTrait[p.y]);
+                
+                cell.append(""rect"")
+                    .attr(""class"", ""frame"")
+                    .attr(""x"", padding / 2)
+                    .attr(""y"", padding / 2)
+                    .attr(""width"", size - padding)
+                    .attr(""height"", size - padding);
+                
+                cell.selectAll(""circle"")
+                    .data(data)
+                    .enter()
+                    .append(""circle"")
+                    .attr(""cx"", function (d) {
+                        return x(d[p.x]);
+                    })
+                    .attr(""cy"", function (d) {
+                        return y(d[p.y]);
+                    })
+                    .attr(""r"", 4);
+                
+                cell.append(""g"")
+                    .attr(""class"", ""x axis"")
+                    .attr(""transform"", ""translate(0,"" + size + "")"")
+                    .call(xAxis);
+                
+                cell.append(""g"")
+                    .attr(""class"", ""y axis"")
+                    .call(yAxis);
+            }
+            
+            function brushstart(p) {
+                if (brush.empty()) {
+                    svg.selectAll("".selected"").classed(""selected"", false);
+                }
+            }
+            
+            function brushmove(p) {
+                const e = brush.extent();
+                svg.selectAll(""circle"").classed(""selected"", function (d) {
+                    return e[0][0] <= x(d[p.x]) && x(d[p.x]) <= e[1][0] && e[0][1] <= y(d[p.y]) && y(d[p.y]) <= e[1][1];
+                });
+            }
+            
+            function brushend() {
+                if (brush.empty()) {
+                    svg.selectAll("".selected"").classed(""selected"", false);
+                }
+            }
+            
+            function cross(a, b) {
+                const c = [], n = a.length, m = b.length;
+                let i, j;
+                for (i = -1; ++i < n;) {
+                    for (j = -1; ++j < m;) {
+                        c.push({ x: a[i], i: i, y: b[j], j: j });
+                    }
+                }
+                return c;
+            }
+        });
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a brushable Scatterplot that visualizes the relationship between Visitors and Page Views. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Brushable Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .brush {
+            fill-opacity: 0.2;
+        }
+        
+        .brush .selection {
+            fill-opacity: 0.5;
+        }
+        
+        #scatterplot {
+            border: 1px solid lightgray;
+        }
+        
+        #table-container {
+            margin-top: 20px;
+        }
+        
+        table {
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""scatterplot""></div>
+    <div id=""table-container""></div>
+    
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        // Set up the dimensions and margins of the scatterplot
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = 600 - margin.left - margin.right;
+        const height = 400 - margin.top - margin.bottom;
+        
+        // Create the SVG element for the scatterplot
+        const svg = d3.select(""#scatterplot"")
+            .append(""svg"")
+            .attr(""width"", width + margin.left + margin.right)
+            .attr(""height"", height + margin.top + margin.bottom)
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+        
+        // Load the data
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"")
+            .then(data => {
+                // Convert data types
+                data.forEach(d => {
+                    d[""Visitors""] = parseInt(d[""Visitors""]);
+                    d[""Page Views""] = parseInt(d[""Page Views""]);
+                });
+                
+                // Set up the scales for the scatterplot
+                const xScale = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d[""Visitors""])])
+                    .range([0, width]);
+                
+                const yScale = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d[""Page Views""])])
+                    .range([height, 0]);
+                
+                // Create the scatterplot
+                const points = svg.selectAll(""circle"")
+                    .data(data)
+                    .enter()
+                    .append(""circle"")
+                    .attr(""cx"", d => xScale(d[""Visitors""]))
+                    .attr(""cy"", d => yScale(d[""Page Views""]))
+                    .attr(""r"", 5);
+                
+                // Set up the brush
+                const brush = d3.brush()
+                    .extent([[0, 0], [width, height]])
+                    .on(""brush"", brushed)
+                    .on(""end"", brushended);
+                
+                svg.append(""g"")
+                    .attr(""class"", ""brush"")
+                    .call(brush);
+                
+                // Function to handle brushing
+                function brushed(event) {
+                    const selection = event.selection;
+                    
+                    // Filter the data to get the selected points
+                    const selectedData = data.filter(d => {
+                        const x = xScale(d[""Visitors""]);
+                        const y = yScale(d[""Page Views""]);
+                        return x >= selection[0][0] && x <= selection[1][0] && y >= selection[0][1] && y <= selection[1][1];
+                    });
+                    
+                    // Update the table with the selected points
+                    updateTable(selectedData.slice(0, 20));
+                }
+                
+                // Function to handle the end of brushing
+                function brushended(event) {
+                    if (!event.selection) {
+                        // Clear the table when the brush is cleared
+                        updateTable([]);
+                    }
+                }
+                
+                // Function to update the table with the selected points
+                function updateTable(data) {
+                    const table = d3.select(""#table-container"")
+                        .select(""table"");
+                    
+                    if (table.empty()) {
+                        // Create the table if it doesn't exist
+                        d3.select(""#table-container"")
+                            .append(""table"");
+                    }
+                    
+                    const rows = d3.select(""#table-container"")
+                        .select(""table"")
+                        .selectAll(""tr"")
+                        .data(data);
+                    
+                    rows.enter()
+                        .append(""tr"")
+                        .html(d => {
+                            return `
+                                <td>${d[""Week""]}</td>
+                                <td>${d[""Traffic Source""]}</td>
+                                <td>${d[""Visitors""]}</td>
+                                <td>${d[""Page Views""]}</td>
+                                <td>${d[""Bounce Rate""]}</td>
+                                <td>${d[""Average Session Duration""]}</td>
+                                <td>${d[""Conversion Rate""]}</td>
+                                <td>${d[""Region""]}</td>
+                                <td>${d[""Device Type""]}</td>
+                            `;
+                        });
+                    
+                    rows.exit()
+                        .remove();
+                }
+            })
+            .catch(error => console.error(error));
+    </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a horizontal Bar Chart that shows all the data concerning Visitors, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Visitors Bar Chart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .chart {
+            display: flex;
+        }
+        
+        .main-chart {
+            flex: 1;
+        }
+        
+        .minimap {
+            width: 200px;
+            height: 200px;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class=""chart"">
+        <div class=""main-chart"" id=""main-chart""></div>
+        <div class=""minimap"" id=""minimap""></div>
+    </div>
+    
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = 600 - margin.left - margin.right;
+        const height = 400 - margin.top - margin.bottom;
+        const minimapWidth = 200;
+        const minimapHeight = 200;
+        
+        const mainChart = d3.select(""#main-chart"")
+            .append(""svg"")
+            .attr(""width"", width + margin.left + margin.right)
+            .attr(""height"", height + margin.top + margin.bottom)
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+        
+        const minimap = d3.select(""#minimap"")
+            .append(""svg"")
+            .attr(""width"", minimapWidth)
+            .attr(""height"", minimapHeight);
+        
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"")
+            .then(data => {
+                data.forEach(d => {
+                    d.Visitors = +d.Visitors;
+                });
+                
+                const visitors = data.map(d => ({ Traffic_Source: d[""Traffic Source""], Visitors: d.Visitors }));
+                
+                const xScale = d3.scaleLinear()
+                    .domain([0, d3.max(visitors, d => d.Visitors)])
+                    .range([0, width]);
+                
+                const yScale = d3.scaleBand()
+                    .domain(visitors.map(d => d.Traffic_Source))
+                    .range([0, height])
+                    .padding(0.2);
+                
+                const minimapXScale = d3.scaleLinear()
+                    .domain([0, d3.max(visitors, d => d.Visitors)])
+                    .range([0, minimapWidth]);
+                
+                const minimapYScale = d3.scaleBand()
+                    .domain(visitors.map(d => d.Traffic_Source))
+                    .range([0, minimapHeight])
+                    .padding(0.2);
+                
+                mainChart.selectAll(""rect"")
+                    .data(visitors)
+                    .enter()
+                    .append(""rect"")
+                    .attr(""x"", 0)
+                    .attr(""y"", d => yScale(d.Traffic_Source))
+                    .attr(""width"", d => xScale(d.Visitors))
+                    .attr(""height"", yScale.bandwidth());
+                
+                mainChart.append(""g"")
+                    .attr(""transform"", `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScale));
+                
+                mainChart.append(""g"")
+                    .call(d3.axisLeft(yScale));
+                
+                minimap.selectAll(""rect"")
+                    .data(visitors)
+                    .enter()
+                    .append(""rect"")
+                    .attr(""x"", 0)
+                    .attr(""y"", d => minimapYScale(d.Traffic_Source))
+                    .attr(""width"", d => minimapXScale(d.Visitors))
+                    .attr(""height"", minimapYScale.bandwidth());
+            });
+    </script>
+</body>
+</html>
+```"

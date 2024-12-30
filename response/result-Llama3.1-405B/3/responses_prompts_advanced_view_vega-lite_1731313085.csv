@@ -1,0 +1,551 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Scatterplot that visualizes the relationship between Units Produced and Revenue. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",Vega-Lite,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@4""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+
+<body>
+
+<div id=""vis""></div>
+
+<script type=""text/javascript"">
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v4.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv""
+      },
+      ""mark"": {""type"": ""point"", 
+               tooltip: true},
+      encoding: {
+        x: {field: 'Units Produced', type: 'quantitative'},
+        y: {field: 'Revenue', type: 'quantitative'}
+      }
+    };
+
+    vegaEmbed('#vis', spec).then(function(result) {}).catch(console.error);
+</script>
+
+</body>
+
+</html>"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Scatterplot that visualizes the relationship between Units Produced and Revenue. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",Vega-Lite,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatterplot with Brushing</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@4""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+
+<body>
+
+<div id=""vis""></div>
+
+<script>
+
+const spec = {
+  ""$schema"": ""https://vega.github.io/schema/vega-lite/v4.json"",
+  ""data"": {
+    ""url"": ""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv""
+  },
+  
+""mark"": {""type"": ""point"", ""tooltip"": true},
+  
+""encoding"": {
+""x"": {""field"": ""Units Produced"", ""type"": ""quantitative""},
+""y"": {""field"":""Revenue"",""type"":""quantitative""}
+},
+  
+""selection"":{
+""brush"":{""type"":""interval"",""encodings"":[""x""]}
+}
+};
+
+const opt = {renderer: 'canvas'};
+
+function showDataPoints() {
+const selectedData = vega.transforms.filter(spec.data, spec.selection.brush);
+console.log(selectedData);
+}
+
+document.getElementById('vis').addEventListener('click', showDataPoints);
+
+vegaEmbed('#vis', spec, opt);
+
+</script>
+
+</body></html>"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Scatterplot that visualizes the relationship between Units Produced and Revenue. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",Vega-Lite,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@4""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+
+<body>
+
+<div id=""vis""></div>
+
+<script type=""text/javascript"">
+    var yourVlSpec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v4.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv""
+      },
+      ""mark"": {""type"": ""point"", ""tooltip"": true},
+      encoding: {
+        x: {field: 'Units Produced', type: 'quantitative'},
+        y: {field: 'Revenue', type: 'quantitative'}
+      },
+       width:{step:40},
+       height:{step:40}
+    };
+
+    vegaEmbed('#vis', yourVlSpec);
+</script>
+
+</body>
+
+</html>"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Units Produced and Revenue. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",Vega-Lite,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatterplot with External Links and Tooltips</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@4""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+
+<body>
+
+<div id=""vis""></div>
+
+<script>
+
+const spec = {
+  ""$schema"": ""https://vega.github.io/schema/vega-lite/v4.json"",
+  ""data"": {
+    ""url"": ""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv""
+  },
+  
+""mark"": {""type"": ""point"", tooltip: true},
+  
+""encoding"": {
+""x"": {""field"": ""Units Produced"", type: 'quantitative'},
+""y"": {""field"":""Revenue"", type: 'quantitative'},
+""tooltip"":[{
+      field:""Crop Type"",
+      title:""Crop Type""
+    },{
+      field:""Year"",
+      title:""Year""
+    },{
+      field:""Units Produced"",
+      title:""Units Produced""
+    },{
+     field:""Revenue"",
+     title:""Revenue""
+   }]
+},
+  
+""selection"":{
+        select:{type:'single'}
+       },
+      
+       config:{
+         clickEvent:true
+       }
+};
+
+const opt = {renderer: 'canvas'};
+
+function openGoogleSearch(event, item) {
+ const url = `https://www.google.com/search?q=${item.datum['Crop Type']}+${item.datum.Year}`;
+ window.open(url, '_blank');
+}
+
+const view = vegaEmbed('#vis', spec, opt);
+
+view.then(result => {
+
+ result.view.addEventListener('click', function(event, item) {
+
+   if (item && item.mark.name === 'points') {
+
+     openGoogleSearch(event, item);
+   }
+ });
+});
+
+</script>
+
+</body></html>"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Scatterplot with query widgets showing the Units Produced and Revenue of the given dataset. Add a slider to represent the Year.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",Vega-Lite,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatterplot with Query Widgets</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@4""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+
+<body>
+
+<div id=""vis"" width=300 height=300></div>
+
+<script type=""text/javascript"">
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v4.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv""
+      },
+      ""mark"": {""type"": ""point"", ""tooltip"": true},
+      encoding: {
+        x: {field: 'Units Produced', type: 'quantitative'},
+        y: {field: 'Revenue', type: 'quantitative'},
+        color:{field:'Crop Type'}
+        
+    },
+     width:""container"",
+     height:""container""
+    };
+
+    const opt = {""renderer"": ""canvas""};
+    
+   var view;
+   vegaEmbed(""#vis"", spec, opt).then(function(result) {
+       // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
+       view = result.view;
+   }).catch(console.error);
+</script>
+
+</body>
+
+</html>"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Scatterplot showing the Units Produced of Wheat. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",Vega-Lite,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatterplot of Wheat Production</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@4""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+
+<body>
+
+<div id=""vis""></div>
+
+<script>
+
+const spec = {
+  ""$schema"": ""https://vega.github.io/schema/vega-lite/v4.json"",
+  ""data"": {
+    ""url"": ""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv""
+  },
+  
+""transform"": [
+    {""filter"": ""(datum['Crop Type'] == 'Wheat')""}
+],
+  
+""mark"": {""type"":""line"", 
+         ""point"":{""filled"":""true""},
+         ""interpolate"":""monotone""},
+  
+""encoding"":{
+""x"":{""field"":""Year"",""type"":""temporal""},
+""y"":{""field"":""Units Produced"",""type"":""quantitative""}
+},
+  
+};
+
+const opt = {renderer: 'svg'};
+
+const el = document.getElementById('vis');
+
+function showVis() {
+   vegaEmbed(el, spec, opt);
+}
+
+showVis();
+
+</script>
+
+</body>
+
+</html>"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Units Produced of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",Vega-Lite,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <title>Units Produced Line Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@4""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+
+</head>
+
+<body>
+
+<div id=""vis""></div>
+
+<script type=""text/javascript"">
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v4.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv""
+      },
+      ""mark"": {""type"": ""line"", 
+               tooltip: true},
+      
+       encoding: {
+        x: {field: 'Year', type: 'temporal'},
+        y: {field: 'Units Produced', type:'quantitative'},
+        color:{field:""Crop Type"",type:""nominal""}
+        
+    }
+    };
+    
+  	// Embed the visualization in the container with id `vis`
+  	vegaEmbed('#vis', spec);
+</script>
+
+</body>
+</html>"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Bar Chart that visualizes the Units Produced for each Crop Type in 2020. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",Vega-Lite,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@4""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+
+<body>
+
+<div id=""vis""></div>
+
+<script type=""text/javascript"">
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v4.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv""
+      },
+      ""transform"": [
+        {""filter"": {""field"": ""Year"", ""equal"": 2020}}
+      ],
+      ""mark"": {""type"":""bar""},
+      encoding: {
+        x: {field: 'Crop Type', title:""Crop Type""},
+        y: {field:'Units Produced', title:""Units Produced""}
+    }
+};
+
+const opt = {renderer: 'canvas'};
+const el = document.getElementById('vis');
+el.addEventListener('wheel', event => event.ctrlKey && event.preventDefault());
+el.addEventListener('contextmenu', event => event.preventDefault());
+
+function update() {
+    vegaEmbed('#vis', spec, opt);
+}
+
+update();
+</script>
+
+</body> 
+</html>"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Bar Chart that visualizes the Units Produced for each Crop Type in 2020. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",Vega-Lite,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <title>Bar Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@4""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+
+<body>
+
+<div id=""vis""></div>
+
+<script>
+
+const spec = {
+  ""$schema"": ""https://vega.github.io/schema/vega-lite/v4.json"",
+  ""data"": {
+    ""url"": ""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv""
+  },
+  
+""transform"": [
+    {""filter"": {""field"": ""Year"", ""equal"": {""year"":2020}}}
+],
+  
+""mark"":""bar"",
+""encoding"":{
+""x"":{""field"":""Crop Type"",""type"":""nominal""},
+""y"":{""field"":""Units Produced"",""type"":""quantitative""}
+},
+""selection"":{
+""selsction_name"":{""type"":""single""}
+},
+""title"":{
+""text"":[""Units Produced for each Crop Type in the year of "",""2020""],
+""subtitleFontSize "":14,
+""titleFontSize "":16
+}
+};
+
+const opt = {renderer: 'canvas'};
+
+function showVis() {
+   vegaEmbed('#vis', spec, opt);
+}
+
+showVis();
+
+</script>
+
+</body>
+
+</html>"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Bar Chart that visualizes the Units Produced for each Crop Type in 2020. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Units Produced.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",Vega-Lite,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@4""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+
+<body>
+
+<div id=""vis""></div>
+
+<script type=""text/javascript"">
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v4.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv""
+      },
+      ""transform"": [
+        {""filter"": {""field"": ""Year"", ""equal"": {""value"": 2020}}},
+        {""sortby"" : [{""field"" : [""Units Produced""],""order"" : [""descending""]}]},
+        ],
+       mark: 'bar',
+       encoding: {
+         x: {field: 'Crop Type', title:""Crop Type""},
+         y: {field:'Units Produced', title:""Units Produced""},
+         tooltip:[
+           { field:'Crop Type' ,title:""Crop Type""},
+           { field:'Units Produced' ,title:""Units Produced""}
+          ]
+       }
+     };
+
+    vegaEmbed('#vis', spec);
+</script>
+
+</body> 
+</html>"

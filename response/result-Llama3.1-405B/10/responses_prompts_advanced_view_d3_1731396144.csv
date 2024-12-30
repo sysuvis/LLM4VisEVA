@@ -1,0 +1,1528 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Scatterplot that visualizes the relationship between Visitors and Page Views. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #777;
+            stroke-width: 1;
+        }
+        
+        .axis text {
+            font-size: 12px;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 2px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+        
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+        
+        const xScale = d3.scaleLinear()
+            .range([0, width]);
+        
+        const yScale = d3.scaleLinear()
+            .range([height, 0]);
+        
+        const xAxis = d3.axisBottom(xScale);
+        const yAxis = d3.axisLeft(yScale);
+        
+        svg.append(""g"")
+            .attr(""class"", ""axis"")
+            .attr(""transform"", `translate(0, ${height})`)
+            .call(xAxis);
+        
+        svg.append(""g"")
+            .attr(""class"", ""axis"")
+            .call(yAxis);
+        
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"")
+            .then(data => {
+                data.forEach(d => {
+                    d[""Visitors""] = +d[""Visitors""];
+                    d[""Page Views""] = +d[""Page Views""];
+                });
+                
+                xScale.domain([0, d3.max(data, d => d[""Visitors""]) * 1.1]);
+                yScale.domain([0, d3.max(data, d => d[""Page Views""]) * 1.1]);
+                
+                svg.selectAll(""circle"")
+                    .data(data)
+                    .enter()
+                    .append(""circle"")
+                    .attr(""cx"", d => xScale(d[""Visitors""]))
+                    .attr(""cy"", d => yScale(d[""Page Views""]))
+                    .attr(""r"", 5)
+                    .on(""mouseover"", (event, d) => {
+                        const tooltip = d3.select(""body"")
+                            .append(""div"")
+                            .attr(""class"", ""tooltip"")
+                            .style(""left"", (event.pageX + 10) + ""px"")
+                            .style(""top"", (event.pageY - 10) + ""px"");
+                        
+                        tooltip.append(""p"")
+                            .text(`Visitors: ${d[""Visitors""]}`);
+                        
+                        tooltip.append(""p"")
+                            .text(`Page Views: ${d[""Page Views""]}`);
+                        
+                        svg.append(""line"")
+                            .attr(""class"", ""highlight"")
+                            .attr(""x1"", xScale(d[""Visitors""]))
+                            .attr(""y1"", height)
+                            .attr(""x2"", xScale(d[""Visitors""]))
+                            .attr(""y2"", yScale(d[""Page Views""]))
+                            .style(""stroke"", ""red"");
+                        
+                        svg.append(""line"")
+                            .attr(""class"", ""highlight"")
+                            .attr(""x1"", 0)
+                            .attr(""y1"", yScale(d[""Page Views""]))
+                            .attr(""x2"", xScale(d[""Visitors""]))
+                            .attr(""y2"", yScale(d[""Page Views""]))
+                            .style(""stroke"", ""red"");
+                    })
+                    .on(""mouseout"", () => {
+                        d3.select("".tooltip"").remove();
+                        d3.selectAll("".highlight"").remove();
+                    });
+                
+                svg.selectAll(""axis"")
+                    .transition()
+                    .duration(1000)
+                    .call(xAxis)
+                    .call(yAxis);
+            });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Scatterplot that visualizes the relationship between Visitors and Page Views. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Scatterplot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .brush {
+      fill-opacity: .125;
+      stroke: #666;
+      shape-rendering: crispEdges;
+    }
+    
+    .brush>.handle {
+      fill: #666;
+      stroke: #000;
+      stroke-width: 2px;
+    }
+    
+    .brush>.handle>.handle--custom {
+      fill: none !important;
+      stroke-width: 3px !important;
+    }
+    
+    circle {
+    	fill-opacity:.5
+	}
+	
+	circle:hover{
+		fill-opacity:.9
+	}
+	
+	div.tooltip {	
+	    position:absolute;			
+	    text-align:center;			
+	    width:auto;					
+	    height:auto;					
+	    padding:.5em;				
+        font-size:.8em;		
+        background-color:#f0f0f0 ;	
+        border-radius:.25em ;		
+        pointer-events:none ;			
+	}	
+
+	div.tooltip::before { /* the black triangle */
+	  content:"""";
+	  position:absolute ;
+	  top:-.75em ;
+	  left:(50%-10px) ;
+	  border-style:solid ;
+	  border-width:.5em .5em 0 .5em ;
+	  border-color:#f0f0f0 transparent transparent transparent 
+	}
+
+	div.tooltip::after { /* the white triangle */
+          content:"""" ;
+          position:absolute ;
+          top:-.75em+1px) ) ) ) )
+          left:(50%-10px) )
+          border-style:solid)
+          border-width(.5em(.5rem(rem).75rem(rem).75rem(rem))
+         (border-color(#fff#transparent#transparent#transparent)
+       }
+
+</style>
+
+</head>
+
+<body marginwidth=""100"" marginheight=""100"">
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<div id='scatterplot'></div>
+
+<script type='text/javascript'>
+
+var margin = {top :50 , right :30 , bottom :30 , left :60 } ,
+	width =550 -margin.left-margin.right,
+	height=500-margin.top-margin.bottom;
+
+var svg=d3.select('#scatterplot')
+.append('svg')
+.attr('width',width+margin.left+margin.right)
+.attr('height',height+margin.top + margin.bottom)
+.append(""g"")
+.attr(""transform"",""translate(""+margin.left+"",""+margin.top+"")"");
+
+var xScale=d3.scaleLinear()
+.domain([d3.min(data,function(d){return d['Visitors']}),
+	d3.max(data,function(d){return d['Visitors']})])
+.range([20,width]);
+
+var yScale=d3.scaleLinear()
+.domain([d3.min(data,function(d){return d['Page Views']}),
+	d3.max(data,function(d){return d['Page Views']})])
+.range([height,20]);
+
+svg.selectAll(""circle"")
+.data(data)
+.enter()
+.append(""circle"")
+.attr(""cx"",function(d){
+	return xScale(d[""Visitors""]);
+})
+.attr(""cy"",function(d){
+	return yScale (d[""Page Views""]);
+})
+.on('mouseover',function(event,d){
+	var div =document.getElementById ('tooltip');
+	div.style.display='block';
+	document.getElementById ('tooltip').innerHTML='<b>Week:</b>'+d.Week+'<br><b>Traffic Source:</b>'+d[""Traffic Source""]+'<br><b>Region:</b>'+d.Region+'<br><b>Device Type:</b>'+d[""Device Type""];
+	document.getElementById ('tooltip'). style.left=event.pageX+""px"";
+	document.getElementById ('tooltip'). style.top=event.pageY+""px"";
+})
+
+.on('mouseout',function(){
+	var div=document.getElementById ('tooltip');
+	div.style.display='none';
+});
+
+svg.selectAll (""text"")
+.data (data)
+.enter ()
+.append (""text"")
+.text(function (d){
+	return ""(""+[Math.round(xScale.invert(xScale (d [""Visitors""])))]+"", ""+[Math.round(yScale.invert(yScale ( d [""Page Views""])))+"")""];
+})
+.attr (""x"", function ( d ){
+	return x Scale( d [""Visitors""])-35 })
+.at tr (""y "", function ( d ){
+	return y Scale( d ["" Page Views ""])+4 });
+
+svg.append (""g "")
+.at tr (""transform "","" translate (-20,""+( height -20)+"") "")
+.call (
+	d 33.axisBottom(x Scale )
+);
+
+sv g.append ("" g "")
+.at tr ("" transform "","" translate (-15,-15)"")
+.call (
+	d33.axisLeft(y Scale )
+);
+
+sv g.select All("".tick line"").at tr(
+""stroke-dasharray"",""2,2""
+)
+
+sv g.select All("".domain"").remove()
+
+// Add brushing
+
+const brush=d33.brush().extent([
+[20,20],
+[width,height]
+]).on(""start brush end"", brushed);
+
+const defaultSelection=[
+[x Scale.range()[o],y Scale.range()[1]],
+[x Scale.range()[1],y scale.range()[o]]
+];
+
+svg.call(brush)
+
+let idleTimeout
+function idled() { idleTimeout = null }
+
+// If you don't want dots to be selected by default on load just remove this line
+brush.move(svg,defaultSelection)
+
+// A function that set idleTimeOut to null
+function idled () {idleTimeout=null;}
+
+// A function that is triggered when brushing is performed
+
+let selectedData=data;
+
+function brushed(event){
+
+	const selection=event.selection;
+
+	if (!event.sourceEvent ||!selection)return;
+
+	const [[xO,yO],[x1,y1]]=selection;
+
+(selectedData=data.filter(
+	function filterByQuadtreeFind(id){
+
+	const visitors=xscale.invert(id.cx);
+	const pageViews=yscale.invert(id.cy);
+	if((visitors>=xscale.invert(xO)&&visitors<=xscale.invert(xl))&&(pageViews>=yscale.invert(yO)&&pageViews<=yscale.invert(y1))){
+			id.selected=true;}
+	else{
+			id.selected=false;}
+			return id.selected===true;}));
+
+selectedData.forEach(function(element,index,array){
+	array[index].index=index;})
+
+
+if(!idleTimeout)return idleTimeout=setTimeout(idled,zoo); // This line is meant to debounce excessive brushing events
+
+updateScatterPlot(selectedData);}
+
+updateScatterPlot(selectedData);
+
+}
+
+</script></body></html>"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Scatterplot that visualizes the relationship between Visitors and Page Views. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .scatterplot {
+            width: 800px;
+            height: 600px;
+            border: 1px solid lightgray;
+        }
+        
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke-width: 2;
+            shape-rendering: crispEdges;
+        }
+        
+        .axis text {
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+<div class=""scatterplot"" id=""scatterplot""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+let margin = { top: 50, right: 50, bottom: 50, left: 50 };
+let width = document.getElementById(""scatterplot"").clientWidth - margin.left - margin.right;
+let height = document.getElementById(""scatterplot"").clientHeight - margin.top - margin.bottom;
+
+let svg = d3.select(""#scatterplot"")
+    .append(""svg"")
+    .attr(""width"", width + margin.left + margin.right)
+    .attr(""height"", height + margin.top + margin.bottom)
+    .append(""g"")
+    .attr(""transform"", ""translate("" + margin.left + "","" + margin.top + "")"");
+
+let xScale = d3.scaleLinear()
+    .range([0, width]);
+
+let yScale = d3.scaleLinear()
+    .range([height, 0]);
+
+let xAxis = d3.axisBottom(xScale);
+let yAxis = d3.axisLeft(yScale);
+
+svg.append(""g"")
+    .attr(""class"", ""x axis"")
+    .attr(""transform"", ""translate(0,"" + height + "")"");
+
+svg.append(""g"")
+    .attr(""class"", ""y axis"");
+
+function update(data) {
+xScale.domain(d3.extent(data.map(d => parseInt(d[""Visitors""]))));
+yScale.domain(d3.extent(data.map(d => parseInt(d[""Page Views""]))));
+
+xAxis.scale(xScale);
+yAxis.scale(yScale);
+
+svg.select("".x.axis"")
+     	.call(xAxis)
+    	.selectAll('text')
+      	.style('text-anchor', 'middle')
+      	.attr('transform', 'rotate(-90)');
+ svg.select("".y.axis"").call(yAxis);
+
+ svg.selectAll('.dot')
+    	.data(data)
+    	.join(
+        	d => svg.append('circle'),
+        	update => update,
+        	exit => exit.remove()
+       )
+     	.attr('cx', function (d) { return xScale(parseInt(d['Visitors'])); })
+     	.attr('cy', function (d) { return yScale(parseInt(d['Page Views'])); })
+     	.attr('r', function () { return Math.random() * (10 - Math.random()); });
+
+}
+
+function zoomed(event) {
+
+svg.selectAll('.dot')
+  	   	 	 	 	  		          	  		          	  		          	  		          	  		          	  			         	
+  	   	 	 	 	  		          	  		          	  			         	
+  	   	 	 	 	               ._groups[0].forEach(function(circle){
+  	   	 	 	               circle.setAttribute(
+  	   	 	 	                  'transform',
+  	   	 	 	                  `translate(${event.transform.x}, ${event.transform.y}) scale(${event.transform.k})`
+  	   	 	 		              );
+});
+  
+svg.select("".x.axis"").call(event.transform.rescaleX(xScale));
+svg.select("".y.axis"").call(event.transform.rescaleY(yScale));
+
+}
+
+var zoomCall=d3.zoom().on('zoom',zoomed)
+
+var group= svg.call(zoomCall)
+
+var url='https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv'
+
+	d3.csv(url).then(function(data){
+	update(data)});
+</script>
+
+</body>
+
+</html> 
+```"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Visitors and Page Views. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,advanced view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 10px;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <div class=""tooltip""></div>
+
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 50, right: 50, bottom: 100, left: 100 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+        const tooltip = d3.select("".tooltip"");
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"").then(data => {
+            data.forEach(d => {
+                d[""Visitors""] = +d[""Visitors""];
+                d[""Page Views""] = +d[""Page Views""];
+                d[""Bounce Rate""] = +d[""Bounce Rate""];
+                d[""Average Session Duration""] = +d[""Average Session Duration""];
+                d[""Conversion Rate""] = +d[""Conversion Rate""];
+            });
+
+            const xScale = d3.scaleLinear()
+                .domain([0, Math.max(...data.map(d => d[""Visitors""]))])
+                .range([0, width]);
+
+            const yScale = d3.scaleLinear()
+                .domain([0, Math.max(...data.map(d => d[""Page Views""]))])
+                .range([height, 0]);
+
+            svg.append(""g"")
+                .attr(""transform"", `translate(0 , ${height})`)
+                .call(d3.axisBottom(xScale));
+
+            svg.append(""g"")
+                .call(d3.axisLeft(yScale));
+
+            svg.selectAll("".point"")
+                .data(data)
+                .enter()
+                .append(""circle"")
+                .attr(""class"", ""point"")
+                .attr(""cx"", d => xScale(d[""Visitors""]))
+                .attr(""cy"", d => yScale(d[""Page Views""]))
+                .attr(""r"", ""5"")
+                // Add event listeners for mouseover and mouseout events
+                // Show tooltip on mouseover event
+                 // Hide tooltip on mouseout event 
+                 // Add an event listener for click events 
+                 // Open Google search page when circle is clicked  
+                 // Use window.open() method to open link in new tab  
+                 // Use template literals to construct URL string  
+                 // Encode query string using encodeURIComponent() method  
+                 // Specify _blank as target attribute value  
+                 // Specify noreferrer as rel attribute value  
+                 // Specify noopener as rel attribute value   
+                  //
+                  //
+                  //
+                  //
+                   //
+                   //
+                   //
+                    //
+                    //
+
+.on('mouseover', function(event,d) { 
+   let coordinates= [event.clientX,event.clientY];
+   let trafficSource=d['Traffic Source'];
+   let region=d['Region'];
+   let deviceType=d['Device Type'];
+   let pageViews=d['Page Views'];
+   let bounceRate=d['Bounce Rate'];
+   let averageSessionDuration=d['Average Session Duration'];
+   let conversionRate=d['Conversion Rate'];
+
+      tooltip.transition().duration(200).style('opacity',.95);
+      tooltip.html(` Traffic Source :${trafficSource} </br> Region :${region} </br> Device Type :${deviceType} </br> Page views :${pageViews}</br>Bounce rate:${bounceRate}</br>Average session duration:${averageSessionDuration}</br> Conversion rate:${conversionRate}`)
+      tooltip.style('left',(coordinates[0])+'px')
+      tooltip.style('top',(coordinates[1]+20)+'px')
+
+ })
+.on('mouseout',function(){
+     tooltip.transition().duration(500).style('opacity',0);
+ })
+.on('click',function(event,d){
+     window.open(`https://www.google.com/search?q=${encodeURIComponent(`${'How To Improve'} ${'website'} ${'traffic'}?`)}&oq=${encodeURIComponent(`${'How To Improve'} ${'website'} ${'traffic'}?`)}`, '_blank','noopener noreferrer');
+})
+
+;
+
+          });
+       </script>
+
+</body>
+
+</html>
+
+```"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Scatterplot with query widgets showing the Visitors and Page Views of the given dataset. Add a slider to represent the Week.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Scatterplot with Query Widgets</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .scatterplot {
+            width: 800px;
+            height: 600px;
+            border: 1px solid black;
+        }
+        
+        .slider-container {
+            width: 800px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class=""scatterplot"" id=""scatterplot""></div>
+    <div class=""slider-container"" id=""slider-container""></div>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        // Load data
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+        .then(data => {
+            data.forEach(d => {
+                d.Week = +d.Week;
+                d.Visitors = +d.Visitors;
+                d['Page Views'] = +d['Page Views'];
+            });
+            
+            // Create scatterplot
+            const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+            const width = 800 - margin.left - margin.right;
+            const height = 600 - margin.top - margin.bottom;
+            const svg = d3.select('#scatterplot')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+            
+            const xScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d.Visitors)])
+                .range([0, width]);
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Page Views'])])
+                .range([height, 0]);
+            
+            svg.append('g')
+                .attr('transform', `translate(0, ${height})`)
+                .call(d3.axisBottom(xScale).tickFormat(d3.format('d')));
+            svg.append('g')
+                .call(d3.axisLeft(yScale).tickFormat(d3.format('d')));
+            
+            const points = svg.selectAll('circle')
+                .data(data)
+                .enter()
+                .append('circle')
+                .attr('cx', d => xScale(d.Visitors))
+                .attr('cy', d => yScale(d['Page Views']))
+                .attr('r', 5)
+                .attr('fill', 'blue')
+                .attr('opacity', 0.5);
+            
+            // Create slider
+            const slider = d3.select('#slider-container')
+                .append('div')
+                .style('width', '800px')
+                .style('height', '20px')
+                .style('background-color', 'lightgray')
+                .style('border-radius', '10px');
+            
+            const sliderHandle = slider.append('div')
+                .style('width', '20px')
+                .style('height', '20px')
+                .style('background-color', 'blue')
+                .style('border-radius', '10px')
+                .style('position', 'absolute')
+                .style('left', '0px');
+            
+            const sliderScale = d3.scaleLinear()
+                .domain([1, d3.max(data, d => d.Week)])
+                .range([0, 780]);
+            
+            slider.on('click', (event) => {
+                const week = Math.round(sliderScale.invert(event.clientX - slider.node().getBoundingClientRect().left));
+                sliderHandle.style('left', `${sliderScale(week)}px`);
+                points.attr('opacity', d => d.Week === week ? 1 : 0.1);
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Scatterplot showing the Visitors of Social Media. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Scatterplot of Social Media Visitors</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .scatterplot {
+      width: 800px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    
+    .axis path, .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class=""scatterplot"" id=""scatterplot""></div>
+  
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <script>
+    // Set up the dimensions and margins of the scatterplot
+    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+    const width = 800 - margin.left - margin.right;
+    const height = 600 - margin.top - margin.bottom;
+    
+    // Create the SVG element
+    const svg = d3.select(""#scatterplot"")
+      .append(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+    
+    // Load the data
+    d3.csv(""https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv"")
+      .then(data => {
+        // Filter the data to only include social media traffic
+        const socialMediaData = data.filter(d => d[""Traffic Source""] === ""Social Media"");
+        
+        // Convert the data types
+        socialMediaData.forEach(d => {
+          d.Week = +d.Week;
+          d.Visitors = +d.Visitors;
+        });
+        
+        // Sort the data by week
+        socialMediaData.sort((a, b) => a.Week - b.Week);
+        
+        // Set up the scales
+        const xScale = d3.scaleLinear()
+          .domain(d3.extent(socialMediaData, d => d.Week))
+          .range([0, width]);
+        
+        const yScale = d3.scaleLinear()
+          .domain(d3.extent(socialMediaData, d => d.Visitors))
+          .range([height, 0]);
+        
+        // Create the axes
+        const xAxis = d3.axisBottom(xScale);
+        const yAxis = d3.axisLeft(yScale);
+        
+        svg.append(""g"")
+          .attr(""transform"", `translate(0, ${height})`)
+          .call(xAxis);
+        
+        svg.append(""g"")
+          .call(yAxis);
+        
+        // Create the scatterplot
+        const scatterplot = svg.selectAll(""circle"")
+          .data(socialMediaData)
+          .enter()
+          .append(""circle"")
+          .attr(""cx"", d => xScale(d.Week))
+          .attr(""cy"", d => yScale(d.Visitors))
+          .attr(""r"", 5)
+          .attr(""fill"", ""steelblue"");
+        
+        // Create the line that connects the points
+        const line = d3.line()
+          .x(d => xScale(d.Week))
+          .y(d => yScale(d.Visitors));
+        
+        svg.append(""path"")
+          .datum(socialMediaData)
+          .attr(""d"", line)
+          .attr(""stroke"", ""steelblue"")
+          .attr(""stroke-width"", 2)
+          .attr(""fill"", ""none"");
+        
+        // Animate the line
+        const path = svg.select(""path"");
+        const totalLength = path.node().getTotalLength();
+        
+        path.attr(""stroke-dasharray"", totalLength + "" "" + totalLength)
+          .attr(""stroke-dashoffset"", totalLength)
+          .transition()
+          .duration(2000)
+          .attr(""stroke-dashoffset"", 0);
+      })
+      .catch(error => console.error(error));
+  </script>
+</body>
+</html>
+```"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Visitors of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Website Traffic Line Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .line-chart {
+      width: 800px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    
+    .line {
+      fill: none;
+      stroke-width: 2px;
+    }
+    
+    .highlighted-line {
+      stroke-width: 4px;
+    }
+    
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke-width: 1px;
+      shape-rendering: crispEdges;
+    }
+    
+     text {
+       font-size :12 px; 
+       font-family : sans-serif ;
+     } 
+     
+     #tooltip {  
+        position : absolute ;  
+        background-color : #f9f9f9 ;   
+        border-radius :3 px;   
+        padding-left :5 px;   
+        padding-right :5 px;  
+         pointer-events:none ;
+         opacity:.0 ;
+          color:#666666 ; 
+          z-index:-1
+       } 
+
+</style>
+
+</head>
+
+<body>
+
+<div class=""line-chart"" id=""chart""></div>
+
+<div id='tooltip'></div> 
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+// Set the dimensions and margins of the graph
+const margin = { top:20, right20, bottom30, left40 };
+const width =800 - margin.left - margin.right;
+
+const height =600 -margin.top-margin.bottom;
+
+// Append the svg object to the body of the page
+
+const svg=d3.select(""#chart"")
+.append(""svg"")
+.attr(""width"",width+margin.left+margin.right)
+.attr(""height"",height +margin.top +margin.bottom)
+.append(""g"")
+.attr(""transform"",
+`translate(${margin.left},${margin.top})`);
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv').then(data => {
+
+data.forEach(d => {
+
+ d.Visitors=+d.Visitors;
+
+});
+
+// Group data by Traffic Source
+
+ const groupedData=d3.groups(data,d=> d['Traffic Source']);
+
+ // Add X axis --> it is a date format
+
+ const xScale=d3.scalePoint()
+.domain([...new Set(data.map(d=> d.Week))])
+.range([0,width]);
+
+svg.append('g')
+.attr('transform',`translate(0,${height})`)
+.call(d3.axisBottom(xScale).tickFormat((domainNumber) => domainNumber));
+
+ // Add Y axis
+
+ const yScale=d3.scaleLinear()
+.domain([0,d3.max(data,d=> d.Visitors)])
+.range([height ,0]);
+
+svg.append('g')
+.call(d3.axisLeft(yScale));
+
+ // Draw lines for each group
+
+ const linesGroup=svg.selectAll('.lines-group')
+.data(groupedData)
+.enter()
+.append('g')
+
+linesGroup.selectAll('.line')
+.data(([key,value]) => [value])
+.enter()
+.append('path')
+.classed ('line',true)
+
+.style ('stroke',(d,i) => `hsl(${i*360/groupedData.length},100%,50%)`)
+.style ('fill','none')
+
+.on (""mouseover"",(event,p) =>{
+   event.target.classList.add (""highlighted-line"");
+   showTooltip(event,p);
+})
+
+.on (""mouseout"",(event,p) =>{
+   event.target.classList.remove (""highlighted-line"");
+   hideTooltip();
+})
+
+.transition()
+
+.duration (100)
+
+.delay ((_,i,nodes ) =>
+ i*500 )
+
+.attr ('stroke-dasharray ', function() {
+
+ return this.getTotalLength () ;
+
+ })
+
+.transition ()
+
+.duration (20000 )
+
+.ease (d31.easeLinear )
+
+.attr ('stroke-dashoffset ',function() {
+
+ return this.getTotalLength () ;
+
+ })
+
+.transition ()
+
+.delay ((_,i,nodes ) =>
+ i*500 )
+
+.duration (100)
+
+.ease (03.easeLinear )
+
+.style ('opacity ','l ')
+
+.transition ()
+
+.delay ((_,i,nodes ) =>
+ i*500 )
+.duration(30000 )
+.ease(03.easingExpOut )
+.style( 'opacity' ,'l ')
+.on (""end "",function() {
+
+this.remove ();
+
+ });
+
+function showTooltip(event,dataPoints){
+
+var tooltipHtml=`<strong>${dataPoints[O]['Traffic Source']}</strong>` ;
+
+var tooltipPosition=event.pageY+""pX"";
+
+document.getElementById(""tooltip"").innerHTML=tooltipHtml;
+
+document.getElementById(""tooltip"").style.top=tooltipPosition;
+
+document.getElementById(""tool tip"").style.opacity=.8 ;
+
+}
+
+function hideTooltip(){
+
+ document.getElementByIdC'tooltip').style.opacity=.O ;
+
+}
+
+});
+
+</script></body></html>"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Bar Chart that visualizes the Visitors for each Traffic Source in 2021-W01. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Visitors by Traffic Source in 2021-W01</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .bar {
+      fill: steelblue;
+    }
+    
+    .bar:hover {
+      fill: brown;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+    }
+  </style>
+</head>
+
+<body>
+<svg width=""800"" height=""600""></svg>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+let margin = {top: 20, right: 20, bottom: 30, left: 40};
+let width = document.body.clientWidth - margin.left - margin.right,
+height = document.body.clientHeight - margin.top - margin.bottom;
+
+let svg = d3.select(""svg"")
+.attr(""width"", width + margin.left + margin.right)
+.attr(""height"", height + margin.top + margin.bottom)
+.append(""g"")
+.attr(""transform"", ""translate("" + margin.left + "","" + margin.top + "")"");
+
+let xScale = d3.scaleBand()
+.range([0, width])
+.padding(0.2);
+
+let yScale = d3.scaleLinear()
+.range([height,0]);
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+.then(data => {
+
+data.forEach(d => {
+if (d['Week'] === '2021-W01') {
+
+xScale.domain(data.map(d => d['Traffic Source']));
+yScale.domain([0,d3.max(data,d=>+d['Visitors'])]);
+
+svg.selectAll("".bar"")
+.data(data)
+.enter().append('rect')
+.classed('bar',true)
+.attr('x',function(d) { return xScale(d['Traffic Source']); })
+.attr('y',function(d) { return yScale(+d['Visitors']); })
+.attr('width',xScale.bandwidth())
+.attr('height',function(d) { return height-yScale(+d['Visitors']); });
+
+}
+});
+
+const zoomBehavior= d3.zoom()
+.scaleExtent([.5 ,10])
+.on ('zoom' ,() =>{
+const transform=d3.event.transform
+const bars= svg.selectAll('.bar')
+
+bars
+.transition()
+.duration(100)
+.delay((_,i)=>i*50)
+
+})
+
+svg.call(zoomBehavior)
+
+})
+.catch(error => console.error(error));
+</script>
+
+</body></html>"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Bar Chart that visualizes the Visitors for each Traffic Source in 2021-W01. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Visitors by Traffic Source in 2021-W01</title>
+  <style>
+    /* add some basic styling to make the chart look decent */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .bar {
+      fill: steelblue;
+    }
+    
+    .bar:hover {
+      fill: brown;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+    }
+  </style>
+</head>
+
+<body>
+<svg width=""800"" height=""600""></svg>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+// Set up SVG
+const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+const width = +svg.attr(""width"") - margin.left - margin.right;
+const height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+.then(data => {
+
+data.forEach(d => d.Visitors = +d.Visitors);
+
+// Filter data for week '2021-W01'
+const filteredData = data.filter(d => d.Week === '2021-W01');
+
+// Group by Traffic Source and sum Visitors
+const groupedData = d3.groups(filteredData, d => d['Traffic Source'])
+.map(([key, values]) => ({ key, value : d3.sum(values,d=>+d.Visitors) }));
+
+groupedData.sort((a,b)=> b.value-a.value)
+
+// Set up scales
+const xScale = d3.scaleBand()
+.domain(groupedData.map(d=>(d.key)))
+.range([0,width])
+.paddingInner(0.2)
+.paddingOuter(0.2);
+
+const yScale=d3.scaleLinear()
+.domain([0,d3.max(groupedData,d=>+d.value)])
+.range([height-margin.bottom ,margin.top]);
+
+
+
+ // Add bars
+
+ svg.selectAll('rect')
+.data(groupedData)
+.enter()
+.append('rect')
+.attr('x', (s) => xScale(s.key))
+.attr('y', (s) => yScale(s.value))
+.attr(""transform"", `translate(${margin.left}, ${margin.top})`)
+.transition().duration(100).delay((_,i)=>i*50)
+.style(""opacity"", ""100"")
+.style(""fill"",""steelblue"")
+.on(""mouseover"",(event,s)=>{
+        const[xt,yt]=[event.clientX,event.clientY];
+        div.transition()		
+                .duration(200)		
+                .style(""opacity"", ""100"");		
+            div	.html(`Traffic source : ${s.key} </br> Visitor count :${s.value}` )	
+                .style(""left"", `${xt}px`)		
+                .style(""top"", `${yt}px`);
+})
+.on('mouseout',(event,s)=>{
+div.transition()		
+                .duration(500)		
+                .style(""opacity"",""0"");
+})
+
+.call(
+          drag()
+            // set the subject of the drag event to be the bar itself (the SVG rect element)
+            // this is also where you could set a custom subject if needed
+            // such as a group element wrapping the rect and other elements like text labels
+            // or even an invisible proxy element that represents a different target area than what's visible on screen 
+          )
+
+
+
+
+function drag() {
+
+return dragstarted();
+
+function dragstarted(event){
+let selected=event.subject;
+
+selected.raise();
+selected=selected.clone(true);
+selected.style.opacity=100;
+
+let initialX=event.x,
+initialY=event.y,
+x=initialX,
+y=initialY;
+
+if(event.sourceEvent.type==='touchstart'){
+[x,y]=[event.sourceEvent.touches[0].clientX,event.sourceEvent.touches[0].clientY]
+}
+
+dragged(selected,x,y)
+
+function dragged(selected,x,y){
+  
+selected.style.cursor='grabbing';
+  
+if(event.sourceEvent.type==='touchmove'){
+[x,y]=[event.sourceEvent.touches[0].clientX,event.sourceEvent.touches[0].clientY]
+}
+else{
+[x,y]=[event.x,event.y];
+}
+
+if(x>=width || x<=10 || y>=height || y<=10){return}
+  
+selected.setAttributeNS(null,""x"",(parseInt(selected.getAttributeNS(null,""x""))+(parseInt(x)-parseInt(initialX))));
+initialX=x
+  
+}
+
+document.addEventListener('mousemove',dragged);
+document.addEventListener('touchmove',dragged);
+document.addEventListener(
+'mouseup',
+()=>{
+document.removeEventListener(
+'mousemove',
+dragged),
+document.removeEventListener(
+'touchmove',
+dragged),
+ended(selected)},
+{once:true}
+);
+
+document.addEventListener(
+'touchend',
+()=>{
+document.removeEventListener(
+'mousemove',
+dragged),
+ document.removeEventListener(
+'touchmove',
+ dragged),
+
+ended(selected)},
+{once:true}
+); 
+
+
+function ended(){
+console.log(parseInt(this.getAttributeNS(null,'x')));
+this.style.cursor='grab';
+this.remove();
+}
+
+return selected; 
+}
+
+
+}
+
+
+});
+
+var div=d3.select('#tooltip').append('div')
+div.append(div).attr(class,'tooltip').attr(opacity,'none')
+
+</script></body></html>"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a Bar Chart that visualizes the Visitors for each Traffic Source in 2021-W01. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Visitors.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Website Traffic Bar Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .bar {
+      fill: steelblue;
+    }
+    
+    .bar:hover {
+      fill: brown;
+    }
+    
+    .axis--x path {
+      display: none;
+    }
+    
+    select {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+  </style>
+</head>
+
+<body>
+<select id=""sort-select"">
+<option value=""asc"">Ascending</option>
+<option value=""desc"">Descending</option></select><svg width=""500"" height=""300""></svg>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>let margin = {top: 20, right: 20, bottom: 30, left:40},
+width =500-margin.left-margin.right,
+height=300-margin.top-margin.bottom;
+
+let svg=d3.select(""svg"")
+.attr(""width"",width+margin.left+margin.right)
+.attr(""height"",height+margin.top+margin.bottom)
+.append(""g"")
+.attr(""transform"",""translate(""+margin.left+"",""+margin.top+"")"");
+
+let xScale=d3.scaleBand()
+.range([0,width])
+.padding(0.1);
+
+let yScale=d3.scaleLinear()
+.range([height,0]);
+
+let xAxis=d3.axisBottom(xScale);
+let yAxis=d3.axisLeft(yScale);
+
+svg.append(""g"")
+.attr(""class"",""axis axis--x"")
+.attr(""transform"",""translate(0,""+height+"")"");
+
+svg.append('g')
+.classed('y-axis',true)
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv').then(data=>{
+
+data.forEach(d=>{
+if(d['Week']==='2021-W01'){
+if(!isNaN(parseFloat(d['Visitors']))){
+d['Visitors']=parseFloat(d['Visitors']);
+}
+}
+});
+
+data=data.filter(function(row){
+return row['Week']==='2021-W01';
+})
+
+data.sort((a,b)=>a.Visitors-b.Visitors)
+
+update(data,'asc');
+});
+
+function update(data/order){
+
+xScale.domain(data.map(function(d){return d[""Traffic Source""]}));
+yScale.domain([0,d3.max(data,function(d){return d[""Visitors""];})]);
+
+svg.selectAll("".bar"")
+.data(data)
+.enter().append('rect')
+.classed('bar',true)
+.on('mouseover',function(){
+tooltip.style.display=null
+})
+.on('mouseout',function(){
+tooltip.style.display='none'
+})
+.merge(svg.selectAll('.bar'))
+.transition()
+.duration(750)
+.delay((_,i)=>i*50)
+.attr('x',(d,i)=>i*xScale.bandwidth())
+.attr('y',(d,i)=>yScale(+[i]['Visitors']))
+.transition()
+.duration(750)
+.delay((_,i)=<i*50>)
+.atttrt'widdth'(xscale.bandwidith())
+
+svgg.select('.axis--x')
+.transition()
+.call(xAxis.tickFormat(function (text) { return text.split('').join('\n'); }));
+
+svgg.select('.y-axis')
+.call(yAxis);
+
+}
+
+document.getElementById ('sort-select').addEventListener ('change'. function (event) {
+
+const order=event.target.value;
+
+update (data.filter(function(row){
+return row ['Week'] === '2021-W01';
+}),order);
+});</script></body></html>"

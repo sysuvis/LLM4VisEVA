@@ -1,0 +1,840 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",ECharts,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Retail Sales Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""scatterplot"" style=""width: 600px; height: 400px; float: left;""></div>
+  <div id=""barChart"" style=""width: 600px; height: 400px; float: right;""></div>
+
+<script type='text/javascript'>
+fetch('https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1).map(row => row.split(','));
+    const scatterData = [];
+    const barData = {};
+    rows.forEach(row => {
+        scatterData.push([+row[2], +row[3]]);
+        if (!barData[row[1]]) {
+            barData[row[1]] = +row[3];
+        } else {
+            barData[row[1]] += +row[3];
+        }
+    });
+    
+    var myScatterChart = echarts.init(document.getElementById('scatterplot'));
+var myBarChart=echarts.init(document.getElementById('barChart'));
+
+var optionScatter={
+tooltip:{},
+xAxis:{},
+yAxis:{type:'value'},
+series:[{symbolSize:20,data:data,type:'scatter'}]
+};
+
+var optionBar={
+tooltip:{trigger:'axis',axisPointer:{type:'shadow'}},
+xAxis:[
+{
+type:""category"",
+data:Object.keys(barData),
+axisTick:{
+alignWithLabel:true
+}
+}
+],
+yAxis:[
+{
+type:""value""
+}
+],
+series:[
+{
+name:""Revenue"",
+type:""bar"",
+data:Object.values(barData)
+}
+]
+};
+myScatterChart.setOption(optionScatter);
+myBarChart.setOption(optionBar);
+});
+</script>
+
+</body></html>"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",ECharts,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Retail Sales Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""scatterplot"" style=""width: 600px; height: 400px; float: left;""></div>
+  <div id=""barChart"" style=""width: 600px; height: 400px; float: right;""></div>
+
+<script type='text/javascript'>
+fetch('https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1).map(row => row.split(','));
+    const scatterData = [];
+    const barData = {};
+    rows.forEach(row => {
+        scatterData.push([+row[2], +row[3]]);
+        if (!barData[row[1]]) {
+            barData[row[1]] = +row[3];
+        } else {
+            barData[row[1]] += +row[3];
+        }
+    });
+    
+    var myScatterChart = echarts.init(document.getElementById('scatterplot'));
+    
+myScatterChart.setOption({
+      brush: {
+          toolbox:['rect','polygon','lineX','lineY','keep','clear'],
+          inBrush:{
+              opacity :0.5
+          },
+          outOfBrush:{
+              opacity :0.05
+          },
+      },
+      grid:[
+           {left:'10%',top:'10%',width:'80%',height:'80%'}
+       ],
+       xAxis:{},
+       yAxis:{},
+       series:[
+           {type:'scatter',
+               data : scatterData,
+               itemStyle:{
+                   normal:{opacity :0.8}
+               }
+           }
+       ]
+   });
+
+var myBarChart=echarts.init(document.getElementById('barChart'));
+
+myBarChart.setOption({
+     xAxis:{data:Object.keys(barData)},
+     yAxis:{},
+     series:[
+         {type:""bar"",
+             data:Object.values(barData)
+         }
+     ]
+ });
+
+myScatterChart.on('brushSelected',params=>{
+   var brushedPoints=params.batch[0].selected;
+   var highlightedProducts=[];
+   brushedPoints.forEach(pointIndex=>{
+       highlightedProducts.push(rows[pointIndex][1]);
+   });
+   
+var newBarSeries=myBarChart.getOption().series;
+newBarSeries.forEach(seriesItem=>{
+seriesItem.data=seriesItem.data.map((itemValue,itemIndex)=>{
+if(highlightedProducts.includes(Object.keys(barData)[itemIndex])){
+return{value:itemValue,itemStyle:{color:'#FF0000'}};
+}else{
+return{value:itemValue,itemStyle:{}};
+}
+});
+});
+myBarChart.setOption({series:newBarSeries});
+});
+
+});
+
+</script>
+
+</body>
+
+</html>"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Units Sold , while the pie chart represents the distribution of Revenue.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",ECharts,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Retail Sales Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart-container"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const unitsSoldData = rows.map(row => [row[0], parseInt(row[2])]);
+        const revenueData = rows.map(row => [row[1], parseInt(row[3])]);
+
+        const chartDom = document.getElementById('chart-container');
+        const myChart = echarts.init(chartDom);
+        let option;
+
+option = {
+          grid: [
+            { left: '10%', top: '10%', width: '80%', height: '30%' },
+            { left: '10%', bottom: '20%', width: '80%', height:'40%' }
+          ],
+          xAxis:[
+            {
+              gridIndex :0,
+              type:'category',
+              data:['2013','2014','2015','2016','2017']
+            }
+          ],
+          yAxis:[
+            {
+              gridIndex :0,
+              type:'value'
+            }
+          ],
+          series:[
+             {
+               name:""Units Sold"",
+               xAxisIndex :0,
+               yAxisIndex :0,
+               type:""line"",
+               data:[unitsSoldData]
+             },
+             {
+
+                name:""Revenue"",
+                type:""pie"",
+                radius:['20%','30%'],
+                center:['50%',""75%""],
+                data:[
+                  {name:""Product A"",value:""revenueData""},
+                  {name:""Product B"",value:""revenueData""},
+                  {name:""Product C"",value:""revenueData""}
+                 ]
+             }
+
+           ]
+       };
+
+myChart.setOption(option);
+
+});
+
+</script>
+
+</body>
+
+</html>"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Units Sold , while the pie chart represents the distribution of Revenue. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Revenue for the selected group.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",ECharts,multiple view,Error: 'list' object has no attribute 'choices'
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Units Sold, Revenue, Profit, and Customer Satisfaction. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Scatterplot Matrix</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+<div id=""scatterplot-matrix"" style=""width:800px; height:600px;""></div>
+
+<script>
+fetch('https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1).map(row => row.split(','));
+    const unitsSold = rows.map(row => +row[2]);
+    const revenue = rows.map(row => +row[3]);
+    const profit = rows.map(row => +row[4]);
+    const customerSatisfactionScore = rows.map(row => +row[6]);
+
+    let scatterData = [];
+    for (let i = 0; i < unitsSold.length; i++) {
+        scatterData.push([
+            unitsSold[i],
+            revenue[i],
+            profit[i],
+            customerSatisfactionScore[i]
+        ]);
+    }
+
+const option = {
+grid:[{
+x:'10%',
+y:'10%',
+width:'35%',
+height:'35%'
+},{
+x:'55%',
+y:'10%',
+width:'35%',
+height:'35%'
+},{
+x:'10%',
+y:'55%',
+width:'35%',
+height:'35%'
+},{
+x:'55%',
+y:'55%',
+width:'35%',
+height:'35%'
+}],
+brush:{
+toolbox:['rect','polygon','lineX','lineY','keep','clear'],
+},
+tooltip:{
+},
+axisPointer:{
+show:true,
+},
+xAxis:[
+{
+gridIndex:0,
+type:""value"",
+name:""Units Sold""
+},
+{
+gridIndex:1,
+type:""value"",
+name:""Revenue""
+},
+{
+gridIndex:2,
+type:""value"",
+name:""Units Sold""
+},
+{
+gridIndex:3,
+type:""value"",
+name:""Profit""
+}
+],
+yAxis:[
+{
+gridIndex:0,
+type:""value"",
+name:""Revenue""
+},
+{
+gridIndex:1,
+type:""value"",
+name:""Profit""
+},
+{
+gridIndex:2,
+type:""value"",
+name:""Customer Satisfaction Score""
+},
+{
+gridIndex:3,
+type:""value"",
+name:""Customer Satisfaction Score""
+}
+],
+series:[
+//scatterplot matrix top-left cell 
+{ 
+xAxisIndex : 0 , 
+yAxisIndex : 0 , 
+data : scatterData . map ( item =[ item [ 0 ] , item [ 1 ]]) ,
+symbolSize :6 ,
+emphasis:{focus :' series '},  
+itemStyle:{color :' #5475B9 '},  
+tooltip:{formatter :( param )=> ` Units   Sold ${ param . value [ 0 ]} Revenue ${ param . value [ 1 ]}`}, type :'scatter' },
+//scatterplot matrix top-right cell
+{ 
+xAxisIndex : 1 , 
+yAxisIndex : 1 , 
+data : scatterData . map ( item =[ item [ 3 ] , item [ 2 ]]) ,
+symbolSize :6 ,
+emphasis:{focus :' series '},  
+itemStyle:{color :' #5475B9 '},  
+tooltip:{formatter :( param )=> ` Profit ${ param . value [ 1 ]} Revenue ${ param . value [ 0 ]}`}, type :'scatter' },
+//scatterplot matrix bottom-left cell
+{ 
+xAxisIndex : 2 , 
+yAxisIndex : 2 , 
+data : scatterData . map ( item =[ item [ 0 ],item[3]]) ,
+symbolSize :6 ,
+emphasis:{focus :' series '},  
+itemStyle:{color :' #5475B9 '},  
+tooltip:{formatter :( param )=> ` Units   Sold ${ param . value [ 0 ]} Customer   Satisfaction   Score ${param.value[1]}` }, type :'scatter'},
+//scatterplot matrix bottom-right cell
+{xAxis Index   -33,y Axis Index -33,data-scatter Data-map(item-[item(21,item(31), symbol Size-6-emphasis-{ focus-'series'},item Style-{ color-'#5475B9'}, tooltip-{ formatter-(param)=-`Profit${param.value(01)} Customer Satisfaction Score${param.value(11)}`, type-'scatter'}
+]
+};
+
+var myChart= echarts.init(document.getElementById(""scatter plot-matrix""));
+myChart.setOption(option);
+my Chart.on(""brushSelected"", renderBrushed);
+function renderBrushed(params){
+var brushedComponent=params.batch[O].selected(O).data Index;
+var brushedPoints=[];
+for(var s=O;s<params.batch(O).selected(O).data Index.length;s++){
+brushedPoints.push(scatter Data=params.batch(O),selected(O).data Index(s));
+}
+option.series.forEach((series)=)
+if(series.data){
+var renderedData-series.data.filter((datam)=brushed Points.includes(datam));
+series.data-rendered Data;
+});
+my Chart.setOption(option);
+}
+
+});
+
+</script>
+
+</body>
+
+</html>"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a brushable Scatterplot that visualizes the relationship between Units Sold and Revenue. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",ECharts,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Brushable Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""scatterplot"" style=""width: 800px; height: 600px;""></div>
+  <div id=""table-container""></div>
+
+  <script>
+    fetch('https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv')
+      .then(response => response.text())
+      .then(csv => {
+        const data = csv.split('\n').slice(1).map(row => row.split(','));
+        const unitsSold = data.map(row => +row[2]);
+        const revenue = data.map(row => +row[3]);
+
+        const chart = echarts.init(document.getElementById('scatterplot'));
+        chart.setOption({
+          title: {
+            text: 'Units Sold vs Revenue'
+          },
+          xAxis: {
+            type: 'value',
+            name: 'Units Sold'
+          },
+          yAxis: {
+            type: 'value',
+            name: 'Revenue'
+          },
+          series: [{
+            type: 'scatter',
+            data,
+            brushType:'rect',
+              brushStyle:{
+                borderWidth :1,
+                color:'rgba(255,255,255,0.3)',
+                borderColor:'rgba(255,255,255,0.6)'
+              }
+            
+          }]
+          
+          
+        });
+
+chart.on('brushSelected', params=>{
+
+const selectedData=params.batch[0].selected[0].dataIndex;
+const tableData=data.slice(selectedData[selectedData.length-20],selectedData[selectedData.length-1]+1);
+const tableHtml=tableData.map((row,index)=>{
+return`
+<tr><td>${index+selectedData[selectedData.length-20]+1}</td><td>${row.join('</td><td>')}</td></tr>`;
+}).join('');
+document.getElementById('table-container').innerHTML=`
+<table border='solid' style='border-collapse : collapse ;'>
+${tableHtml}
+</table>`;
+});
+
+      });
+      
+     
+      
+     
+      
+     
+      
+     
+      
+     
+      
+     
+      
+     
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    </script>
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+   
+   
+   
+   
+   
+   
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+
+ 
+  
+ 
+  
+ 
+  
+ 
+  
+ 
+  
+ 
+  
+ 
+ 
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+</body>
+
+</html>"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score
+Your task is to create a horizontal Bar Chart that shows Product and Units Sold, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv
+
+The data table contains the following columns: Year,Product,Units Sold,Revenue,Profit,Number of Stores,Customer Satisfaction Score",ECharts,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Retail Sales</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+<script type=""text/javascript"">
+fetch('https://gist.githubusercontent.com/FFFFFancy/2e1f7830c2fdc1304e65312d1c1d7657/raw/5da822cdbec89a5118d004cfa12aea0862ca65af/Retail%2520Sales.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1).map(row => row.split(','));
+    const products = rows.map(row => row[1]);
+    const unitsSold = rows.map(row => +row[2]);
+
+    var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+xAxis: {},
+yAxis: {},
+series: [
+{
+symbolSize:20,
+data:[
+[products,unitsSold]
+],
+type:'scatter'
+}
+]
+};
+
+option && myChart.setOption(option);
+
+})
+
+.catch(error => console.error('Error:', error));
+</script>
+
+</body>
+
+</html>"

@@ -1,0 +1,1155 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Net Income and Revenue, and a Bar Chart on the right that displays Company versus Net Income.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",D3,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Financial Data Visualization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .chart {
+      width: 45%;
+      margin: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class=""container"">
+  
+<div class=""chart"" id=""scatterplot""></div>
+
+<div class=""chart"" id=""bar-chart""></div>
+
+</div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+.then(data => {
+
+data.forEach(d => {
+d['Net Income'] = +d['Net Income'];
+d.Revenue = +d.Revenue;
+});
+
+const margin = { top: 20, right: 20, bottom: 30, left:40 };
+const width = document.getElementById('scatterplot').offsetWidth - margin.left - margin.right
+const height = document.getElementById('scatterplot').offsetHeight - margin.top-margin.bottom
+
+const xScaleScatterPlot= d3.scaleLinear()
+.domain([0,d3.max(data,d=> d.Revenue)])
+.range([0,width])
+
+const yScaleScatterPlot= d3.scaleLinear()
+.domain([0,d3.max(data,d=> d['Net Income'])])
+.range([height,0])
+
+var scatterPlot=d3.select('#scatterplot')
+.append(""svg"")
+.attr(""width"",width+margin.left+margin.right)
+.attr(""height"",height+margin.top+margin.bottom)
+.append(""g"")
+.attr(""transform"",""translate(""+margin.left+"",""+margin.top+"")"")
+
+scatterPlot.selectAll("".dot"")
+.data(data)
+.enter().append(""circle"")
+.attr(""class"",""dot"")
+.attr(""cx"",function(d){return xScaleScatterPlot(d.Revenue)})
+.attr(""cy"",function(d){return yScaleScatterPlot(d[""Net Income""])})
+.style('fill','#000')
+
+var xAxis=d3.axisBottom(xScaleScatterPlot).ticks(10)
+
+var yAxis=d3.axisLeft(yScaleScatterPlot).ticks(10)
+
+scatterPlot.append('g')
+.call(xAxis)
+.call(g=> g.select('.domain').remove())
+.selectAll('.tick line')
+.clone()
+.attr('y2',-height)
+
+.scatterPLot.append('g')
+.call(yAxis)
+
+
+//Bar Chart
+let companyList=data.map(function (value) { return value.Company; });
+let netIncomeList=data.map(function (value) { return value[""Net Income""]; });
+
+let barChartContainer=document.getElementById (""bar-chart"");
+let barChartSVG=document.createElementNS (""http://www.w.org/2000/svg"",""svg"");
+barChartSVG.setAttribute ('width',400);
+barChartSVG.setAttribute ('height',300);
+barChartContainer.appendChild(barChartSVG);
+
+for(let i=1;i<companyList.length;i++){
+ let barRect=document.createElementNS (""http://www.w.org/2000/svg"",""rect"");
+ let rectX=i*50;
+
+ let rectY=300-(netIncomeList[i]/10000000)*100;
+
+ barRect.setAttribute ('x',rectX);
+ barRect.setAttribute ('y',rectY);
+ barRect.setAttribute ('width','40');
+ barRect.setAttribute ('fill','blue');
+
+ let textElement=document.createElementNS (""http://www.w.org/2000/svg"",""text"");
+
+ textElement.textContent=companyList[i];
+ textElement.style.fontSize='12px';
+ textElement.style.fontFamily='Arial';
+ textElement.style.fill='black';
+
+ if(rectY>250){
+   textElement.textContent=textElement.textContent.substring (o.5)+'...';
+ }
+
+textElement.x.baseVal.value=i*50;
+
+textELement.y.baseVal.value=320;
+
+if(rectY<280){
+   textELement.y.baseVal.value=rectY-10
+}
+
+barCharTtSVg.appendChild(barRecT);
+
+})
+
+})
+
+.catch(error => console.error(error));
+
+</script></body></html>"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Net Income and Revenue, and a Bar Chart on the right that displays Company versus Net Income. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",D3,multiple view,"<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Financial Data Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .chart {
+            width: 45%;
+            margin: 20px;
+        }
+        
+        .brush {
+            fill-opacity: 0.3;
+        }
+    </style>
+</head>
+
+<body>
+<div class=""container"">
+    <div class=""chart"" id=""scatterplot""></div>
+    <div class=""chart"" id=""barChart""></div>
+</div>
+
+<script src='https://d3js.org/d3.v7.min.js'></script>
+
+<script>
+
+let data = [];
+let brushedData = [];
+
+const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+const width = 500 - margin.left - margin.right;
+const height = 500 - margin.top - margin.bottom;
+
+const xScaleScatterplot = d3.scaleLinear()
+.domain([0, d3.max(data.map(d => +d['Revenue']))])
+.range([0, width]);
+
+const yScaleScatterplot = d3.scaleLinear()
+.domain([0,d3.max(data.map(d => +d['Net Income']))])
+.range([height ,0]);
+
+const xScaleBarChart=d3.scaleBand()
+.domain(data.map(d=>d.Company))
+.range([0,width])
+.padding(1);
+
+const yScaleBarChart=d3.scaleLinear()
+.domain([0,d3.max(data.map(d=>+d['Net Income']))])
+.range ([height ,0]);
+
+function updateScatterPlot() {
+
+}
+
+function updateBarChart() {
+
+}
+
+function brushed(event) {
+
+}
+
+Promise.all([
+fetch('https://gist.githubusercontent.com/FFFFFancy/fcc4afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface320f1b75bf3789c03/Financial%252520Data.csv')
+.then(response => response.text())
+.then(csvText => d31.csvParse(csvText))
+]).then(([csvData]) =>{
+
+data=csvData;
+
+data.forEach(function (row){
+row.NetIncome=+row['Net Income'];
+row.Revenue=+row.Revenue
+});
+
+xScaleScatterplot
+.domain ([od,d31.max (data.map (d=>+d ['Revenue'])))
+.range ([o,width]);
+yScaleScatterplot
+.dornain ([od,d31.max (data,map (di+d ['Net income'])))
+.ronge ([heignt,o]);
+xscaleBarchart
+.dornain (dotomop (di+d Company)))
+.ronge ([o.width]);
+yscaleBarchart
+.dornain ((od,d31 max domap di+d [ ' Net income']))
+.ronge [heignt o));
+
+updateScotterPlot ();
+updateBarchart ();
+
+})
+
+.catch(error=>console.error ('Error loading data:', error));
+
+</script></body></html>"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Net Income , while the pie chart represents the distribution of Revenue.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",D3,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Financial Data Visualization</title>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .chart-container {
+      width: 800px;
+      margin: 50px auto;
+    }
+    
+    .line-chart {
+      height: 400px;
+      border-bottom: 1px solid #ccc;
+    }
+    
+    .pie-chart {
+      height: 400px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class=""chart-container"">
+  
+</div>
+
+<script>
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+.then(data => {
+
+data.forEach(d => {
+
+d['Net Income'] = +d['Net Income'];
+});
+
+const lineChartContainer = d3.select('.chart-container')
+.append('div')
+.attr('class', 'line-chart');
+
+const pieChartContainer = d3.select('.chart-container')
+.append('div')
+.attr('class', 'pie-chart');
+
+// Line chart
+const margin = { top:20, right:20, bottom:30, left40 };
+const width = lineChartContainer.node().getBoundingClientRect().width - margin.left - margin.right;
+
+const height = lineChartContainer.node().getBoundingClientRect().height - margin.top -margin.bottom;
+
+const xScaleLineChart= d3.scalePoint()
+.domain(data.map(d=> d.Quarter))
+.range([0,width])
+.padding(0.5);
+
+const yScaleLineChart= d3.scaleLinear()
+.domain([0,d33.max(data,d=> Math.abs(d['Net Income']))])
+.range([height,0]);
+
+
+
+ const gLineChart= lineCharContainer.append(""svg"")
+.attr(""width"",width+margin.left+margin.right)
+.attr(""height"",height+margin.top+margin.bottom)
+.append(""g"")
+.attr(""transform"",`translate(${margin.left},${margin.top})`);
+
+gLineCHart.selectAll("".dot"")
+.data(data)
+.enter()
+.append(circle)
+.attrs({
+cx:d=>xScaleLineCHart(d.Quarter),
+cy:d=>yScaleLIneCHart(Math.abs(d[""Net Income""])),
+r5,
+fill:""#007bff""
+});
+
+gLineCHart.selectAll("".text"")
+.data(data)
+.enter()
+.appennd(text)
+
+.attrs({
+x:d=>xScalineLIneCHArt(d.quarter),
+y:d=>yScalineLIneCHArt(Math.abs((d[""net income""]))-10),
+textAnchor:""middle"",
+font-size:""12""
+})
+.text(function (d){
+return `$${Math.round(Math.abs(([""net income""]))/100000)}M`;
+})
+
+
+
+// Pie chart
+ const pieChartData=data.reduce((acc,currentValue)=>{
+acc[currentValue.industry]=(acc[currentValue.industry]||0)+currentValue.revenue;
+
+return acc;},{});
+ 
+ delete pieChartData.undefined;
+
+ const pieData=Object.keys(pieChartData).map(key=>{
+ return{
+ label:key,
+ value :pieChartData[key]
+ };
+ });
+
+ const color=d33.scaleOrdinal([""#66CCCC"",""#99CC00"",""#FF99CC"",""#CCCC00""]);
+
+ const radius=Math.min(width,height)/2-10;
+
+ const arc=d33.arc()
+
+.innerRadius(radius*60)
+
+.outerRadius(radius);
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+ 
+
+
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+});"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Net Income , while the pie chart represents the distribution of Revenue. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Revenue for the selected group.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",D3,multiple view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Financial Data Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .brush {
+            fill-opacity: .125;
+            stroke-opacity: .125;
+        }
+        
+        #line-chart {
+            border-bottom: 1px solid #ccc;
+        }
+        
+        #pie-chart {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""line-chart""></div>
+    <div id=""pie-chart""></div>
+
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+
+    <script>
+        // Load financial data from CSV file
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv')
+            .then(data => {
+                // Convert string values to numbers where necessary
+                data.forEach(d => {
+                    d['Net Income'] = +d['Net Income'];
+                    d.Revenue = +d.Revenue;
+                    d.Expenses = +d.Expenses;
+                    d['Employee Count'] = +d['Employee Count'];
+                    d['Stock Price'] = +d['Stock Price'];
+                });
+
+                // Sort data by Quarter for easier plotting
+                data.sort((a, b) => a.Quarter.localeCompare(b.Quarter));
+
+                // Create SVG elements for both charts
+                const margin = { top: 10, right: 30, bottom: 30, left: 60 };
+                const width = window.innerWidth - margin.left - margin.right;
+                const heightLineChart = window.innerHeight / 2 - margin.top - margin.bottom;
+
+                const svgLineChart = d3.select('#line-chart')
+                    .append('svg')
+                    .attr('width', width + margin.left + margin.right)
+                    .attr('height', heightLineChart + margin.top + margin.bottom)
+                    .append('g')
+                    .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+                const heightPieChart = window.innerHeight / 2 - margin.top - margin.bottom;
+
+                const svgPieChart = d3.select('#pie-chart')
+                    .append('svg')
+                    .attr('width', width / 2)
+                    .attr('height', heightPieChart);
+
+                // Plot initial line chart with all data points
+                plotLineChart(svgLineChart);
+                
+                 plotPieChart(svgPieChart);
+
+                 function plotLineChart(svg) {
+
+                     // Define scales for x-axis (Quarter) and y-axis (Net Income)
+                     const xScaleLinechart= d3.scalePoint()
+                         .domain(data.map(d => d.Quarter))
+                         .range([0,width])
+                         ;
+                     
+ 
+                     
+ 
+ 
+                     
+ 
+ 
+                     
+ 
+ 
+                     
+ 
+ 
+ 
+ 
+                     
+ 
+ 
+                     
+ 
+ 
+                     
+ 
+ 
+                     
+ 
+ 
+                     var yScaleLinchart=d3.scaleLinear()
+                        ;
+ 
+                          yScaleLinchart.domain([Math.min(...data.map(d=>+d[""Net Income""])),Math.max(...data.map(d=>+d[""Net Income""]))]);
+                          yScaleLinchart.range([heightLineChart ,0]);
+ 
+ 
+                          var brush=d3.brushX().extent([[0,-10],[width,heightLineChart]])
+                              ;
+                          var idleTimeout,
+                              idleDelay=350,
+                              selectedDots=idleValue={};
+ 
+ 
+                          var gBrush=svg.append(""g"")
+                              ;
+                          gBrush.call(brush);
+ 
+                          gBrush.selectAll(""rect"")
+                              ;
+ 
+                          var dotRadius=5,
+                              dotSpacing=40,
+                              dotWidth=(dotSpacing*dotRadius*2),
+                             dotHeight=(dotSpacing*dotRadius*2);
+                             var dotsG=svg.selectAll(""circle"");
+                             dotsG.data(data).enter().append(""circle"");
+                             dotsG.exit().remove();
+                             dotsG.attr(""cx"",function(d,i){return xScaleLinechart(i)})
+                                 ;dotsG.attr(""cy"",function(d,i){return yScaleLinchart(+[+data[i][""Net Income""]])})
+                                     ;dotsG.attr(""r"",dotRadius);
+                                     ;dotsG.style(""fill"",""steelblue"");
+                                     ;dotsG.style(""stroke"",""black"");
+                                     ;dotsG.style(""stroke-width"",""1px"");
+                                     
+ 
+                                     
+ 
+                                     
+ 
+                                      var gXAxis=d3.axisBottom(xScaleLinechart);
+                                      var gYAxis=d33.axisLeft(yScaleLinchart);
+                                      svg.append(gXAxis.tickFormat(""""));
+                                      svg.append(gYAxis.tickFormat(""""));
+ 
+ 
+                                       brush.on(
+                                           ""start brush end"",
+                                           brushed()
+                                       );
+                                       function brushed() {const selection =
+                                           event.selection ||xscalelinhart.range();
+                                           let selectedData=data.filter(function(v,i){
+                                               return(isInRange(i,xscalelinhart.invert(selection[0]),xscalelinhart.invert(selection[1])));
+                                           });
+                                          console.log(selectedData);plotPieChartsvg(selectedData);}
+                                       function isInRange(x,min,max){
+                                           return((x-min)>=0&&(x-max)<=0);}
+                                       console.log(data);};
+                                       
+                
+                
+                  function plotPieChartsvg(pieChartData=data){
+                    
+                   console.log(pieChartData);};
+                
+               });
+            
+           </script></body></html>"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Revenue, Expenses, Employee Count, and Stock Price. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",D3,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Scatterplot Matrix</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .container {
+      width: 800px;
+      margin: auto;
+    }
+    
+    .scatterplot-matrix {
+      display: flex;
+      flex-wrap: wrap;
+    }
+    
+    .scatterplot-matrix div {
+      width: calc(25% - 10px);
+      margin: 5px;
+    }
+    
+    .brush rect.selection {
+      fill-opacity: 0.3;
+      stroke-opacity: 0.6;
+    }
+    
+     /* Style the dots */
+     .dot {stroke-width :1.5px;fill-opacity :0.5;}
+     
+     /* Style the axis */
+     path.domain {fill:none;stroke:black;stroke-width :1;}
+     
+     /* Style the ticks */
+     g.tick line {fill:none;stroke:black;stroke-width :0.5;}
+   </style>
+ </head>
+
+<body>
+
+<div class=""container"">
+<div id=""scatterplot-matrix"" class=""scatterplot-matrix""></div></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>let margin = {top :50,right :50,bottom :50,left :50},size =300;
+
+// set x and y scales
+let xscale = d3.scaleLinear().range ([margin.left,size-margin.right]);
+let yscale = d3.scaleLinear().range ([size-margin.bottom,margin.top]);
+
+// set up brush
+let brush = d3.brush()
+.extent ([[margin.left,margin.top],[size-margin.right,size-margin.bottom]])
+.on (""start"",brushstart)
+.on (""brush"",brushmove)
+.on (""end"",brushend);
+
+// load data
+d3.csv(""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"").then (data => {
+
+data.forEach (function(d){
+d[""Revenue""] = +d[""Revenue""];
+d[""Expenses""] = +d[""Expenses""];
+d [""Employee Count""] = +d [""Employee Count""];
+});
+
+// get column names
+let columns =[ ""Revenue"",""Expenses"",""Employee Count""];
+
+// create svg for each pair of columns
+for(let i=0;i<columns.length;i++){
+for(let j=i+1;j<columns.length;j++){
+
+xscale.domain ([0,d3.max(data,function(d){return d[columns[i]];})]);
+yscale.domain ([0,d3.max(data,function(d){return d[columns[j]];})]);
+
+drawScatterPlot(columns[i],columns[j],xscale,yscale,data);
+}
+}
+
+});
+
+function drawScatterPlot(xcolumn,yolumn,xscale,yscale,data){
+
+let svg=d3.select(""#scatterplot-matrix"")
+.append(""svg"")
+.attr(""width"", size)
+.attr(""height"", size);
+
+svg.selectAll("".dot"")
+.data(data)
+.enter()
+.append(""circle"")
+.attr(""class"",""dot"")
+.attr(""cx"", function(d) { return xscale(d[xcolumn]); })
+.attr('cy', function (d) { return yscale (diy column]); })
+.attr('r',2);
+
+svg.append ('g')
+.call(brush)
+
+.call(brush.move,[[-100,-100],[100,100]]);
+
+}
+
+function brushstart() {}
+
+function brushmove() {}
+
+function brushend(){}
+
+</script></body></html>"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a brushable Scatterplot that visualizes the relationship between Net Income and Revenue. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",D3,multiple view,"<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Brushable Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .scatterplot {
+            width: 600px;
+            height: 400px;
+            border: 1px solid #ddd;
+        }
+        
+        .brush {
+            width: 600px;
+            height: 50px;
+            border: 1px solid #ddd;
+        }
+        
+        table {
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class=""scatterplot""></div>
+    <div class=""brush""></div>
+    <table id=""selected-points-table""></table>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+let margin = {top:20,right :20,bottom :30,left :40},
+width =500-margin.left-margin.right,
+height =350-margin.top-margin.bottom;
+
+let svg=d3.select(""body"")
+.append(""svg"")
+.attr(""width"",width+margin.left+margin.right)
+.attr(""height"",height+margin.top+margin.bottom)
+.append(""g"")
+.attr('transform',`translate(${margin.left},${margin.top})`);
+
+let xScale=d3.scaleLinear()
+.domain([0,d3.max(data,function(d){return d['Revenue'];})])
+.range([0,width]);
+
+let yScale=d3.scaleLinear()
+.domain([0,d3.max(data,function(d){return d['Net Income'];})])
+.range([height,0]);
+
+svg.selectAll('circle')
+.data(data)
+.enter()
+.append('circle')
+.attr('cx',function(d){return xScale(d['Revenue']);})
+.attr('cy',function(d){return yScale(d['Net Income']);})
+.attr('r',5);
+
+svg.selectAll('.text')  
+.data(data)
+.enter()
+.append('text')
+.text(function (d) { return d.Company; })
+.attr(""x"", function (d) { return xScale(d.Revenue); })
+.attr(""y"", function (d) { return yScale(d[""Net Income""]); });
+
+var brush = d3.brushX() 
+.extent([[0,0],[width,height]])
+.on (""end "",update);
+
+var gBrush=svg
+.append (""g "")
+.call(brush );
+
+function update(){
+clearTable();
+var selectedPoints=getSelectedPoints();
+drawTable(selectedPoints);
+}
+
+function getSelectedPoints(){
+var selection=d3.event.selection ;
+if (!selection){
+selection=[[-Infinity,-Infinity],[Infinity,Infinity]];
+}
+var[x0,x1]=selection.map(xScale.invert);
+console.log(x1,x2);
+console.log(y2,y2);
+const selectedData=data.filter(function (d){
+if(+d.Revenue>=x0 && +d.Revenue<=x1 ){
+return true ;
+}
+});
+console.log(selectedData.slice(20));
+return selectedData.slice(20);
+}
+
+function clearTable(){
+document.getElementById ('selected-points-table ').innerHTML="""";
+}
+
+function drawTable(points){
+const table=document.getElementById ('selected-points-table ');
+points.forEach ((point )=>{
+const row=table.insertRow (-1 );
+Object.keys(point ).forEach ((key )=>{
+const cell=row.insertCell (-1 );
+cell.textContent=point[key ];
+});
+});
+}
+
+</script></body></html>"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price
+Your task is to create a horizontal Bar Chart that shows all the data concerning Net Income, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv
+
+The data table contains the following columns: Quarter,Company,Net Income,Revenue,Expenses,Employee Count,Industry,Stock Price",D3,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Net Income Bar Chart</title>
+  <style>
+    /* Add some basic styling to make the chart look decent */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .chart {
+      display: flex;
+      flex-direction: row;
+    }
+    
+    .main-chart {
+      width: 80%;
+    }
+    
+    .minimap {
+      width: 20%;
+      height: 200px;
+      border-left: 1px solid #ccc;
+      padding-left: 10px;
+    }
+    
+    /* Style the bars and axes */
+.bar {
+fill
+stroke
+stroke-width
+}
+.axis path,
+.axis line 
+{
+fill
+stroke
+shape-rendering 
+}
+.x.axis path 
+{
+display none;	
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class=""chart"">
+<svg class=""main-chart"" width=""800"" height=""600""></svg>	
+<svg class=""minimap"" width=""200"" height= ""200""></svg>	
+</div>
+
+<script src=""//d3js.org/d3.v7.min.js""></script>	
+
+<script>
+
+let margin = {top	50, right	20,bottom	30,left	40},
+width = +document.querySelector('.main-chart').getAttribute('width') - margin.left - margin.right,
+height = +document.querySelector('.main-chart').getAttribute('height') - margin.top - margin.bottom;
+
+let minimapWidth = +document.querySelector('.minimap').getAttribute('width') - margin.left -margin.right,
+minimapHeight =+document.querySelector('.minimap').getAttribute('height')-margin.top-margin.bottom;
+
+let xScaleMain=d3.scaleLinear().range([0,width]);
+let yScaleMain=d3.scaleBand().range([0,height]).padding(0.2);
+
+let xScaleMini=d3.scaleLinear().range([0,minimapWidth]);
+let yScaleMini=yScaleMain.copy();
+
+// Load data from CSV file
+
+Promise.all([
+d3.csv(""https://gist.githubusercontent.com/FFFFFancy/fcc3afbe4b998a16981b5b26589f6d71/raw/dfec0405212e82128fface3c20f1b75bf3789c03/Financial%2520Data.csv"", d => ({
+...d,
+'Net Income': parseFloat(d['Net Income'])
+}))
+]).then(([data]) => {
+
+data.sort((a,b) => b['Net Income']- a['NetIncome']);
+
+xScaleMain.domain([-100000000,d3.max(data,d=> d['NetIncome'])]);
+yScaleMain.domain(data.map(d=> d.Company));
+
+xScaleMini.domain(xscaleMain.domain());
+ySacleMini.range([0,minimmapHeight]);
+
+drawChart(data);
+});
+
+function drawChart(data){
+const mainG= document.querySelector('.main-chart')
+.append(""g"")
+.attr(""transform"", `translate(${margin.left},${margin.top})`);
+
+const miniG=document.querySelector("".mini-map"")
+.append(""g"")
+.attr(""transform"",`translate(${margin.left},${margin.top})`);
+
+// Draw bars on main chart
+
+const bars= mainG.selectAll("".bar"")
+.data(data)
+.enter()
+.append(""rect"")
+.attr (""class"",""bar"")
+
+bars.transition()
+.duration(500)
+.delay((_,i) => i*50)
+.attrs({
+x:d=> xscaleMian(Math.min(0,d[""net income""])),
+y:d=>yscaleMian(d.company),
+width:d=>Math.abs(xscaleMian(d[""net income""])- xscaleMian(0)),
+height:y scaleMian.bandwith()
+})
+
+// Draw minimap bars
+
+miniG.selectAll("".bar-mini"")
+
+.data (data)
+
+.enter()
+
+.append (""rect"")
+
+.attrs({
+
+""class"":""bar-mini"",
+
+x:d=>xscalemini(Math.min (o,d [""net income""])),
+
+y :d =>yscalemini (d.company),
+
+widht : d => Math.abs(xsclemini (d [""net income""]) – xscalemini(o)),
+
+heigt :yscalemini.bandwith()
+
+})
+
+// Add axes to main chart 
+
+const xAxisCall=d3.axisBottom(xscaleMian).tickFormat(d=>""$"" +(Math.round(d /100000)/10)+ ""m"");
+
+const yAxisCall=d33.axisLeft(y scale Mian);
+
+main G.append (""g"").attr (""class"",""axis axis-x"").attr (""transform"",`translate(o,${heigt})`).call(xAxisCall);
+
+maing.append (""g"").attr (""class"",""axis axis-y"").call(yAxisCall);
+}
+
+</script></body></html>"

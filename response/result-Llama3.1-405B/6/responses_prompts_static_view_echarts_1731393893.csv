@@ -1,0 +1,862 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Scatterplot that visualizes the relationship between Energy Consumed and Cost.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Energy Consumption Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""scatterplot"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const scatterData = rows.map(row => {
+                    const columns = row.split(',');
+                    return [parseFloat(columns[2]), parseFloat(columns[3])];
+                });
+
+                const chartDom = document.getElementById('scatterplot');
+                const myChart = echarts.init(chartDom);
+                const option = {
+                    title: {
+                        text: 'Energy Consumption vs Cost'
+                    },
+                    xAxis: {
+                        name: 'Energy Consumed',
+                        type: 'value'
+                    },
+                    yAxis: {
+                        name: 'Cost',
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            type: 'scatter',
+                            data: scatterData
+                        }
+                    ]
+                };
+
+                myChart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+2,line chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Line Chart that visualizes the trend of Energy Consumed over the Month for each Energy Sector.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Energy Consumption Line Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 100%; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1).map(row => row.split(','));
+            const sectors = Array.from(new Set(rows.map(row => row[1])));
+            const months = Array.from(new Set(rows.map(row => row[0]))).sort();
+            const series = sectors.map(sector => {
+                return {
+                    name: sector,
+                    type: 'line',
+                    data: months.map(month => {
+                        const row = rows.find(row => row[0] === month && row[1] === sector);
+                        return row ? parseFloat(row[2]) : null;
+                    })
+                };
+            });
+
+            const chart = echarts.init(document.getElementById('chart'));
+            chart.setOption({
+                title: {
+                    text: 'Energy Consumption Trend'
+                },
+                legend: {
+                    data: sectors
+                },
+                xAxis: {
+                    type: 'category',
+                    data: months
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLabel: {
+                        formatter: '{value} MWh'
+                    }
+                },
+                series: series
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+3,bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Bar Chart that visualizes the Energy Consumed for each Energy Sector in January.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Energy Consumption Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1);
+            const januaryData = rows.filter(row => row.split(',')[0] === 'January');
+            const sectors = januaryData.map(row => row.split(',')[1]);
+            const energyConsumed = januaryData.map(row => parseFloat(row.split(',')[2]));
+
+            const chart = echarts.init(document.getElementById('chart'));
+            const option = {
+                title: {
+                    text: 'Energy Consumed by Sector in January'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: sectors
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        type: 'bar',
+                        data: energyConsumed
+                    }
+                ]
+            };
+            chart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
+4,pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Pie Chart that visualizes the proportion of Energy Consumed contributed by each Energy Sector in January.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Energy Consumption Pie Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 600px; height: 400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1);
+            const januaryData = rows.filter(row => row.split(',')[0] === 'January');
+            const sectors = januaryData.map(row => row.split(',')[1]);
+            const energyConsumed = januaryData.map(row => parseFloat(row.split(',')[2]));
+
+            const uniqueSectors = [...new Set(sectors)];
+            const sectorEnergyConsumed = uniqueSectors.map(sector => {
+                const energies = energyConsumed.filter((energy, index) => sectors[index] === sector);
+                return energies.reduce((a, b) => a + b, 0);
+            });
+
+            const chart = echarts.init(document.getElementById('chart'));
+            const option = {
+                title: {
+                    text: 'Energy Consumption by Sector in January'
+                },
+                series: [
+                    {
+                        type: 'pie',
+                        data: uniqueSectors.map((sector, index) => {
+                            return {
+                                name: sector,
+                                value: sectorEnergyConsumed[index]
+                            };
+                        })
+                    }
+                ]
+            };
+            chart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
+5,donut chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Donut Chart that visualizes the distribution of Energy Consumed among Energy Sector in January.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Energy Consumption Donut Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 600px; height: 400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1);
+            const januaryData = rows.filter(row => row.split(',')[0] === 'January');
+            const sectors = januaryData.map(row => row.split(',')[1]);
+            const energyConsumed = januaryData.map(row => +row.split(',')[2]);
+
+            const uniqueSectors = [...new Set(sectors)];
+            const sectorEnergyConsumed = uniqueSectors.map(sector => {
+                const energies = energyConsumed.filter((energy, index) => sectors[index] === sector);
+                return energies.reduce((a, b) => a + b, 0);
+            });
+
+            const chart = echarts.init(document.getElementById('chart'));
+            const option = {
+                title: {
+                    text: 'Energy Consumption Distribution in January',
+                    subtext: 'Donut Chart',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left'
+                },
+                series: [
+                    {
+                        name: 'Energy Consumption',
+                        type: 'pie',
+                        radius: ['40%', '70%'],
+                        avoidLabelOverlap: false,
+                        itemStyle: {
+                            borderRadius: 10,
+                            borderColor: '#fff',
+                            borderWidth: 2
+                        },
+                        label: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            label: {
+                                show: true,
+                                fontSize: '40',
+                                fontWeight: 'bold'
+                            }
+                        },
+                        labelLine: {
+                            show: false
+                        },
+                        data: uniqueSectors.map((sector, index) => {
+                            return { value: sectorEnergyConsumed[index], name: sector };
+                        })
+                    }
+                ]
+            };
+            chart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
+6,coxcomb chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Coxcomb Chart(polar area chart) to compare the Energy Consumed of different Energy Sector in January.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Coxcomb Chart for Energy Consumption</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const januaryData = rows.filter(row => row[0] === 'January');
+                const sectors = [...new Set(januaryData.map(row => row[1]))];
+                const seriesData = sectors.map(sector => {
+                    const sectorData = januaryData.filter(row => row[1] === sector);
+                    const energyConsumed = sectorData.reduce((acc, row) => acc + parseFloat(row[2]), 0);
+                    return { name: sector, value: energyConsumed };
+                });
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const option = {
+                    title: {
+                        text: 'Energy Consumption in January'
+                    },
+                    legend: {
+                        orient: 'vertical',
+                        left: 'left'
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            radius: ['30%', '70%'],
+                            roseType: 'area',
+                            data: seriesData
+                        }
+                    ]
+                };
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+7,radar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Radar Chart to compare the Energy Consumed of different Energy Sector in January.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Radar Chart of Energy Consumed</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1).map(row => row.split(','));
+            const januaryData = rows.filter(row => row[0] === 'January');
+            const sectors = [...new Set(januaryData.map(row => row[1]))];
+            const indicator = sectors.map(sector => ({ name: sector, max: Math.max(...januaryData.filter(row => row[1] === sector).map(row => parseFloat(row[2]))) }));
+            const seriesData = sectors.map(sector => {
+                const data = januaryData.filter(row => row[1] === sector).map(row => parseFloat(row[2]));
+                return {
+                    name: sector,
+                    value: data,
+                };
+            });
+
+            const chart = echarts.init(document.getElementById('chart'));
+            const option = {
+                title: {
+                    text: 'Radar Chart of Energy Consumed in January',
+                },
+                radar: {
+                    indicator: indicator,
+                },
+                series: [
+                    {
+                        type: 'radar',
+                        data: seriesData,
+                    },
+                ],
+            };
+            chart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
+8,streamgraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Streamgraph that visualizes the changes of Energy Consumed over the Month for each Energy Sector.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Energy Consumption Streamgraph</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const sectors = Array.from(new Set(rows.map(row => row[1])));
+        const months = Array.from(new Set(rows.map(row => row[0]))).sort();
+        const seriesData = sectors.map(sector => {
+          return months.map(month => {
+            const energyConsumed = rows.find(row => row[0] === month && row[1] === sector)[2];
+            return [month, energyConsumed];
+          });
+        });
+
+        var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+    title: {
+      text: 'Energy Consumption Streamgraph'
+    },
+    tooltip: {},
+    legend: {},
+    xAxis: [
+      {type:'category',data:['Jan','Feb','Mar','Apr','May']}
+],
+yAxis:[
+{id:'yAxis'}
+],
+series:[
+{name:""Coal"",type:""line"",stack:""Total"",areaStyle:{},emphasis:{focus:""series""},data:[120,132,101,134,90]},
+{name:""Oil"",type:""line"",stack:""Total"",areaStyle:{},emphasis:{focus:""series""},data:[220,182,191,234,290]},
+{name:""Gas"",type,""line"",""stack"":""Total"",""areaStyle"":{},""emphasis"":{""focus"":""series""},""data"":[150.232.201.154.190]}
+]
+};
+
+option && myChart.setOption(option);
+
+});
+</script>
+
+</body>
+
+</html>"
+9,slopegraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Slopegraph to compare the Energy Consumed between November and December for each Energy Sector.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Energy Consumption Slopegraph</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+<script>
+
+fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1);
+    const sectors = [];
+    const novData = [];
+    const decData = [];
+
+rows.forEach(row => {
+        const columns = row.split(',');
+        if (columns[0] === 'November') {
+            novData.push([columns[1], parseFloat(columns[2])]);
+            if (!sectors.includes(columns[1])) {
+                sectors.push(columns[1]);
+            }
+        } else if (columns[0] === 'December') {
+            decData.push([columns[1], parseFloat(columns[2])]);
+        }
+});
+
+const chartDom = document.getElementById('chart');
+const myChart = echarts.init(chartDom);
+
+const option = {
+    title: {text: 'Energy Consumed by Sector'},
+    legend: {data: ['November', 'December']},
+xAxis: [
+{
+type:'category',
+axisTick:{alignWithLabel:true},
+data:['Agriculture','Commercial','Industrial','Residential','Transportation']
+}
+],
+yAxis:[
+{
+type:'value',
+name:'Energy Consumed'
+}
+],
+series:[
+{
+name:'November',
+type:'bar',
+xAxisIndex:0,
+yAxisIndex:0,
+data:novData.map(item=>item.slice(1))
+},
+{
+name:'December',
+type:'bar',
+xAxisIndex:0,
+yAxisIndex:0,
+data(decData.map(item=>item.slice(1)))
+}
+]
+};
+
+myChart.setOption(option);
+});
+
+</script>
+
+</body>
+
+</html>"
+10,heatmap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Heatmap that visualizes the Energy Consumed across Energy Sector and Months.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Energy Consumption Heatmap</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+<script type=""text/javascript"">
+fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1);
+    const dataset = [];
+    rows.forEach(row => {
+        const columns = row.split(',');
+        dataset.push({
+            Month: columns[0],
+            'Energy Sector': columns[1],
+            'Energy Consumed': +columns[2]
+        });
+    });
+
+    const distinctMonths = [...new Set(dataset.map(item => item.Month))];
+    const distinctSectors = [...new Set(dataset.map(item => item['Energy Sector']))];
+
+    const seriesData = [];
+    for (let i=0; i<distinctSectors.length; i++) {
+        seriesData[i] = [];
+        for (let j=0; j<distinctMonths.length; j++) {
+            let value;
+            dataset.forEach(item => {
+                if (item['Energy Sector'] === distinctSectors[i] && item.Month === distinctMonths[j]) {
+                    value = item['Energy Consumed'];
+                }
+            });
+            seriesData[i].push(value || '-');
+        }
+    }
+
+const chartDom=document.getElementById('chart');
+const myChart=echarts.init(chartDom);
+const option={
+tooltip:{position:'top'},
+grid:{height:'50%',top:'10%'},
+xAxis:{
+type:'category',
+data:distinctMonths,
+splitArea:{show:true}
+},
+yAxis:{
+type:'category',
+data:distinctSectors,
+splitArea:{show:true}
+},
+visualMap:{
+min:10000,
+max:100000,
+calculable:true,
+orient:""horizontal"",
+left:""center"",
+bottom:""15%""
+},
+series:[
+{
+name:"""",
+type:""heatmap"",
+data:[],
+emphasis:{
+itemStyle:{
+shadowBlur:20,
+shadowColor:""rgba(0,0,0,0.5)""
+}
+}
+}
+]
+};
+myChart.setOption(option);
+
+for(let i=seriesData.length-1;i>=0;i--){
+for(let j=seriesData[i].length-1;j>=0;j--){
+if(seriesData[i][j]===""-""){
+seriesData[i].splice(j,1);
+}else{
+option.series[0].data.push([i,j,seriesData[i][j]]);
+}
+
+}
+
+}
+
+myChart.setOption(option);
+
+});
+</script>
+
+</body></html>"
+11,bar chart+stacked bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Stacked Bar Chart that visualizes the given data table.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Stacked Bar Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const months = Array.from(new Set(rows.map(row => row[0]))).sort();
+        const sectors = Array.from(new Set(rows.map(row => row[1]))).sort();
+        const seriesData = sectors.map(sector => {
+          return months.map(month => {
+            const filteredRows = rows.filter(row => row[0] === month && row[1] === sector);
+            return filteredRows.reduce((acc, current) => acc + parseFloat(current[2]), 0);
+          });
+        });
+
+        var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+    title: {
+      text: 'Energy Consumption by Sector and Month'
+    },
+    tooltip: {},
+    legend: {},
+    xAxis: [
+      {
+        data: months,
+      }
+    ],
+    yAxis:{},
+series:[
+{
+name:""Energy Sector"",
+type:""bar"",
+data:[
+{
+value:"""",
+itemStyle:{
+color:""#FF0000""
+}
+},
+{
+value:"""",
+itemStyle:{
+color:""#00FF00""
+}
+},
+{
+value:"""",
+itemStyle:{
+color:""#0000FF""
+}
+}
+]
+}]
+};
+
+option && myChart.setOption(option);
+
+});
+</script>
+
+</body>
+
+</html>"
+12,bar chart+horizontal bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Horizontal Bar Chart that visualizes the Energy Consumed for each Energy Sector in January.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Energy Consumption Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1);
+        const sectors = [];
+        const energyConsumed = [];
+
+        rows.forEach(row => {
+          const columns = row.split(',');
+          if (columns[0] === 'January') {
+            sectors.push(columns[1]);
+            energyConsumed.push(parseFloat(columns[2]));
+          }
+        });
+
+        var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+xAxis: {},
+yAxis: {},
+series: [
+{
+symbolSize:20,
+data:[
+[value, name],
+[value, name],
+[value, name]
+],
+type:'scatter'
+}
+]
+};
+
+option && myChart.setOption(option);
+
+myChart.setOption({
+xAxis:{
+type:'value'
+},
+yAxis:{
+type:'category',
+data:['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+},
+series:[
+{
+name:""Energy Consumed"",
+type:""bar"",
+data:[120,200,150,80,70,110,130]
+}
+]
+})
+
+      });
+      
+    </script>
+
+</body>
+
+</html>"

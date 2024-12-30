@@ -1,0 +1,1622 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Scatterplot that visualizes the relationship between Enrollment Number and Revenue.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Scatterplot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .scatterplot {
+      width: 800px;
+      height: 600px;
+      border: 1px solid lightgray;
+    }
+    
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      shape-rendering: crispEdges;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .dot {
+      stroke: #000;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class=""scatterplot"" id=""scatterplot""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+// Set the dimensions and margins of the graph
+var margin = {top: 20, right: 20, bottom: 30, left:40},
+width = document.getElementById(""scatterplot"").offsetWidth - margin.left - margin.right,
+height = document.getElementById(""scatterplot"").offsetHeight - margin.top - margin.bottom;
+
+// Append the svg object to the body of the page
+var svg = d3.select(""#scatterplot"")
+.append(""svg"")
+.attr(""width"", width + margin.left + margin.right)
+.attr(""height"", height + margin.top +margin.bottom)
+.append(""g"")
+.attr(""transform"",
+""translate(""+margin.left+"",""+margin.top+"")"");
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+.then(data => {
+
+data.forEach(d => {
+
+d['Enrollment Number'] = parseInt(d['Enrollment Number']);
+d.Revenue= parseInt(d.Revenue);
+
+});
+
+// Add X axis
+var xScale = d3.scaleLinear()
+.domain([0,d3.max(data,function(d){return d['Enrollment Number'];})])
+.range([0,width]);
+svg.append('g')
+.attr('transform','translate(0,'+height+')')
+.call(d3.axisBottom(xScale));
+
+// Add Y axis
+var yScale= d3.scaleLinear()
+.domain([0,d3.max(data,function (d){return d.Revenue;})])
+.range([height,0]);
+svg.append('g')
+.call(d3.axisLeft(yScale));
+
+
+
+svg.selectAll("".dot"")
+.data(data)
+.enter().append(""circle"")
+.attr('cx',function (d) { return xScale( d['Enrollment Number']);} )
+.attr('cy',function (d) { return yScale( d.Revenue );} )
+.style('fill','#CC0000');
+
+})
+
+.catch(error => console.error(error))
+
+</script></body></html>"
+2,line chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Line Chart that visualizes the trend of Enrollment Number over the Quarter for each Education Level.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Enrollment Trend</title>
+  <style>
+    /* add some basic styling to make the chart look decent */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .chart {
+      width: 800px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      shape-rendering: crispEdges;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .line {
+      fill: none;
+      stroke-width: 2.5px;
+      
+     /* stroke-dasharray and stroke-linecap are optional */
+     /*stroke-dasharray :5,5;*/
+     /*stroke-linecap :round;*/
+     
+     
+     
+     
+   }
+ </style>
+
+</head>
+
+<body>
+
+<div class=""chart"" id=""enrollment-chart""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+// Set up margins and dimensions for the chart
+const margin = { top :20, right :30, bottom :30, left :40 };
+const width =800 - margin.left - margin.right ;
+const height =600 - margin.top - margin.bottom ;
+
+// Select the div with id ""enrollment-chart"" and append an SVG
+const svg = d3.select(""#enrollment-chart"")
+.append(""svg"")
+.attr(""width"", width +margin.left +margin.right )
+.attr(""height"", height +margin.top +margin.bottom )
+.append(""g"")
+.attr(""transform"",
+`translate(${margin.left}, ${margin.top})`);
+
+// Load data from CSV file
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv').then(data => {
+
+data.forEach(d => {
+
+d['Enrollment Number'] =+ d['Enrollment Number'];
+
+});
+
+// Extract unique education levels for separate lines
+
+const educationLevels =[...new Set(data.map(d => d['Education Level']))];
+
+educationLevels.sort();
+
+console.log(educationLevels);
+
+// Scales
+
+const xScale = d3.scalePoint()
+.domain([...new Set(data.map(d => d.Quarter))])
+.range([0 ,width ]);
+
+svg.append('g')
+.attr('transform', `translate(0 ,${height})`)
+.call(d3.axisBottom(xScale));
+
+
+
+ const yScale=d3.scaleLinear()
+.domain([0,d3.max(data,d=>d['Enrollment Number'])])
+.range([height ,0]);
+
+svg.append('g')
+.call(d3.axisLeft(yScale));
+
+ // Colors for different education levels (optional)
+
+ const colors=d3.schemeCategory10;
+
+ // Line generator function
+
+ const line=d=>{
+
+return d.reduce((acc,currentValue,index)=>{
+
+if(index===0){
+
+acc.push(`M${xScale(currentValue.Quarter)} ${yScale(currentValue[""Enrollment Number""])}`);
+
+}else{
+
+acc.push(`L${xScale(currentValue.Quarter)} ${yScale(currentValue[""Enrollment Number""])}`);
+
+}
+
+return acc;
+
+},[]).join('');
+
+ };
+
+ // Draw lines for each education level
+
+ svg.selectAll('.line')
+
+.data(educationLevels)
+
+.enter()
+
+.append('path')
+
+.classed('line',true)
+
+.style('stroke',(d,i)=>colors[i])
+
+.style ('fill','none')
+
+.datum (function(level){
+
+return data.filter(function(row){
+
+return row ['Education Level']===level;
+
+})
+
+})
+
+.transition()
+
+.duration (1000)
+
+.delay ((d,i)=>i*500)
+
+.attr ('d',function (levelData){
+
+console.log(line(levelData))
+
+ return line(levelData);
+
+ })
+
+ });
+
+</script></body></html>"
+3,bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Bar Chart that visualizes the Enrollment Number for each Education Level in Q2-2021.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Enrollment Number by Education Level in Q2-2021</title>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+</head>
+<body>
+
+<svg width=""500"" height=""300""></svg>
+
+<script>
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+.then(data => {
+    data.forEach(d => {
+        d['Enrollment Number'] = +d['Enrollment Number'];
+    });
+
+    const filteredData = data.filter(d => d.Quarter === 'Q2-2021');
+
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = 500 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
+
+    const svg = d3.select('svg')
+        .append('g')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+const xScale = d3.scaleBand()
+.domain(filteredData.map(d => d['Education Level']))
+.range([0, width])
+.padding(0.2);
+
+const yScale = d3.scaleLinear()
+.domain([0, Math.max(...filteredData.map(d => +d['Enrollment Number']))])
+.range([height, 0]);
+
+svg.selectAll('rect')
+.data(filteredData)
+.enter()
+.append('rect')
+.attr(""x"", (d) => xScale(d[""Education Level""]))
+.attr(""y"", (d) => yScale(+d[""Enrollment Number""]))
+.attr(""width"", xScale.bandwidth())
+.attr(""height"", (d) =>
+yScale(0) - yScale(+d[""Enrollment Number""])
+);
+
+svg
+.selectAll("".text"")
+.data(filteredData)
+.enter()
+.append(""text"")
+.text((dataPoint) =>
+dataPoint[""Education Level""]
+)
+.join(
+""rect""
+).attr(
+""x"",
+(dataPoint)=>
+xScale(dataPoint[""Education Level""])+xScale.bandwidth()/4
+).attr(
+""y"",
+(height+10)
+);
+});
+
+</script>
+
+</body></html>"
+4,pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Pie Chart that visualizes the proportion of Enrollment Number contributed by each Education Level in Q2-2021.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Pie Chart</title>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+</head>
+<body>
+  <svg width=""500"" height=""500""></svg>
+
+  <script>
+
+    // Load data
+    d3.csv('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+      .then(data => {
+        // Filter data for Q2-2021
+        const filteredData = data.filter(d => d.Quarter === 'Q2-2021');
+
+        // Group by Education Level and sum Enrollment Number
+        const groupedData = d3.groups(filteredData, d => d['Education Level'])
+          .map(([key, values]) => ({ key, value: values.reduce((sum, current) => sum + parseInt(current['Enrollment Number']), 0) }));
+
+        // Create pie chart
+        const svg = d3.select('svg');
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = svg.attr('width') - margin.left - margin.right;
+        const height = svg.attr('height') - margin.top - margin.bottom;
+const g = svg.append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+const pieChartGroup= g.append(""g"")
+            .attr(""transform"", `translate(${width /2 }, ${height /2 })`);
+
+const pie=d3.pie()
+.value(d=>d.value);
+
+const arc=d3.arc()
+.innerRadius(100)
+.outerRadius(150);
+
+pieChartGroup.selectAll("".arc"")
+.data(pie(groupedData))
+.enter().append(""path"")
+.attr(""class"",""arc"")
+.style(""fill"",(d,i)=>`hsl(${i*360/groupedData.length},100%,50%)`)
+.transition().delay(500).duration(1000)
+.attrTween('d', (d) => {
+                var i = d3.interpolate(d.startAngle+0.1,d.endAngle);
+                return function(t){
+                    var currentArc=d;
+                    currentArc.startAngle=i(t);
+                    return arc(currentArc);
+                }
+            });
+
+pieChartGroup.selectAll("".text"").data(pie(groupedData)).enter().append(""text"").attr(
+""text-anchor"",""middle""
+).style(
+""font-size"",""12px""
+).style(
+""font-weight"",""bold""
+).style(
+'fill',""white""
+)
+.transition().delay(function(d,i){
+return i*200+700;
+}).duration(300)
+.text(function(d){return `${Math.round((d.endAngle-d.startAngle)*100/6.283185307179586)}%`;})
+.attrTween('transform', (d) => {
+var centroidPos=arc.centroid(d);
+var x=centroidPos[0];
+var y=centroidPos[1];
+var angle=(x>0?(Math.atan(y/x)):Math.PI+(Math.atan(y/x)));
+angle=(180+angle*(180/Math.PI));
+if(angle<90||angle>270){
+    angle+=180;
+}
+return function(t){
+   var radiusVector=[x,y];
+   if(angle<90||angle>270){
+       radiusVector=[radiusVector[0]*t,radiusVector[1]*t]
+   }else{
+       radiusVector=[radiusVector[0]*(t),radiusVector[1]*(t)]
+   }
+   return `translate(${radiusVector})`;
+}
+});
+
+      });
+</script>
+
+</body></html>"
+5,donut chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Donut Chart that visualizes the distribution of Enrollment Number among Education Level in Q2-2021.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Donut Chart</title>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+</head>
+<body>
+  <svg width=""500"" height=""500""></svg>
+
+  <script>
+
+    // Load data
+    d3.csv('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+      .then(data => {
+        // Filter data for Q2-2021
+        const filteredData = data.filter(d => d.Quarter === 'Q2-2021');
+
+        // Group by Education Level and sum Enrollment Number
+        const groupedData = d3.groups(filteredData, d => d['Education Level'])
+          .map(([key, values]) => ({ key, value: values.reduce((sum, d) => sum + parseInt(d['Enrollment Number']), 0) }));
+
+        // Sort the grouped data in descending order of value
+        groupedData.sort((a, b) => b.value - a.value);
+
+        // Create pie chart layout
+        const pie = d3.pie()
+          .value(d => d.value)
+          .sort(null);
+
+        // Create arc generator
+        const arc = d3.arc()
+          .innerRadius(150)
+          .outerRadius(200);
+
+         svg.selectAll('path')
+           .data(pie(groupedData))
+           .enter()
+           .append('path')
+           .attr('d', arc)
+           })
+       </script> 
+   </body> 
+</html>"
+6,coxcomb chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Coxcomb Chart(polar area chart) to compare the Enrollment Number of different Education Level in Q2-2021.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Coxcomb Chart</title>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+</head>
+<body>
+
+<svg width=""500"" height=""500""></svg>
+
+<script>
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+.then(data => {
+
+    // Filter data for Q2-2021
+    const filteredData = data.filter(d => d['Quarter'] === 'Q2-2021');
+
+    // Convert Enrollment Number to number
+    filteredData.forEach(d => {
+        d['Enrollment Number'] = +d['Enrollment Number'];
+    });
+
+    // Create a pie chart layout
+const pie = d3.pie()
+.value(d => d['Enrollment Number']);
+
+// Create an arc generator
+const arc = d3.arc()
+.outerRadius(200)
+.innerRadius(100);
+
+// Select the SVG element and create a group for the chart
+const svg = d3.select('svg');
+const g = svg.append('g')
+.attr('transform', 'translate(250, 250)');
+
+// Create the arcs for each education level
+
+g.selectAll('.arc')
+.data(pie(filteredData))
+.enter()
+.append('path')
+.attr('class', 'arc')
+.attr('fill', (d, i) => `hsl(${i * 360 / filteredData.length}, 100%, 50%)`)
+.attr(""stroke"", ""black"")
+.transition().duration(2000)
+.delay((d,i)=>i*500)
+.attrTween(""d"", function (dataItem) {
+var interpolator=d3.interpolate({startAngle:0,endAngle:0},{startAngle:dataItem.startAngle,endAngle:dataItem.endAngle});
+return function(t){
+return arc(interpolator(t));
+}
+});
+
+});
+
+</script>
+
+</body></html>"
+7,radar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Radar Chart to compare the Enrollment Number of different Education Level in Q2-2021.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Radar Chart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .radar-chart {
+            width: 600px;
+            height: 600px;
+            margin: 50px auto;
+        }
+        
+        .axis text {
+            font-size: 12px;
+        }
+        
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #777;
+            stroke-width: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class=""radar-chart""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+.then(data => {
+
+// Filter data for Q2-2021
+const filteredData = data.filter(d => d.Quarter === 'Q2-2021');
+
+// Extract unique education levels
+const educationLevels = [...new Set(filteredData.map(d => d['Education Level']))];
+
+// Extract enrollment numbers for each education level
+const enrollmentNumbers = filteredData.map(d => +d['Enrollment Number']);
+
+// Define the radar chart dimensions and scales
+const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+const width = document.querySelector('.radar-chart').clientWidth - margin.left - margin.right; // Use clientWidth instead of offsetWidth to get the correct width without borders and scrollbars.
+const height = document.querySelector('.radar-chart').clientHeight - margin.top - margin.bottom; // Use clientHeight instead of offsetHeight to get the correct height without borders and scrollbars.
+
+const maxRadius = Math.min(width, height) / (educationLevels.length * (educationLevels.length + educationLevels.length % (educationLevels.length % (educationLevels.length + educationLevels.length))));
+
+let angleSlice = Math.PI / educationLevels.length;
+
+let rScale = d3.scaleLinear()
+.domain([0,d3.max(enrollmentNumbers)])
+.range([0,maxRadius]);
+
+let colorScale=d3.scaleOrdinal()
+.domain(educationLevels)
+.range(['#FF69B4','#33CC33','#6666CC','#CC3333']);
+
+
+
+var svgRadarChart=d3.select("".radar-chart"")
+.append(""svg"")
+.attr(""width"",width+margin.left+margin.right)
+.attr(""height"",height+margin.top+margin.bottom);
+
+var g=svgRadarChart.selectAll("".level-group"")
+.data(filteredData)
+.enter().append(""g"")
+.attr('class','level-group')
+.attr('transform',function(d,i){
+return ""translate(""+((width-margin.left-margin.right)/2)+"",""+((height-margin.top-margin.bottom)/2)+"")"";
+});
+
+g.selectAll("".levels-circle-line"").data(function(d){return [d];})
+.enter().append(""path"")
+.style('stroke',function(j){return colorScale(j[""Education Level""]);})
+.style('fill','none')
+.style('stroke-width',""4px"")
+
+.datum(function(j){
+	return [
+		{angle:-Math.PI/len*len,x_axis:rScale(+j[""Enrollment Number""]),y_axis:-rScale(+j[""Enrollment Number""])*Math.sin(-Math.PI/len*len)},
+		{angle:(Math.PI*11)/6,x_axis:rScale(+j[""Enrollment Number""])*Math.cos(Math.PI*11/6),y_axis:rScale(+j[""Enrollment Number""])*Math.sin(Math.PI*11/6)},
+		{angle:(Math.PI*13)/6,x_axis:rScale(+j[""Enrollment Number""])*Math.cos(Math.PI*13/6),y_axis:rScale(+j[""Enrollment Number""])*Math.sin(Math.PI*13/6)},
+	    {angle:(5*Math.PI)/4,x_axis:rScale(+j[""Graduation Rate""]),y_axis:-rScale(+j[""Graduation Rate""])},
+	    {angle:(7*Math.PI)/4,x_axis:+rScale(j['Number of Staff']),y_axis:+rScale(j['Number of Staff'])},
+	    {angle:(17*Math.PI)/12,x_aixs:+rScalE(J[Average Tuition]),Y_Axis=rScalE(J[Average Tuition])}
+	   ];})
+
+.transition()
+.delay(function(d,i){return i *100;})
+.duration(1000)
+
+.attrTween(""d"",function(c){
+	var v=[c[0]];
+	for(var i=(+this.getAttribute(""T""));i<v[i].length;i++){
+	v.push({x:v[i].x,y:v[i].y});
+}
+v.push(c[c.lenght-1]);
+	return function(t){
+	var e=t*(v.lenght-1);
+	var a=Math.floor(e);
+	var n=v[a];
+	var o=v[a+>e-a];
+	return h(n,o,e-a);
+};
+});
+
+svgRadarChart.selectAll('.axis').data(levels).enter().append(g=>legendDot(g))
+.call(legend);
+
+});
+</script></body></html>"
+8,streamgraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Streamgraph that visualizes the changes of Enrollment Number over the Quarter for each Education Level.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Streamgraph</title>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+</head>
+<body>
+  <svg width=""800"" height=""600""></svg>
+
+  <script>
+
+    const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+    const width = document.body.clientWidth - margin.left - margin.right;
+    const height = document.body.clientHeight - margin.top - margin.bottom;
+
+    const svg = d3.select(""svg"")
+      .attr(""width"", width + margin.left + margin.right)
+      .attr(""height"", height + margin.top + margin.bottom)
+      .append(""g"")
+      .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+    d3.csv('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+      .then(data => {
+        data.forEach(d => {
+          d['Enrollment Number'] = parseInt(d['Enrollment Number']);
+        });
+
+        const xScale = d3.scalePoint()
+          .domain(data.map(d => d.Quarter))
+          .range([0, width])
+          .padding(0.5);
+
+        svg.append('g')
+          .attr('transform', `translate(0, ${height})`)
+          .call(d3.axisBottom(xScale));
+
+        const yScale = d3.scaleLinear()
+          .domain([0, Math.max(...data.map(d => parseInt(d['Enrollment Number'])))])
+
+        svg.append('g')
+            // Add the Y Axis
+            var yAxisGroup=svg.append(""g"");
+            var yAxis=d3.axisLeft(yScale);
+            yAxisGroup.call(yAxis);
+
+         // Group the data by Education Level
+         var nest=d3.nest()
+             // Set the keys for grouping
+             // In this case we are grouping by Education Level
+             // The key function takes in a data point and returns 
+             // The value to use as the key for that point.
+             //
+             //
+          
+
+          
+
+          
+
+          
+
+      
+
+
+      
+
+
+      
+    
+
+    
+
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+
+      
+     
+     
+     
+     
+     
+     
+     
+
+     
+
+     
+
+      
+
+      
+
+      
+   
+
+   
+   
+   
+   
+   
+   
+
+   
+
+   
+
+   
+
+   
+
+   
+
+  
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+// Set up stack method
+var stack=d3.stack()
+.keys([""Primary"",""Secondary"",""Tertiary""]);
+
+// Data stacked now set up domains for axises
+x.domain(data.map(function (d){return (d.year);}));
+y.domain([0,d3.max(layers.concat(layers),function (layer){
+return Math.max.apply(null,(layer).concat(layer));
+})
+]);
+
+// Add a group for each layer of graph.
+var groups=svg.selectAll("".groups"")
+.data(stack(data))
+.enter().append(""g"")
+.attr (""class"",""groups"");
+
+// Add a path for each group.
+var paths=groups.selectAll("".path"")
+.data(function (d){return [d];})
+.enter().append (""path"").classed (""path"",(true));
+
+paths.transition().duration(10000).delay(function (d,i){
+console.log(i);
+return i*200;}).ease (""bounce"").attr(
+""d"",
+function (dd){
+console.log(JSON.stringify(dd));
+return area(dd);
+});
+
+paths.attr(
+""fill"",
+function (ddd,i){
+console.log(i);
+return colors[i];
+});
+
+paths.on(
+""mouseover"",
+update_tooltip);
+
+paths.on (
+""mouseout"",
+function (){
+tooltip.style (
+""display"",""none"");
+});
+
+paths.on (
+""mousemove"",
+function (){
+if(event.pageX || event.pageY) {
+x=event.clientX+document.body.scrollLeft+document.documentElement.scrollLeft;
+y=event.clientY+document.body.scrollTop+document.documentElement.scrollTop;
+}else{
+x=event.clientX+document.body.scrollLeft+document.documentElement.scrollLeft;
+y=event.clientY+documnet.body.scrollTop-document.documentElement.scrollTop;
+}
+tooltip.style (
+""top"",(y-10)+""px"").
+style(
+""left"",(x-10)+""px"");
+});
+});"
+9,slopegraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Slopegraph to compare the Enrollment Number between Q1-2020 and Q2-2020 for each Education Level.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Slopegraph</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .slopegraph {
+      width: 800px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    
+    .slopegraph .axis path,
+    .slopegraph .axis line {
+      fill: none;
+      stroke: #777;
+      shape-rendering: crispEdges;
+    }
+    
+    .slopegraph .axis text {
+      font-size: 12px;
+    }
+    
+    .slopegraph .line {
+      stroke-width: 2px;
+    }
+    
+     /* Add styles for the legend */
+     /* Add styles for the tooltip */
+     /* Add styles for the axis labels */
+     
+   </style>
+
+</head>
+
+<body>
+
+<div class=""chart"" id=""chart""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script> 
+
+let margin = {top :20, right :30, bottom :30, left :40},
+width =500 -margin.left -margin.right,
+height =500 -margin.top-margin.bottom;
+
+let svg=d3.select(""body"")
+.append(""svg"")
+.attr(""width"", width + margin.left + margin.right)
+.attr(""height"", height + margin.top + margin.bottom)
+.append(""g"")
+.attr(""transform"",""translate(""+margin.left+"",""+margin.top+"")"");
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+.then(data => {
+
+data.forEach(d => {
+
+d['Enrollment Number'] =+ d['Enrollment Number'];
+
+});
+
+let educationLevels= [...new Set(data.map(d => d['Education Level']))];
+
+educationLevels.sort((a,b) => a.localeCompare(b));
+
+let xScale=d3.scalePoint()
+.domain(educationLevels)
+.range([0,width])
+.padding(0.5);
+
+svg.append('g')
+.selectAll('text')
+.data(educationLevels)
+.enter()
+.append('text')
+.text(d=> d)
+.attr('x', d=> xScale(d))
+.attr ('y', height+20);
+
+let yScale=d3.scaleLinear()
+.domain([0,d3.max(data,d=> d['Enrollment Number'])])
+.range([height,0]);
+
+svg.append ('g')
+.call (d3.axisLeft(yScale));
+
+data.sort((a,b) => a ['Education Level'].localeCompare(b ['Education Level']));
+
+for(let i=0; i< educationLevels.length; i++) {
+
+ let q12020Data=data.filter (d=> d ['Quarter']==='Q1-2020'&&
+                                d ['Education Level']=== educationLevels[i])[0];
+ let q22020Data=data.filter (d=> d ['Quarter']==='Q2-2020'&&
+                                d ['Education Level']=== educationLevels[i])[0];
+
+ if(q12020Data && q22020Data) {
+
+ svg.append ('line ')
+   // Set the x-coordinates of both ends of the line to be at the center of each Education level on the x-axis.
+   // Set y-coordinates based on Enrollment Numbers.
+   // Use different colors or patterns to differentiate between lines representing different Education levels.
+   
+ }
+
+}
+
+})
+
+.catch(error =>{
+console.error ('Error loading data:', error);
+});
+
+</script> 
+</body> 
+</html>"
+10,heatmap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Heatmap that visualizes the Enrollment Number across Education Level and Quarters.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Heatmap</title>
+  <style>
+
+    .heatmap {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+    }
+
+    .heatmap text {
+      text-anchor: middle;
+    }
+
+    .heatmap rect {
+      stroke-width: 1px;
+      stroke-opacity: 0.5;
+    }
+    
+  </style>
+</head>
+
+<body>
+
+<svg width=""800"" height=""600"" class=""heatmap""></svg>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+let margin = {top:50, right:50, bottom:100, left:150};
+let width = document.querySelector('.heatmap').getAttribute('width') - margin.left - margin.right,
+height = document.querySelector('.heatmap').getAttribute('height') - margin.top - margin.bottom;
+
+let svg = d3.select("".heatmap"")
+.append(""g"")
+.attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+d3.csv(""https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv"").then(data => {
+
+data.forEach(d => {
+d['Enrollment Number'] = +d['Enrollment Number'];
+});
+
+let educationLevels = [...new Set(data.map(d => d['Education Level']))];
+let quarters = [...new Set(data.map(d => d.Quarter))];
+
+let xScale = d3.scaleBand()
+.domain(quarters)
+.range([0, width])
+.paddingInner(0.05);
+
+svg.append(""g"")
+.attr(""transform"", `translate(0, ${height})`)
+.call(d3.axisBottom(xScale));
+
+let yScale = d3.scaleBand()
+.domain(educationLevels)
+.range([height, 0])
+.paddingInner(0.05);
+
+svg.append(""g"")
+.call(d3.axisLeft(yScale));
+
+// Heatmap
+svg.selectAll()
+.data(data)
+.enter()
+.append('rect')
+.attr('x', (d,i) => xScale.bandwidth() * (quarters.indexOf(d.Quarter)) + xScale.bandwidth()/4 )
+.attr('y', (d,i) => yScale.bandwidth() * educationLevels.indexOf(d['Education Level']))
+.attr('width', xScale.bandwidth()/2)
+.attr('height', yScale.bandwidth())
+.style('fill-opacity', '100%')
+.style ('fill','none')
+.transition().duration(500).delay((i,d) => i*10).ease(d=>{return;})
+.style ('fill',(i,d)=>{
+
+if(i<20000){
+return '#66CCCC';
+}
+else if(i>=20000 && i<=40000){
+return '#66CCFF';
+}
+else if(i>40000 && i<=60000){
+return '#66CCCC';
+}
+else{
+return '#33CCFF'
+}
+
+})
+
+.on (""mouseover"",(event,d)=>{
+const[x,y] =( [event.x,event.y]);
+const[containerWidth , containerHeight] =( [document.body.offsetWidth , document.body.offsetHeight]);
+
+if(x>(containerWidth-250)){
+tooltiptext(event.pageX-250,event.pageY+20,d);
+}else{
+tooltiptext(event.pageX+10,event.pageY+20,d);
+}
+
+})
+
+.on (""mouseout"",(event,d)=>{
+div.transition().duration(`500`).style(`opacity`,`0`);
+});
+
+function tooltiptext(x,y,data){
+
+div.transition().duration(`500`).style(`opacity`,`1`);
+
+div.html(
+""<b>""+""Quarter : ""+data.Quarter+""</b>""+
+""<br/>""+""<b>""+""Education Level : ""+data[""Education Level""]+""</b>""+
+""<br/>""+""<b>""+""Enrollment Number : ""+data[""Enrollment Number""]+""</b>""
+)
+
+.style (`left`, `${x}px`)
+.style (`top`, `${y}px`);
+};
+
+var div=d3.select(`body`).append (`div`)
+.attr (`class`,`tooltip`)
+.style (`opacity`,`0`);
+
+});
+</script></body></html>"
+11,bar chart+stacked bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Stacked Bar Chart that visualizes the given data table.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Stacked Bar Chart</title>
+  <script src=""https://d3js.org/d3.v7.min.js""></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .chart {
+      width: 800px;
+      height: 600px;
+      margin: auto;
+    }
+    
+    .bar {
+      fill-opacity: .5;
+    }
+    
+    .bar:hover {
+      fill-opacity: .8;
+    }
+    
+    text {
+      font-size: 12px;
+      text-anchor: middle;
+    }
+    
+     /* Add styles for the legend */
+     .legend rect {
+       fill-opacity:.5
+     }
+
+     /* Add styles for the legend text */
+     .legend text{
+       font-size :12px
+     }
+
+   </style>
+
+</head>
+
+<body>
+
+<div class=""chart"" id=""chart""></div>
+
+<script>
+
+// Set up margins and dimensions for the chart
+const margin = { top: 20, right: 20, bottom:30, left :40 };
+const width = document.getElementById(""chart"").offsetWidth - margin.left - margin.right,
+height = document.getElementById(""chart"").offsetHeight -margin.top-margin.bottom;
+
+// Create SVG element
+const svg = d3.select(""#chart"")
+.append(""svg"")
+.attr(""width"",width+margin.left+margin.right)
+.attr(""height"",height+margin.top+margin.bottom)
+.append('g')
+.attr('transform',`translate(${margin.left},${margin.top})`);
+
+// Load data from CSV file
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv').then(data => {
+
+data.forEach(d => {
+
+// Convert data types as necessary (e.g., numeric columns)
+
+d['Enrollment Number'] = +d['Enrollment Number'];
+d['Revenue'] = +d['Revenue'];
+d['Operating Costs'] = + d ['Operating Costs'];
+});
+
+// Define scales and axes
+
+const xScale=d3.scaleBand()
+.domain(data.map(d=> d.Quarter))
+.range([0,width])
+.padding(0.2);
+
+svg.append('g')
+.call(d3.axisBottom(xScale))
+.selectAll ('text')
+.style ('text-anchor','middle');
+
+const yScale=d3.scaleLinear()
+.domain ([0,d3.max(data,d=> d ['Enrollment Number'])])
+.range ([height ,0]);
+
+svg.append ('g')
+.call (d3.axisLeft(yScale));
+
+ // Define colors for each bar segment
+
+ const colors=['#66b33f','#ffcc00','#6495ED'];
+
+ // Create a stacked bar chart using D's stack layout
+
+ const stack=d3.stack().keys(['Revenue','Operating Costs']);
+
+ const series=stack(data);
+
+ series.forEach ((s,i) =>{
+
+ s.forEach ((v,j) =>{
+
+ v[1]=yScale(v[1]);
+ v[0]=yScale(v[0]);
+ });
+
+ });
+
+ svg.selectAll('.series')
+
+.data(series)
+
+.enter()
+
+.append('g')
+
+.classed ('series',true)
+
+.style ('fill',(s,i) =>colors[i])
+
+.selectAll('.bar')
+
+.data(s=> s)
+
+.enter()
+
+.append('rect')
+
+.classed ('bar',true)
+
+.attr (""x"",(v,i) =>xscale(i))
+
+.attr (""y"",v=> v [1])
+
+.attr (""width"",xscale.bandwidth())
+
+.attr (""height"",(v,i)=> v [0]-v [1]);
+
+});
+
+</script></body></html>"
+12,bar chart+horizontal bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate
+Your task is to create a Horizontal Bar Chart that visualizes the Enrollment Number for each Education Level in Q2-2021.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv
+
+The data table contains the following columns: Quarter,Education Level,Enrollment Number,Revenue,Operating Costs,Profit,Average Tuition,Number of Staff,Graduation Rate",D3,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Horizontal Bar Chart</title>
+  <style>
+    /* add some basic styling to make the chart look decent */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .chart {
+      width: 800px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    
+    .bar {
+      fill: steelblue;
+    }
+    
+    .bar:hover {
+      fill: brown;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+     path.domain{
+       stroke:none
+     }
+
+     g.tick line{
+       stroke:none
+     }
+
+     g.tick text{
+       transform : rotate(-45deg);
+       text-anchor : end
+     }
+
+     
+     
+     
+     
+   </style>
+
+</head>
+
+<body>
+
+<div class=""chart"" id=""chart""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+// Set up margins and dimensions for the chart
+const margin = { top: 20, right: 20, bottom:100, left:150 };
+const width = document.body.clientWidth - margin.left - margin.right -200 ;
+const height = document.body.clientHeight - margin.top - margin.bottom-200;
+
+// Select the div with id ""chart"" and append an SVG to it
+const svg = d3.select(""#chart"")
+.append(""svg"")
+.attr(""width"", width + margin.left + margin.right)
+.attr(""height"", height +margin.top+margin.bottom)
+.append(""g"")
+.attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+// Load data from CSV file
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/e84fa1e18efa3cd9ab2c4fb5c27c6191/raw/da2c085514a6958572f6ed3fb7efaaaa967e40d5/Educational%2520Enrollment.csv')
+.then(data => {
+
+data.forEach(d => {
+
+d['Enrollment Number'] = parseInt(d['Enrollment Number']);
+
+});
+
+data=data.filter(function(d){return d.Quarter==""Q2-2021""})
+
+
+let xScale=d3.scaleLinear()
+.domain([0,d3.max(data,d=>d['Enrollment Number'])])
+.range([0,width])
+
+let yScale=d3.scaleBand()
+.domain(data.map(d=>d[""Education Level""]))
+.range([0,height])
+.padding(0.15)
+
+svg.selectAll('rect')
+.data(data)
+.enter()
+.append('rect')
+.classed('bar',true)
+.attr('x',xScale(0))
+.attr('y',function (d,i) { return yScale(d[""Education Level""])})
+.transition().duration(10000).delay(function (i) { return i*500})
+.styleOpacity(1)
+
+svg.selectAll('.text')  
+.data(data) 
+.enter()  
+.append('text') 
+.text(function (data) {return data[""Education Level""]}) 
+.transition().duration(10000).delay(function (i) { return i*500})
+.styleOpacity(1)
+
+svg.selectAll('.numberText')  
+.data(data) 
+.enter()  
+.append('text') 
+.text(function (data) {return data[""Enrollment Number""]}) 
+
+})
+
+.catch(error => console.error(error));
+
+</script></body></html>"

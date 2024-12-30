@@ -1,0 +1,2039 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Scatterplot that visualizes the relationship between Adoption Rate and Investment. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+    <script type=""text/javascript"">
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const adoptionRates = rows.map(row => parseFloat(row[2]));
+                const investments = rows.map(row => parseFloat(row[3]));
+
+                var chartDom = document.getElementById('chart');
+                var myChart = echarts.init(chartDom);
+                var option;
+
+option = {
+  xAxis: {},
+  yAxis: {},
+  series: [
+    {
+      symbolSize: 20,
+      data: adoptionRates.map((rate, index) => [investments[index], rate]),
+      type: 'scatter'
+    }
+  ]
+};
+
+myChart.on('mouseover', function (params) {
+   // get the point's value
+   var valueX=params.value[0];
+   var valueY=params.value[1];
+
+   // highlight the axis
+   myChart.setOption({
+       xAxis:{
+           axisPointer:{show:true}
+       },
+       yAxis:{
+           axisPointer:{show:true}
+       }
+   });
+
+});
+
+myChart.setOption(option);
+
+            });
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+
+                
+                    
+                        
+                        
+                    
+                
+                    
+                        
+                        
+                    
+                
+                    
+                        
+                        
+                    
+                
+                    
+                        
+                        
+                    
+                
+                    
+
+                   
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+
+                    
+
+                   
+                
+                
+                
+                
+                
+                
+
+                    
+
+                   
+                
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+
+                   
+                
+                    
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+    
+
+    
+            
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+             
+            
+             
+            
+             
+            
+             
+            
+             
+             
+             
+             
+             
+             
+             
+             
+             
+             
+              
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+         
+        
+         
+        
+         
+        
+         
+        
+         
+         
+         
+         
+         
+         
+         
+        
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+    
+    
+    
+
+
+
+
+     
+     
+     
+     
+     
+     
+     
+     
+     
+      
+       
+       
+       
+       
+       
+       
+       
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+    
+    
+    
+
+
+
+
+      
+   
+   
+   
+   
+   
+   
+   
+   
+   
+    
+  
+  
+
+  
+
+  
+
+  
+
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  
+
+  
+
+  
+
+  
+
+  
+ 
+
+ 
+ 
+
+ 
+ 
+
+ 
+ 
+
+ 
+ 
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+
+ 
+
+
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+  
+ 
+  
+ 
+  
+ 
+  
+ 
+  
+ 
+  
+ 
+  
+ 
+  
+ 
+  
+ 
+  
+ 
+
+
+ 
+
+
+
+
+  
+  
+  
+
+
+ 
+
+
+
+
+  
+  
+  
+
+
+ 
+
+
+
+
+  
+  
+  
+
+
+ 
+
+
+
+
+  
+  
+  
+
+
+ 
+
+
+
+
+  
+  
+  
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+
+
+ 
+    
+ 
+    
+ 
+    
+ 
+    
+ 
+    
+ 
+    
+ 
+    
+ 
+    
+ 
+    
+ 
+    
+ 
+        
+ 
+        
+ 
+        
+ 
+        
+ 
+        
+ 
+        
+ 
+        
+ 
+        
+ 
+        
+      
+        
+        
+        
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+      
+          
+          
+          
+          
+          
+          
+          
+      
+      
+      
+
+      
+          
+      
+          
+      
+          
+      
+          
+      
+           
+           
+           
+           
+           
+           
+           
+            
+              
+            
+              
+            
+              
+            
+              
+            
+              
+              
+              
+              
+              
+              
+               
+               
+               
+               
+               
+               
+                
+                  
+                  
+                  
+                  
+                  
+                  
+
+    
+                 
+
+    
+                 
+
+    
+                 
+
+    
+                 
+
+    
+                 
+                 
+                 
+                 
+                 
+                 
+                   
+                   
+                   
+                   
+                   
+                   
+                     
+                    
+                     
+                    
+                     
+                    
+                     
+                    
+                     
+                     
+                     
+                     
+                     
+                     
+                      
+                      
+                      
+                      
+                      
+                      
+                        
+                         
+                        
+                         
+                        
+                         
+                        
+                         
+                         
+                         
+                         
+                         
+                          
+                          
+                          
+                          
+                          
+                          	
+                             	
+                             	
+                             	
+                             	
+                             	                            	                            	                            	                            	                            	                            
+                              	                           	
+
+                              	                           	
+
+                              	                           	
+
+                              	                           	
+
+                              	                           	
+
+                               
+	
+                               
+	
+                               
+	
+                               
+	
+                               	
+	
+                                	
+	
+	
+                                	
+	
+	
+                                	
+	
+	
+                                	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+                                 
+
+
+
+
+
+
+                                 
+
+
+
+
+
+
+                                 
+
+
+
+
+
+
+                                 
+
+
+
+
+
+
+                                 
+
+
+
+
+
+                                  
+
+
+
+
+
+                                  
+
+
+
+
+
+                                  
+
+
+
+
+
+                                  
+
+
+
+
+
+
+
+                                   
+
+
+
+
+
+
+
+                                   
+
+
+
+
+
+
+
+                                   
+
+
+
+
+
+
+
+                                   
+
+
+
+
+
+
+
+
+                                    
+
+
+
+
+
+
+
+
+                                    
+
+
+
+
+
+
+
+
+                                    
+
+
+
+
+
+
+
+
+                                    
+                                    
+                                    
+                                    
+                                    
+                                    
+                                     
+                                     
+                                     
+                                     
+                                     
+                                      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+var chartDom_2=document.getElementById(""chart_2"");
+var myChart_2=echarts.init(chartDom_2);
+var option_2;
+option_2={
+xAxis:{},
+yAxis:{},
+series:[
+{
+symbolSize:_DATA_.map(function(item){
+return item[_VALUE_INDEX_]*10;
+}),
+data:_DATA_,
+type:""scatter""
+}
+]
+};
+myChart.on(""mouseover"",function(params){
+//get the point's value on x-axis and y-axis.
+var valueX=params.value[0];
+var valueY=params.value[1];
+//highlight the corresponding gridline on x-axis and y-axis.
+myChart.setOption({
+xAxis:{
+axisPointer:{show:true}
+},
+yAxis:{
+axisPointer:{show:true}
+}
+});
+});
+myChart.setOption(option);"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Scatterplot that visualizes the relationship between Adoption Rate and Investment. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Scatterplot with Brushing</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const chartData = rows.map(row => ({
+          AdoptionRate: parseFloat(row[2]),
+          Investment: parseFloat(row[3])
+        }));
+
+        const chartDom = document.getElementById('chart');
+        const myChart = echarts.init(chartDom);
+        let option;
+
+option = {
+    title: {
+      text: 'Scatterplot of Adoption Rate vs. Investment'
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis : [
+       {
+           type : 'value',
+           scale:true,
+           axisLabel : {
+               formatter:'{value} '
+           },
+           splitLine:{show:false}
+       }
+   ],
+   yAxis:[
+       {   
+            type:'value',
+            scale:true,
+            axisLabel:{
+                formatter:'{value} '
+            },
+            splitLine:{show:false}
+       }
+   ],
+   series:[
+     { 
+         name:'',
+         type:'scatter',
+         data:[],
+         markArea:{
+             silent:true,
+             itemStyle:{
+                 normal:{
+                     color:""transparent"",
+                     borderWidth:""1"",
+                     borderType:""dashed""
+                 }
+             },
+             data:[
+                 [
+                    {name:'',xAxis:'',yAxis:''},
+                    {xAxis:'',yAxis:''}
+                ]
+              ]
+          }  
+     } 
+   ]  
+};
+
+myChart.setOption(option);
+
+const brushComponent=echarts.extendComponentModel({
+getBrushRect:updateView
+});
+
+function updateView(param, api) {
+
+const coordSys=param.coordSys;
+const brushSelectableArea=param.brushSelectableArea;
+let sumDeltaX=sumDeltaY=0;
+let sumDistX=sumDistY=0;
+
+param.downPoints.forEach(function(item,idx){
+if(idx===0){
+sumDeltaX+=item.deltaX||0;
+sumDeltaY+=item.deltaY||0;
+}else{
+sumDistX+=Math.abs(item.x-param.downPoints[idx-1].x);
+sumDistY+=Math.abs(item.y-param.downPoints[idx-1].y);
+}
+
+});
+if(sumDistX<5&&sumDistY<5){
+return[];
+}
+
+var rectShape={
+x:param.movePoint.x+sumDeltaX,
+y:param.movePoint.y+sumDeltaY,
+width:(brushSelectableArea.width-sumDeltaX)/coordSys.scale[0],
+height:(brushSelectableArea.height-sumDeltaY)/coordSys.scale[1]
+};
+return[
+{
+type:""rect"",
+shape:"""",
+style:"""",
+zlevel:"",
+
+},
+
+
+];
+
+}
+
+myChart.on(""brushSelected"",renderBrushedData);
+
+function renderBrushedData(params){
+
+var brushedData=params.batch[params.indices.dataIndex];
+var rawIndices=params.batch.rawIndices[dataIndex];
+var filteredBySeriesId={};
+rawIndices.forEach(function(rawK,i){
+filteredBySeriesId[dataIndex]=filteredBySeriesId[dataIndex]||[];
+filteredBySeriesId[dataIndex].push(i);
+});
+
+console.log(filteredBySeriesId);
+
+}
+
+
+});    
+</script>    
+</body>    
+</html>"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Scatterplot that visualizes the relationship between Adoption Rate and Investment. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""scatterplot"" style=""width: 800px; height: 600px;""></div>
+
+    <script type=""text/javascript"">
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const adoptionRates = rows.map(row => parseFloat(row[2]));
+                const investments = rows.map(row => parseFloat(row[3]));
+
+                var chartDom = document.getElementById('scatterplot');
+                var myChart = echarts.init(chartDom);
+                var option;
+
+option = {
+  xAxis: {},
+  yAxis: {},
+  series: [
+    {
+      symbolSize: 20,
+      data: adoptionRates.map((rate, index) => [investments[index], rate]),
+      type: 'scatter'
+    }
+  ]
+};
+
+option && myChart.setOption(option);
+
+myChart.on('mousewheel', function (params) {
+                    console.log(params)
+                    // Your code here
+                  });
+            });
+            
+chartDom.addEventListener(""mousewheel"", function(event){
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        let delta=0;
+                        if (!event) /* For IE. */
+                            event=window.event;
+                        if (event.wheelDelta) { /* IE/Opera. */
+                            delta=event.wheelDelta /120;
+                        } else if (event.detail) { /** Mozilla case. */
+                            /** In Mozilla, this value is usually multiple of three.
+                             * Users can adjust the speed of wheel by using
+                             * about config variable ""mousewheel.withnokey.numlines""
+                             * or ""mousewheel.withnokey.sysnumlines"".
+                             * We'll divide by three to make it more Firefox like.
+                             */
+                            delta=-event.detail /3;
+                        }
+                        /** If delta is nonzero, handle it.
+                         * Basically, delta is now positive if wheel was scrolled up,
+                         * and negative otherwise.
+                         */
+
+                    });
+
+document.getElementById(""scatterplot"").addEventListener(""DOMMouseScroll"",function(event){ 
+   event.preventDefault();  
+},false); 
+
+document.getElementById(""scatterplot"").addEventListener(""mousewheel"",function(event){ 
+   event.preventDefault();  
+},false);
+            
+</script>
+
+</body>
+
+</html>"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Adoption Rate and Investment. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Technology Adoption Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const chartData = rows.map(row => ({
+          Year: row[0],
+          'Technology Type': row[1],
+          'Adoption Rate': parseFloat(row[2]),
+          Investment: parseFloat(row[3]),
+          'Return on Investment': parseFloat(row[4]),
+          'Number of Users': parseInt(row[5]),
+          'Market Share': parseFloat(row[6]),
+          'Customer Satisfaction Score': parseInt(row[7])
+        }));
+
+        const myChart = echarts.init(document.getElementById('chart'));
+
+        const option = {
+          title: {
+            text: 'Relationship between Adoption Rate and Investment'
+          },
+          tooltip: {
+            trigger: 'item',
+            formatter(params) {
+              return `Year:${params.data.Year}<br/>Technology Type:${params.data['Technology Type']}<br/>Adoption Rate:${params.data['Adoption Rate']}<br/>Investment:${params.data.Investment}`;
+            }
+         },
+         xAxis:{
+           type:'value',
+           name:'Investment'
+         },
+         yAxis:{
+           type:'value',
+           name:'Adoption Rate'
+         },
+         series:[
+           {type:'scatter',data:data}
+         ]
+       };
+
+       myChart.setOption(option);
+
+       myChart.on('click', params=>{window.open(`https://www.google.com/search?q=${encodeURIComponent(params.name)}`, '_blank');});
+     });
+   </script>
+
+ </body>
+
+</html>"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Scatterplot with query widgets showing the Adoption Rate and Investment of the given dataset. Add a slider to represent the Year.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Technology Adoption Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""scatterplot"" style=""width: 800px; height: 600px;""></div>
+
+<script type=""text/javascript"">
+fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1).map(row => row.split(','));
+    const years = [...new Set(rows.map(row => +row[0]))].sort((a, b) => a - b);
+    const minYear = Math.min(...years);
+    const maxYear = Math.max(...years);
+
+    let filteredData = rows.filter(row => +row[0] === minYear);
+
+    function updateScatterplot(year) {
+        filteredData = rows.filter(row => +row[0] === year);
+        myChart.setOption({
+            series: [{
+                data: filteredData.map(row => [+row[2], +row[3]])
+            }]
+        });
+    }
+
+const myChart = echarts.init(document.getElementById('scatterplot'));
+
+myChart.setOption({
+tooltip: {},
+xAxis: {name:'Adoption Rate'},
+yAxis:{name:'Investment'},
+dataZoom:[
+{
+type:'slider',
+startValue:minYear,
+endValue:maxYear
+}
+],
+series:[{
+symbolSize:10,
+data:[],
+type:'scatter'
+}]
+});
+
+updateScatterplot(minYear);
+
+myChart.on('dataZoom', params=> {
+if(params.batch){
+const startValue=params.batch[0].startValue;
+const endValue=params.batch[0].endValue;
+updateScatterplot(startValue)
+}
+});
+});
+</script>
+
+</body></html>"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Scatterplot showing the Adoption Rate of Cloud Computing. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Adoption Rate of Cloud Computing</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const cloudComputingData = rows.filter(row => row[1] === 'Cloud Computing');
+        const years = cloudComputingData.map(row => parseInt(row[0]));
+        const adoptionRates = cloudComputingData.map(row => parseFloat(row[2]));
+
+        var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+          animationDuration:10000,
+          xAxis: {
+            type: 'category',
+            data: years
+          },
+          yAxis: {},
+          series: [
+            {
+              type:'line',
+              data: adoptionRates,
+              showSymbol:true,
+              symbolSize:function(dataItem){
+                return Math.abs(dataItem[1])*2;
+              }
+            }
+          ]
+};
+
+option && myChart.setOption(option);
+
+      });
+</script>
+
+</body>
+
+</html>"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Adoption Rate of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Adoption Rate Line Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+    <script type=""text/javascript"">
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const years = Array.from(new Set(rows.map(row => row[0]))).sort();
+                const technologyTypes = Array.from(new Set(rows.map(row => row[1])));
+                const seriesData = technologyTypes.map(type => {
+                    return years.map(year => {
+                        const row = rows.find(row => row[0] === year && row[1] === type);
+                        return row ? parseFloat(row[2]) : null;
+                    });
+                });
+
+                var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+  title: {
+    text: 'Adoption Rate Line Chart'
+  },
+  tooltip: {
+    trigger: 'axis'
+  },
+  legend: {},
+  grid: {},
+  xAxis: [
+    {
+      type: 'category',
+      data: years
+    }
+  ],
+  
+};
+
+seriesData.forEach((data, index) => {
+
+const seriesObj =
+{
+      name:`${technologyTypes[index]}`,
+      type:'line',
+      lineStyle:{
+        width:.5
+},
+emphasis:{
+lineStyle:{
+width:.5
+}
+},
+smooth:true,
+showSymbol:false,
+stack:'',
+areaStyle:{},
+data:data
+
+};
+if(option.series){
+option.series.push(seriesObj)
+}
+else{
+option.series=[seriesObj]
+}
+
+});
+
+myChart.setOption(option);
+
+});
+</script>
+
+</body>
+
+</html>"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Bar Chart that visualizes the Adoption Rate for each Technology Type in 2020. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Technology Adoption Rate</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const chartData = rows.filter(row => row[0] === '2020').map(row => ({ name: row[1], value: parseFloat(row[2]) }));
+
+        var chartDom = document.getElementById('chart');
+        var myChart = echarts.init(chartDom);
+        var option;
+
+        option = {
+          title: {
+            text: 'Technology Adoption Rate in 2020'
+          },
+          xAxis: {
+            type: 'category',
+            data: chartData.map(item => item.name)
+          },
+          yAxis: {},
+          series: [
+            {
+              type: 'bar',
+              data: chartData.map(item => item.value)
+            }
+          ]
+        };
+
+        myChart.setOption(option);
+
+myChart.on('mousewheel', function (params) {
+    if (params.batch) return;
+    if (params.dataIndex >= option.series[0].data.length || params.dataIndex < -option.series[0].data.length) return;
+    let zoomSize = Math.round(params.batch ? params.batch.length : params.zoomSize);
+    let startValue, endValue;
+if (zoomSize > -10 && zoomSize <= -1) { // Zoom out
+startValue -= zoomSize * option.series[0].data.length / Math.abs(zoomSize);
+endValue += zoomSize * option.series[0].data.length / Math.abs(zoomSize);
+} else if (zoomSize >= -10 && zoomSize <= -1) { // Zoom in
+startValue += zoomSize * option.series[0].data.length / Math.abs(zoomSize);
+endValue -= zoomSize * option.series[0].data.length / Math.abs(zoomsize); 
+}
+myChart.dispatchAction({
+type:'brushSelect',
+batch:[{
+areas:[
+{
+range:[startvalue,endvalue],
+xAxisIndex:params.xAxisIndex,
+yAxisIndex:params.yAxisindex,
+brushType:params.brushType
+}
+]
+}]
+});
+});
+
+myChart.on('mousedown', function(params){
+if(params.componentSubType ==='bar'){
+let startx=params.event.event.clientX;
+let moveHandler=function(event){
+let endX=event.clientX-startX;
+if(endX<100||endX>700)return;//Limit the panning range to prevent the bar from moving out of the visible area
+option.xAxis.data.forEach((item,index)=>{
+item.value+=endX*index*2;//Adjust the x-axis values based on mouse movement
+});
+mychart.setOption(option,{notMerge:true});//Update the chart with new x-axis values without merging with previous options
+
+};
+document.addEventListener(""mousemove"",moveHandler);//Add event listener for mouse movement
+
+document.addEventListener(""mouseup"",function(){
+document.removeEventListener(""mousemove"",moveHandler);//Remove event listener when mouse button is released
+});
+}
+});
+
+      });
+</script>
+
+</body></html>"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Bar Chart that visualizes the Adoption Rate for each Technology Type in 2020. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Technology Adoption Rate Bar Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const data2020 = rows.filter(row => row[0] === '2020');
+                const technologyTypes = data2020.map(row => row[1]);
+                const adoptionRates = data2020.map(row => parseFloat(row[2]));
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const option = {
+                    title: {
+                        text: 'Technology Adoption Rate in 2020'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: technologyTypes
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            type: 'bar',
+                            data: adoptionRates,
+                            itemStyle: {
+                                color: '#409eff'
+                            }
+                        }
+                    ],
+                    dataZoom: [
+                        {
+                            type: 'slider',
+                            show: true,
+                            xAxisIndex: [0],
+                            start: 0,
+                            end: 100
+                        }
+                    ],
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: { show: true, readOnly: false },
+                            magicType: { show: true, type: ['line', 'bar'] },
+                            restore: { show: true },
+                            saveAsImage: { show: true }
+                        }
+                    },
+                    drag: {
+                        show: true,
+                        dragSeries: true,
+                        dragSmooth: true
+                    }
+                };
+
+                chart.setOption(option);
+
+                chart.on('mousedown', function(params) {
+                    if (params.componentType === 'series') {
+                        chart.setOption({
+                            graphicElements: [
+                                {
+                                    type: 'rect',
+                                    shape: {
+                                        x: params.event.offsetX,
+                                        y: params.event.offsetY,
+                                        width: 10,
+                                        height: 10
+                                    },
+                                    style: {
+                                        fill: 'rgba(0, 0, 0, 0.2)'
+                                    },
+                                    draggable: true,
+                                    ondrag: function(dx, dy) {
+                                        const data = chart.getOption().series[0].data;
+                                        const index = params.dataIndex;
+                                        const value = data[index];
+                                        data.splice(index, 1);
+                                        data.splice(params.event.dataIndex, 0, value);
+                                        chart.setOption({
+                                            series: [
+                                                {
+                                                    type: 'bar',
+                                                    data: data
+                                                }
+                                            ]
+                                        });
+                                    }
+                                }
+                            ]
+                        });
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a Bar Chart that visualizes the Adoption Rate for each Technology Type in 2020. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Adoption Rate.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Technology Adoption Rate</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+  <select id=""sort-select"">
+    <option value=""asc"">Ascending</option>
+    <option value=""desc"">Descending</option>
+  </select>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+      .then(response => response.text())
+      .then(csv => {
+        const data = csv.split('\n').slice(1).map(row => row.split(','));
+        const chartData = data.filter(row => row[0] === '2020').map(row => ({ name: row[1], value: parseFloat(row[2]) }));
+
+        const chart = echarts.init(document.getElementById('chart'));
+        const option = {
+          title: { text: 'Technology Adoption Rate in 2020' },
+          xAxis: { type: 'category' },
+          yAxis: { type: 'value' },
+          series: [{ type: 'bar', dataSortingSortKey : ""value"", animationDurationUpdate :100, label:{show:true},dataSortingMethod:""sortValue"",dataSortingSortKey:""value"",dataSortingSortOrder:""asc""}],
+          dataset:[{source : chartData}],
+          toolbox:{feature:{saveAsImage:{}}}
+        };
+
+        document.getElementById('sort-select').addEventListener('change', () => {
+            if (document.getElementById(""sort-select"").value === ""asc"") {
+                option.series.dataSortingSortOrder= ""asc"";
+            } else if (document.getElementById(""sort-select"").value === ""desc"") {
+                option.series.dataSortingSortOrder= ""desc"";
+            }
+            chart.setOption(option);
+         });
+
+         chart.setOption(option);
+       });
+   </script>
+
+</body>
+
+</html>"

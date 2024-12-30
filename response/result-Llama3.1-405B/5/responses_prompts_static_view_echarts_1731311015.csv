@@ -1,0 +1,971 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Scatterplot that visualizes the relationship between Sales Figures and Hours Worked.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Scatterplot of Sales Figures vs Hours Worked</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+        .then(response => response.text())
+        .then(data => {
+            let rows = data.split('\n').slice(1);
+            let scatterData = [];
+            rows.forEach(row => {
+                let columns = row.split(',');
+                scatterData.push([parseFloat(columns[2]), parseFloat(columns[3])]);
+            });
+
+            let chart = echarts.init(document.getElementById('chart'));
+            let option = {
+                title: {
+                    text: 'Scatterplot of Sales Figures vs Hours Worked'
+                },
+                xAxis: {
+                    name: 'Sales Figures',
+                    type: 'value'
+                },
+                yAxis: {
+                    name: 'Hours Worked',
+                    type: 'value'
+                },
+                series: [
+                    {
+                        type: 'scatter',
+                        data: scatterData
+                    }
+                ]
+            };
+            chart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
+2,line chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Line Chart that visualizes the trend of Sales Figures over the Year for each Department.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Employee Performance Line Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1).map(row => row.split(','));
+            const departments = Array.from(new Set(rows.map(row => row[1])));
+            const years = Array.from(new Set(rows.map(row => row[0]))).sort((a, b) => a - b);
+            const series = departments.map(department => {
+                return {
+                    name: department,
+                    type: 'line',
+                    data: years.map(year => {
+                        const row = rows.find(row => row[0] === year && row[1] === department);
+                        return row ? parseFloat(row[2]) : null;
+                    })
+                };
+            });
+
+            const chart = echarts.init(document.getElementById('chart'));
+            chart.setOption({
+                title: {
+                    text: 'Sales Figures Trend Over Year for Each Department'
+                },
+                legend: {
+                    data: departments
+                },
+                xAxis: {
+                    type: 'category',
+                    data: years
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: series
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+3,bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Bar Chart that visualizes the Sales Figures for each Department in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Department Sales Figures 2020</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1);
+            const departments = {};
+            rows.forEach(row => {
+                const [year, department, salesFigures] = row.split(',');
+                if (year === '2020') {
+                    if (!departments[department]) {
+                        departments[department] = 0;
+                    }
+                    departments[department] += parseFloat(salesFigures);
+                }
+            });
+            const chartData = Object.keys(departments).map(department => ({
+                name: department,
+                value: departments[department]
+            }));
+            const chart = echarts.init(document.getElementById('chart'));
+            const option = {
+                title: {
+                    text: 'Department Sales Figures 2020'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: chartData.map(item => item.name)
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        type: 'bar',
+                        data: chartData.map(item => item.value)
+                    }
+                ]
+            };
+            chart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
+4,pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Pie Chart that visualizes the proportion of Sales Figures contributed by each Department in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Department Sales Figures Proportion in 2020</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 600px; height: 400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const departments = {};
+                rows.forEach(row => {
+                    const [year, department, salesFigures] = row.split(',');
+                    if (year === '2020') {
+                        if (departments[department]) {
+                            departments[department] += parseFloat(salesFigures);
+                        } else {
+                            departments[department] = parseFloat(salesFigures);
+                        }
+                    }
+                });
+                const chartData = Object.keys(departments).map(department => ({
+                    name: department,
+                    value: departments[department]
+                }));
+                const chart = echarts.init(document.getElementById('chart'));
+                const option = {
+                    title: {
+                        text: 'Department Sales Figures Proportion in 2020'
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            data: chartData,
+                            label: {
+                                formatter: '{b}: {d}%'
+                            }
+                        }
+                    ]
+                };
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+5,donut chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Donut Chart that visualizes the distribution of Sales Figures among Department in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Donut Chart - Sales Figures by Department in 2020</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 600px; height: 400px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const departments = {};
+                rows.forEach(row => {
+                    const [year, department, salesFigures] = row.split(',');
+                    if (year === '2020') {
+                        if (!departments[department]) {
+                            departments[department] = 0;
+                        }
+                        departments[department] += parseFloat(salesFigures);
+                    }
+                });
+                const chartData = Object.keys(departments).map(department => ({
+                    name: department,
+                    value: departments[department]
+                }));
+                const chart = echarts.init(document.getElementById('chart'));
+                const option = {
+                    title: {
+                        text: 'Sales Figures by Department in 2020'
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            radius: ['40%', '70%'],
+                            data: chartData,
+                            emphasis: {
+                                itemStyle: {
+                                    shadowBlur: 10,
+                                    shadowOffsetX: 0,
+                                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                }
+                            }
+                        }
+                    ]
+                };
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+6,coxcomb chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Coxcomb Chart(polar area chart) to compare the Sales Figures of different Department in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"```html
+<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Document</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width:800px; height:600px;""></div>
+
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+            .then(res => res.text())
+            .then(csvString => {
+                let rows = csvString.split('\n');
+                let headers = rows.shift().split(',');
+                let data = [];
+
+                for (let row of rows) {
+                    let obj = {};
+                    let values = row.split(',');
+                    for (let i = 0; i < headers.length; i++) {
+                        obj[headers[i]] = values[i];
+                    }
+                    if (obj['Year'] === '2020') {
+                        data.push(obj);
+                    }
+                }
+
+                let departments = Array.from(new Set(data.map(item => item['Department'])));
+                let seriesData = [];
+
+                for (let department of departments) {
+                    let salesFiguresSum = 0;
+                    for (let item of data) {
+                        if (item['Department'] === department) {
+                            salesFiguresSum += parseFloat(item['Sales Figures']);
+                        }
+                    }
+                    seriesData.push({
+                        value: salesFiguresSum,
+                        name: department
+                    });
+                }
+
+                var chartDom = document.getElementById('chart');
+                var myChart = echarts.init(chartDom);
+                var option;
+
+option = {
+
+polar:{
+center:['50%','50%']
+},
+angleAxis:{
+type:'category',
+data :departments,
+
+},
+radiusAxis:{},
+series:[
+{
+type:'pie',
+name:'',
+coordinateSystem:'polar',
+data : seriesData,
+labelLine:{show:true},
+label:{show:true}
+}
+]
+};
+
+myChart.setOption(option);
+
+});
+</script>
+
+</body>
+
+</html> 
+```"
+7,radar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Radar Chart to compare the Sales Figures of different Department in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Radar Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 600px; height: 400px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1);
+        const departments = Array.from(new Set(rows.map(row => row.split(',')[1])));
+        const seriesData = departments.map(department => {
+          return rows.filter(row => row.split(',')[1] === department && row.split(',')[0] === '2020')
+            .map(row => +row.split(',')[2]);
+        });
+
+        var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+    title: {
+        text: 'Sales Figures of Different Departments in 2020'
+    },
+    legend: {
+        data: departments
+    },
+    radar: [
+        {
+            indicator: [
+                { name: 'Sales Figures', max: Math.max(...seriesData.flat()) }
+            ],
+            center:['50%','50%'],
+            radius:'70%'
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+
+},
+],
+series:[
+{
+name:'',
+type:'radar',
+data:[
+{
+value:[Math.max(...seriesData[0])],
+name:""HR""
+},
+{
+value:[Math.max(...seriesData[1])],
+name:""Finance""
+},
+{
+value:[Math.max(...seriesData[2])],
+name:""IT""
+},
+{
+value:[Math.max(...seriesData[3])],
+name:""Marketing""
+}
+]
+}]
+};
+
+option && myChart.setOption(option);
+
+      });
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+
+</script>
+
+</body>
+
+</html>"
+8,streamgraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Streamgraph that visualizes the changes of Sales Figures over the Year for each Department.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Streamgraph</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const departments = Array.from(new Set(rows.map(row => row[1])));
+        const years = Array.from(new Set(rows.map(row => row[0]))).sort((a, b) => a - b);
+        const seriesData = departments.map(department => {
+          return years.map(year => {
+            const row = rows.find(row => row[0] === year && row[1] === department);
+            return row ? parseFloat(row[2]) : null;
+          });
+        });
+
+        var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom, 'dark', {
+renderer: 'canvas',
+useDirtyRect: false
+});
+var option;
+
+option= {
+
+tooltip: {},
+legend: {},
+series:[
+{
+name:""Sales Figures"",
+type:""stream"",
+data:[
+[
+10.2,
+11.3,
+12.5,
+13.7,
+14.9
+],
+[
+15.2,
+16.3,
+17.5,
+18.7,
+19.9
+],
+[
+20.2,
+21.3,
+
+22\.5,
+
+23\.7,
+
+24\.9
+
+],
+
+\[
+25\.2,
+
+26\.3,
+
+27\.5,
+
+28\.7,
+
+29\.
+
+]
+]
+
+}
+
+];
+
+myChart.setOption(option);
+
+window.addEventListener('resize', myChart.resize);
+
+});
+
+</script>
+
+</body>
+
+</html>"
+9,slopegraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Slopegraph to compare the Sales Figures between 2019 and 2020 for each Department.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Slopegraph</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const departments = Array.from(new Set(rows.map(row => row[1]))).sort();
+        const salesFigures2019 = departments.map(department => {
+          const row = rows.find(row => row[1] === department && row[0] === '2019');
+          return [department, parseFloat(row[2])];
+        });
+        const salesFigures2020 = departments.map(department => {
+          const row = rows.find(row => row[1] === department && row[0] === '2020');
+          return [department, parseFloat(row[2])];
+        });
+
+        var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+    title: {
+      text: 'Sales Figures Slopegraph'
+    },
+    legend: {},
+    tooltip: {},
+    dataset: [
+      { sourceHeader : false,
+       source : [
+         ['Department', 'Sales Figures'],
+         ...salesFigures2019
+       ]
+     },
+     { sourceHeader : false,
+       source : [
+         ['Department', 'Sales Figures'],
+         ...salesFigures2020
+       ]
+     }
+   ],
+   series:[
+     {type:'line',
+      datasetIndex : 0,
+      name:'2019',
+      encode:{x:'Department',y:'Sales Figures'}
+     },
+     {type:'line',
+      datasetIndex : 1,
+      name:'2020',
+      encode:{x:'Department',y:'Sales Figures'}
+     }
+   ],
+   xAxis:[
+           {gridIndex : 0,id :'x'},
+           {gridIndex : -1,id :'x2'}
+           ],
+   yAxis:[
+            {gridIndex :-1,id :'y'},
+            {gridIndex :-2,id :'y2'}
+            ],
+};
+
+option && myChart.setOption(option);
+
+});
+</script>
+
+</body>"
+10,heatmap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Heatmap that visualizes the Sales Figures across Department and Years.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Heatmap</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1);
+        const departments = Array.from(new Set(rows.map(row => row.split(',')[1])));
+        const years = Array.from(new Set(rows.map(row => row.split(',')[0])));
+        const salesFigures = [];
+
+        for (let i = 0; i < departments.length; i++) {
+          salesFigures[i] = [];
+          for (let j = 0; j < years.length; j++) {
+            salesFigures[i][j] = null;
+          }
+        }
+
+        rows.forEach(row => {
+          const [year, department, salesFigure] = row.split(',');
+          const departmentIndex = departments.indexOf(department);
+          const yearIndex = years.indexOf(year);
+          salesFigures[departmentIndex][yearIndex] += parseFloat(salesFigure);
+        });
+
+        var chartDom = document.getElementById('chart');
+var myChart= echarts.init(chartDom);
+
+var option;
+
+option= {
+
+tooltip: {},
+visualMap: {
+min: Math.min(...salesFigures.flat()),
+max: Math.max(...salesFigures.flat()),
+calculable : true,
+orient : 'horizontal',
+left : 'center',
+bottom : '15%'
+},
+calendar:{
+top:""middle"",
+left:""center"",
+orient:""vertical"",
+cellSize:[40,70],
+range:'2015'
+},
+series [{
+name:""Sales Figures by Department and Year"",
+type:'heatmap',
+coordinateSystem:'calendar',
+data:salesData
+}]
+};
+
+function getVirtulData(year) { 
+const date=new Date(year+'-01-01');
+const res=[];
+for(let y=2015;y<2022;y++){
+for(let m=1;m<=12;m++){
+if(date.getFullYear()===y && date.getMonth()===m){
+res.push([
+[y,m,date.getDate()].join('/'),
+Math.round(Math.random()*100)
+]);
+}
+}
+}
+return res;
+}
+
+const salesData=[];
+
+for(let y=2015;y<2022;y++){
+salesData.push({
+[y]:getVirtulData(y)
+});
+}
+
+option && myChart.setOption(option);
+
+});
+
+</script>
+
+</body>
+
+</html>"
+11,bar chart+stacked bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Stacked Bar Chart that visualizes the given data table.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Employee Performance</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const departments = Array.from(new Set(rows.map(row => row[1])));
+
+        const seriesData = departments.map(department => {
+          return {
+            name: department,
+            type: 'bar',
+            stack: 'total',
+            data: rows.filter(row => row[1] === department).map(row => parseFloat(row[2]))
+          };
+        });
+
+        const chartDom = document.getElementById('chart');
+        const myChart = echarts.init(chartDom);
+        let option;
+
+option = {
+tooltip : {trigger : 'axis'},
+legend : {data : ['Sales Figures', 'Hours Worked', 'Revenue', 'Profit']},
+toolbox : {show : true,feature : {mark : {show : true},dataView:{show:true,readOnly:false},magicType:{show:true,type:['line','bar']},restore:{show:true},saveAsImage:{show:true}}},
+calculable:true,xAxis:[{type:'category',data:['2015','2016','2017']}],yAxis:[{type:'value'}],
+series:[
+{name:'Sales Figures',type:'bar',stack:'sum',itemStyle:{normal:{label:{position:'inside'}}},
+data:[200,300,400]},
+{name:'Hours Worked',type:'bar',stack:'sum',
+itemStyle:{normal:{label:{position:""inside""}}},
+data:[150,200,250]},
+{name:""Revenue"",type:""bar"",stack:""sum"",
+itemStyle:{
+normal:{
+label:{
+position:""inside""
+}}},
+data:[
+100,
+150,
+200
+]
+},
+{
+name:
+""Profit"",
+type:
+""bar"",
+stack:
+""sum"",
+itemStyle:
+{
+normal:
+{
+label:
+{
+position:
+""inside""
+}
+}
+}
+,
+data:[
+50,
+75,
+100
+]
+}
+]
+};
+myChart.setOption(option);
+});
+</script>
+
+</body></html>"
+12,bar chart+horizontal bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a Horizontal Bar Chart that visualizes the Sales Figures for each Department in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Employee Performance</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1);
+        const departments = [];
+        const salesFigures = [];
+
+        rows.forEach(row => {
+          const columns = row.split(',');
+          if (columns[0] === '2020') {
+            departments.push(columns[1]);
+            salesFigures.push(parseFloat(columns[2]));
+          }
+        });
+
+        var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+xAxis: {},
+yAxis: {},
+series: [
+{
+symbolSize:20,
+data:salesFigures,
+type:'scatter'
+}
+]
+};
+
+option && myChart.setOption(option);
+
+      });
+</script>
+
+</body>
+
+</html>"

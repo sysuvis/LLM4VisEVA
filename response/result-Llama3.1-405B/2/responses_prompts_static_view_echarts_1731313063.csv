@@ -1,0 +1,910 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Scatterplot that visualizes the relationship between Units Produced and Revenue.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1);
+        const unitsProduced = [];
+        const revenue = [];
+
+        rows.forEach(row => {
+          const columns = row.split(',');
+          unitsProduced.push(parseFloat(columns[2]));
+          revenue.push(parseFloat(columns[3]));
+        });
+
+        var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+xAxis: {},
+yAxis: {},
+series: [
+{
+symbolSize:10,
+data:[
+(unitsProduced.map((value, index) => [value, revenue[index]])),
+],
+type:'scatter'
+}
+],
+};
+
+option && myChart.setOption(option);
+
+      });
+</script>
+
+</body>
+
+</html>"
+2,line chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Line Chart that visualizes the trend of Units Produced over the Year for each Crop Type.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Agricultural Production Line Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1);
+        const seriesData = {};
+        rows.forEach(row => {
+          const [year, cropType, unitsProduced] = row.split(',');
+          if (!seriesData[cropType]) {
+            seriesData[cropType] = [];
+          }
+          seriesData[cropType].push([year, unitsProduced]);
+        });
+
+        const chartDom = document.getElementById('chart');
+        const myChart = echarts.init(chartDom);
+        let option;
+
+option && myChart.setOption(option);
+
+option = {
+xAxis: {type: 'category'},
+yAxis: {},
+series:
+Object.keys(seriesData).map(cropType => ({
+name: cropType,
+data: seriesData[cropType],
+type:'line'
+})),
+legend:{},
+tooltip:{}
+};
+
+myChart.setOption(option);
+
+window.addEventListener('resize', myChart.resize);
+});
+</script>
+
+</body>
+
+</html>"
+3,bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Bar Chart that visualizes the Units Produced for each Crop Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Units Produced for each Crop Type in 2020</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+<script type=""text/javascript"">
+fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1);
+    const chartData = {};
+    rows.forEach(row => {
+        const columns = row.split(',');
+        if (columns[0] === '2020') {
+            if (!chartData[columns[1]]) {
+                chartData[columns[1]] = parseInt(columns[2]);
+            } else {
+                chartData[columns[1]] += parseInt(columns[2]);
+            }
+        }
+    });
+
+    var myChart = echarts.init(document.getElementById('chart'));
+var option;
+
+option = {
+
+xAxis: {type:'category'},
+yAxis:{type:'value'},
+series:[
+{
+data:Object.values(chartData),
+type:'bar'
+}
+],
+dataset:{
+source:Object.keys(chartData)
+}
+};
+
+myChart.setOption(option);
+
+});
+
+</script>
+
+</body>
+
+</html>"
+4,pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Pie Chart that visualizes the proportion of Units Produced contributed by each Crop Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Agricultural Production Pie Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 600px; height: 400px;""></div>
+
+<script type=""text/javascript"">
+fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1);
+    const cropTypes = {};
+    rows.forEach(row => {
+        const columns = row.split(',');
+        if (columns[0] === '2020') {
+            if (!cropTypes[columns[1]]) {
+                cropTypes[columns[1]] = parseFloat(columns[2]);
+            } else {
+                cropTypes[columns[1]] += parseFloat(columns[2]);
+            }
+        }
+    });
+
+    const chartData = Object.keys(cropTypes).map(key => ({ name: key, value: cropTypes[key] }));
+
+    var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+series : [
+{
+name: 'Crop Type',
+type: 'pie',
+radius : '55%',
+center: ['50%', '60%'],
+data:[
+{value:"" + chartData.map(item => item.value) + "", name:'"" + chartData.map(item => item.name) + ""'},
+],
+itemStyle: {
+emphasis: {
+
+shadowBlur: 10,
+shadowOffsetX: 0,
+shadowColor:'rgba(0, 0, 0, .5)'
+}
+}
+]
+};
+
+option && myChart.setOption(option);
+
+});
+</script>
+
+</body>
+
+</html>"
+5,donut chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Donut Chart that visualizes the distribution of Units Produced among Crop Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Agricultural Production</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 600px; height: 400px;""></div>
+
+<script type=""text/javascript"">
+fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1);
+    const csvData = rows.map(row => row.split(','));
+    const filteredData = csvData.filter(row => row[0] === '2020');
+    const cropTypes = [...new Set(filteredData.map(row => row[1]))];
+    const unitsProduced = cropTypes.map(cropType => {
+        return filteredData.reduce((acc, row) => {
+            if (row[1] === cropType) {
+                acc += parseInt(row[2]);
+            }
+            return acc;
+        }, 0);
+    });
+
+const chartDom = document.getElementById('chart');
+const myChart = echarts.init(chartDom);
+const option;
+
+option && myChart.setOption(option);
+
+option= {
+series: [
+{
+name: 'Access From',
+type: 'pie',
+radius: ['40%', '70%'],
+avoidLabelOverlap: false,
+itemStyle: {
+
+borderRadius:10,
+borderColor:'#fff',
+borderWidth :2
+},
+label:{show:false,position:'center'},
+emphasis:{
+label:{show:true,fontSize:'40',fontWeight:'bold'}
+},
+labelLine:{show:false},
+data:[
+{value:`${unitsProduced[0]}`,name:`${cropTypes[0]}`},
+{value:`${unitsProduced[1]}`,name:`${cropTypes[1]}`},
+{value:`${unitsProduced[2]}`,name:`${cropTypes[2]}`}
+
+]
+}
+]
+};
+myChart.setOption(option)
+})
+.catch(error=>console.error('Error:',error));
+</script>
+
+</body>
+
+</html>"
+6,coxcomb chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Coxcomb Chart(polar area chart) to compare the Units Produced of different Crop Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Coxcomb Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 600px; height: 400px;""></div>
+
+    <script type=""text/javascript"">
+        fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1);
+                const cropTypes = [];
+                const unitsProduced = [];
+
+                rows.forEach(row => {
+                    const columns = row.split(',');
+                    if (columns[0] === '2020') {
+                        cropTypes.push(columns[1]);
+                        unitsProduced.push(parseInt(columns[2]));
+                    }
+                });
+
+                var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+  title: {
+    text: 'Units Produced of Different Crop Types in 2020'
+  },
+  legend: {
+    data: cropTypes
+  },
+  polar: {},
+  tooltip: {},
+  
+};
+
+option.angleAxis= {};
+option.radiusAxis= {};
+option.series=[{
+        type:'pie',
+        radius : [30,110],
+        roseType : 'area',
+        data:[
+          {value:""10"", name:'rose'},
+          {value:""5"", name:'sunflower'},
+          {value:""15"", name:'rape'},
+          {value:""25"", name:'sugarbeet'},
+          {value:""20"", name:'potato'}
+      ]
+}];
+myChart.setOption(option);
+
+            });
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+            
+        
+
+window.addEventListener(""resize"",function(){
+myChart.resize();
+})
+    
+</script>
+
+</body>
+
+</html>"
+7,radar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Radar Chart to compare the Units Produced of different Crop Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Agricultural Production Radar Chart</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1);
+            const csvData = rows.map(row => row.split(','));
+            const filteredData = csvData.filter(row => row[0] === '2020');
+            const cropTypes = [...new Set(filteredData.map(row => row[1]))];
+            const unitsProduced = cropTypes.map(crop => {
+                const cropData = filteredData.find(row => row[1] === crop);
+                return parseInt(cropData[2]);
+            });
+
+            const chartDom = document.getElementById('chart');
+            const myChart = echarts.init(chartDom);
+            const option = {
+                title: {
+                    text: 'Units Produced of Different Crop Types in 2020'
+                },
+                legend: {
+                    data: cropTypes
+                },
+                radar: {
+                    indicator: cropTypes.map(crop => ({ name: crop, max: Math.max(...unitsProduced) }))
+                },
+                series: [{
+                    name: 'Units Produced',
+                    type: 'radar',
+                    data: [{
+                        value: unitsProduced,
+                        name: '2020'
+                    }]
+                }]
+            };
+            myChart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
+8,streamgraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Streamgraph that visualizes the changes of Units Produced over the Year for each Crop Type.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Streamgraph</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const seriesData = {};
+        rows.forEach(row => {
+          const year = row[0];
+          const cropType = row[1];
+          if (!seriesData[cropType]) {
+            seriesData[cropType] = [];
+          }
+          seriesData[cropType].push([year, parseFloat(row[2])]);
+        });
+
+        const chartDom = document.getElementById('chart');
+        const myChart = echarts.init(chartDom);
+        let option;
+
+option && myChart.setOption(option);
+      });
+    </script>
+
+</body>
+
+</html>"
+9,slopegraph,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Slopegraph to compare the Units Produced between 2019 and 2020 for each Crop Type.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Agricultural Production Slopegraph</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const cropTypes = [...new Set(rows.map(row => row[1]))];
+        const unitsProduced2019 = {};
+        const unitsProduced2020 = {};
+
+        rows.forEach(row => {
+          if (row[0] === '2019') {
+            unitsProduced2019[row[1]] = +row[2];
+          } else if (row[0] === '2020') {
+            unitsProduced2020[row[1]] = +row[2];
+          }
+        });
+
+        const chartData = cropTypes.map(cropType => ({
+          name: cropType,
+          value2019: unitsProduced2019[cropType],
+          value2020: unitsProduced2020[cropType],
+        }));
+
+        var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option= {
+
+xAxis: [
+{
+type:'category',
+data:['Crop Type']
+},
+{
+type:'category',
+data:['Crop Type'],
+gridIndex:1
+}
+],
+
+yAxis:[
+{
+type:'value'
+},
+{
+type:'value',
+gridIndex :1
+}
+],
+
+series:[
+{
+
+name:""Units Produced"",
+data:[
+
+{value:[unitsProduced2019['Corn'],unitsProduced2020['Corn']],id:""Corn""},
+
+{value:[unitsProduced2019['Soybeans'],unitsProduced2020['Soybeans']],id:""Soybeans""},
+
+{value:[unitsProduced2019['Wheat'],unitsProducesd02020]['Wheat']],id:""Wheat""},
+//Add more data points for other Crop Types as needed
+],
+lineStyle:{
+normal:{opacity:.5}
+},
+progressiveThreshold :500,
+progressive :200,
+
+coordinateSystem :'cartesian2d',
+
+zlevel :-10,
+
+markLine:{
+symbolSize :10,
+label:{show:true,formatter:(params)=>params.data.name},
+
+emphasis:{label:{show:true}},
+lineStyle:{color:'#000',width:.5,type :'solid'},
+animationDurationTS :40000,
+
+animationEasingUpdate :'quinticInOut',
+
+animationDelayTS :(idx,dims)=>dims encode.y[idx]*100,
+
+animationDelayUpdate :(idx,dims)=>dims.encode.y[idx]*100,
+data:[
+[{coord:[-20,40],name:'Increase'},{coord:[80,40]}],
+
+[{coord:[-20,-40],name:'Decrease'},{coord:[80,-40]}]
+]
+}
+
+]
+
+};
+
+option && myChart.setOption(option);
+
+      });
+</script>
+
+</body>
+
+</html>"
+10,heatmap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Heatmap that visualizes the Units Produced across Crop Type and Years.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Agricultural Production Heatmap</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+<script type=""text/javascript"">
+fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1).map(row => row.split(','));
+    const years = [...new Set(rows.map(row => row[0]))].sort();
+    const cropTypes = [...new Set(rows.map(row => row[1]))].sort();
+    const unitsProduced = [];
+
+    for (let i = 0; i < years.length; i++) {
+        unitsProduced[i] = [];
+        for (let j = 0; j < cropTypes.length; j++) {
+            let value;
+            rows.forEach(row => {
+                if (row[0] === years[i] && row[1] === cropTypes[j]) {
+                    value += parseFloat(row[2]);
+                }
+            });
+            unitsProduced[i][j] = value || '-';
+        }
+    }
+
+const chartDom=document.getElementById('chart');
+const myChart=echarts.init(chartDom);
+const option={
+tooltip:{
+trigger:'axis',
+showDelay:100,
+hideDelay:100
+},
+legend:{data:['Units Produced']},
+xAxis:[
+{
+type:'category',
+data:cropTypes
+}
+],
+yAxis:[
+{
+type:'category',
+data:years
+}
+],
+series:[
+{
+name:'Units Produced',
+type:'heatmap',
+layoutSize:""contain"",
+data:getData(unitsProduced),
+itemStyle:{
+emphasis:{
+shadowBlur:10,
+shadowColor:""rgba(0,0,0,0.5)""
+}
+}
+}
+]
+};
+function getData(unitsProduced){
+const data=[];
+for(let i=unitsProduced.length-1;i>=0;i--){
+for(let j=unitsProduced[i].length-1;j>=0;j--){
+if(unitsProduced[i][j]===""-""){
+continue;
+}else{
+data.push([i,j,unitsProduced[i][j]]);
+}
+
+}
+
+}
+
+return data;
+
+};
+
+myChart.setOption(option);
+
+});
+
+</script>
+
+</body>
+
+</html>"
+11,bar chart+stacked bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Stacked Bar Chart that visualizes the given data table.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Stacked Bar Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+  <script type=""text/javascript"">
+    fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+      .then(response => response.text())
+      .then(data => {
+        const rows = data.split('\n').slice(1).map(row => row.split(','));
+        const years = Array.from(new Set(rows.map(row => row[0]))).sort();
+        const cropTypes = Array.from(new Set(rows.map(row => row[1]))).sort();
+        const seriesData = {};
+
+        rows.forEach(row => {
+          if (!seriesData[row[1]]) {
+            seriesData[row[1]] = [];
+          }
+          seriesData[row[1]].push([row[0], parseFloat(row[2])]);
+        });
+
+        const option = {
+          title: { text: 'Agricultural Production' },
+          tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+          legend: { data: cropTypes },
+          grid:{ left:'3%', right:'4%', bottom:'3%', containLabel:true},
+          xAxis:[
+            {
+              type : 'category',
+              data : years
+            }
+          ],
+         yAxis:[
+           {
+             type : 'value'
+           }
+         ],
+         series:[
+           ...cropTypes.map(cropType=>({
+             name : cropType,
+             type :'bar',
+             stack :'production',
+             label:{
+               show:true,
+               position :'inside'
+             },
+             data : years.map(year=>seriesData[cropType].find(item=>item [0]===year)?. [1]??0)
+           }))
+         ]
+       };
+
+       var chartDom=document.getElementById('chart');
+       var myChart=echarts.init(chartDom);
+       myChart.setOption(option);
+     });
+   </script>
+
+ </body>
+
+ </html>"
+12,bar chart+horizontal bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a Horizontal Bar Chart that visualizes the Units Produced for each Crop Type in 2020.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",ECharts,static view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Agricultural Production</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+
+<script>
+
+fetch('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+.then(response => response.text())
+.then(data => {
+    const rows = data.split('\n').slice(1);
+    const cropTypes = [];
+    const unitsProduced = [];
+
+    rows.forEach(row => {
+        const columns = row.split(',');
+        if (columns[0] === '2020') {
+            cropTypes.push(columns[1]);
+            unitsProduced.push(parseInt(columns[2]));
+        }
+    });
+
+    var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+xAxis: {},
+yAxis: {},
+series: [
+{
+symbolSize:20,
+data:[
+[cropTypes[0],unitsProduced[0]],
+[cropTypes[1],unitsProduced[1]],
+[cropTypes[2],unitsProduced[2]],
+],
+type:'scatter'
+}
+],
+};
+
+option && myChart.setOption(option);
+
+});
+
+</script>
+
+</body>
+
+</html>"

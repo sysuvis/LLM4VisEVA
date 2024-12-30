@@ -1,0 +1,542 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Domestic Consumption and Exports, and a Bar Chart on the right that displays Country versus Domestic Consumption.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Coffee Consumption</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    .chart-container {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class=""chart-container"">
+    <div id=""scatterplot""></div>
+    <div id=""bar-chart""></div>
+  </div>
+
+  <script>
+    const specScatterplot = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv""
+      },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {
+          ""field"": ""Domestic Consumption"",
+          ""type"": ""quantitative""
+        },
+        ""y"": {
+          ""field"": ""Exports"",
+          ""type"": ""quantitative""
+        }
+      },
+      ""width"": 400,
+      ""height"": 400
+    };
+
+    const specBarChart = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv""
+      },
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {
+          ""field"": ""Country"",
+          ""type"": ""nominal"",
+          ""sort"": ""-y""
+        },
+        ""y"": {
+          ""field"": ""Domestic Consumption"",
+          ""type"": ""quantitative""
+        }
+      },
+      ""width"": 400,
+      ""height"": 400
+    };
+
+    vegaEmbed('#scatterplot', specScatterplot);
+    vegaEmbed('#bar-chart', specBarChart);
+  </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Domestic Consumption and Exports, and a Bar Chart on the right that displays Country versus Domestic Consumption. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Coffee Consumption Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    .chart {
+      display: inline-block;
+      width: 49%;
+    }
+  </style>
+</head>
+<body>
+  <div class=""chart"" id=""scatterplot""></div>
+  <div class=""chart"" id=""barChart""></div>
+
+  <script>
+    const specScatterplot = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv""
+      },
+      ""mark"": ""point"",
+      ""selection"": {
+        ""brush"": {
+          ""type"": ""interval"",
+          ""encodings"": [""x""]
+        }
+      },
+      ""encoding"": {
+        ""x"": {
+          ""field"": ""Domestic Consumption"",
+          ""type"": ""quantitative""
+        },
+        ""y"": {
+          ""field"": ""Exports"",
+          ""type"": ""quantitative""
+        }
+      }
+    };
+
+    const specBarChart = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv""
+      },
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {
+          ""field"": ""Country"",
+          ""type"": ""nominal"",
+          ""axis"": {
+            ""labelAngle"": -45
+          }
+        },
+        ""y"": {
+          ""field"": ""Domestic Consumption"",
+          ""type"": ""quantitative""
+        },
+        ""opacity"": {
+          ""condition"": {
+            ""selection"": ""brush"",
+            ""value"": 1
+          },
+          ""value"": 0.2
+        }
+      }
+    };
+
+    vegaEmbed(""#scatterplot"", specScatterplot);
+    vegaEmbed(""#barChart"", specBarChart);
+  </script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Domestic Consumption , while the pie chart represents the distribution of Exports.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Coffee Consumption</title>
+    <script src=""https://cdn.jsdelivr.net/npm/vega@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5""></script>
+    <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6""></script>
+</head>
+
+<body>
+<div id=""vis""></div>
+
+<script>
+const spec = {
+  ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+  ""vconcat"": [
+    {
+      ""width"": 800,
+      ""height"": 300,
+      ""mark"": {""type"": ""line""},
+      ""encoding"": {
+        ""x"":{""field"":""Year"",""type"":""temporal""},
+        ""y"":{""field"":""Domestic Consumption"",""type"":""quantitative""}
+      },
+      ""data"": { 
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv""
+      }
+    },
+    {
+      ""width"": 400,
+      ""height"": 400,
+      ""mark"":{""type"":""arc""},
+      ""_config"":{
+        ""_view"":{""continuousWidth"":-1,""continuousHeight"":-1}
+       },
+       ""_config"":{
+         ""_view"":{""continuousWidth"":-1,""continuousHeight"":-1}
+       },
+       ""_config"":{
+         ""_view"":{""continuousWidth"":-1,""continuousHeight"":-1}
+       },
+     ""_config"":{
+     ""_view"":{""continuousWidth"":-1,""continuousHeight"":-1}
+   }
+   ,
+     encoding:{
+          color:{field:""Country"", type:""nominal"", legend:null},
+          theta:{aggregate:""sum"", field:""Exports"", type:""quantitative""}
+     }
+   ,
+     view:{ stroke:null},
+     layer:[
+           {mark:{type:""arc""}}
+         ]
+   ,
+   data:{ 
+           url : 'https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8/b89'
+           + '95884/Coffee%2520Consumption.csv'
+         }
+   }
+ ],
+};
+
+const opt = {""renderer"":""canvas""};
+const div = document.getElementById('vis');
+vegaEmbed(div,opt.spec=spec).then(function(result) {}).catch(console.error);
+</script>
+
+</body>
+
+</html> 
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Domestic Consumption , while the pie chart represents the distribution of Exports. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Exports for the selected group.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Coffee Consumption</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv""
+      },
+      ""vconcat"": [
+        {
+          ""mark"": ""line"",
+          ""encoding"": {
+            ""x"": {""field"": ""Year"", ""type"": ""temporal""},
+            ""y"": {""field"": ""Domestic Consumption"", ""type"": ""quantitative""}
+          },
+          ""selection"": {
+            ""brush"": {""type"": ""interval"", ""encodings"": [""x""]}
+          }
+        },
+        {
+          ""mark"": ""arc"",
+          ""encoding"": {
+            ""theta"": {""field"": ""Exports"", ""type"": ""quantitative""},
+            ""color"": {""field"": ""Country"", ""type"": ""nominal""}
+          },
+          ""transform"": [
+            {""filter"": {""selection"": ""brush""}}
+          ]
+        }
+      ],
+      ""width"": 800,
+      ""height"": 600
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Domestic Consumption, Exports, Import Price, and Export Price. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Brushable Scatterplot Matrix</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    vegaEmbed('#vis', {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv""
+      },
+      ""repeat"": {
+        ""row"": [""Domestic Consumption"", ""Exports""],
+        ""column"": [""Import Price"", ""Export Price""]
+      },
+      ""spec"": {
+        ""mark"": ""point"",
+        ""selection"": {
+          ""brush"": {
+            ""type"": ""interval"",
+            ""encodings"": [""x""]
+          }
+        },
+        ""encoding"": {
+          ""x"": {
+            ""field"": {""repeat"": ""column""},
+            ""type"": ""quantitative""
+          },
+          ""y"": {
+            ""field"": {""repeat"": ""row""},
+            ""type"": ""quantitative""
+          },
+          ""color"": {
+            ""condition"": {
+              ""selection"": ""brush"",
+              ""value"": ""steelblue""
+            },
+            ""value"": ""lightgray""
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a brushable Scatterplot that visualizes the relationship between Domestic Consumption and Exports. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Brushable Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      width: 800px;
+      height: 600px;
+      border: 1px solid black;
+    }
+    #selected-data {
+      float: right;
+      width: 400px;
+      height: 600px;
+      overflow-y: auto;
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <div id=""selected-data""></div>
+
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv""
+      },
+      ""vconcat"": [
+        {
+          ""width"": 600,
+          ""height"": 600,
+          ""mark"": ""point"",
+          ""encoding"": {
+            ""x"": {""field"": ""Domestic Consumption"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Exports"", ""type"": ""quantitative""}
+          },
+          ""selection"": {
+            ""brush"": {""type"": ""interval"", ""encodings"": [""x"", ""y""]}
+          }
+        },
+        {
+          ""width"": 600,
+          ""height"": 0,
+          ""mark"": ""text"",
+          ""encoding"": {
+            ""text"": {""value"": ""Selected Data:""}
+          }
+        }
+      ]
+    };
+
+    const embedOpt = {""actions"": false};
+    const vis = vegaEmbed(""#vis"", spec, embedOpt);
+
+    const updateSelectedData = () => {
+      const selectedData = vis.view.data(""data_0"")[0].filter((d, i) => {
+        const brushed = vis.view.signal(""brush_x"")[0];
+        return brushed && d[""Domestic Consumption""] >= brushed[0] && d[""Domestic Consumption""] <= brushed[1] &&
+          d[""Exports""] >= vis.view.signal(""brush_y"")[0][0] && d[""Exports""] <= vis.view.signal(""brush_y"")[0][1];
+      }).slice(0, 20);
+
+      const tableHtml = selectedData.reduce((html, row) => {
+        return html + `<tr>
+          <td>${row[""Year""]}</td>
+          <td>${row[""Country""]}</td>
+          <td>${row[""Domestic Consumption""]}</td>
+          <td>${row[""Exports""]}</td>
+          <td>${row[""Import Price""]}</td>
+          <td>${row[""Export Price""]}</td>
+          <td>${row[""Total Production""]}</td>
+        </tr>`;
+      }, ""<table border='1'><tr><th>Year</th><th>Country</th><th>Domestic Consumption</th><th>Exports</th><th>Import Price</th><th>Export Price</th><th>Total Production</th></tr>"");
+
+      document.getElementById(""selected-data"").innerHTML = tableHtml + ""</table>"";
+    };
+
+    vis.then(() => {
+      updateSelectedData();
+      vis.view.addSignalListener(""brush_x"", updateSelectedData);
+      vis.view.addSignalListener(""brush_y"", updateSelectedData);
+    });
+  </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.
+Your task is to create a horizontal Bar Chart that shows all the data concerning Domestic Consumption, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv
+
+The data table contains the following columns: Year, Country, Domestic Consumption,Exports,Import Price,Export Price,Total Production.",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Coffee Consumption</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/8401c4fbc9fa979f342598b002449931/raw/9cb3aef8b2bfe83a01e218193b6e03e8b89b5884/Coffee%2520Consumption.csv""
+      },
+      ""vconcat"": [
+        {
+          ""width"": 600,
+          ""height"": 400,
+          ""mark"": ""bar"",
+          ""encoding"": {
+            ""x"": {
+              ""field"": ""Domestic Consumption"",
+              ""type"": ""quantitative""
+            },
+            ""y"": {
+              ""field"": ""Country"",
+              ""type"": ""nominal"",
+              ""sort"": ""-x""
+            }
+          }
+        },
+        {
+          ""width"": 200,
+          ""height"": 200,
+          ""mark"": ""bar"",
+          ""encoding"": {
+            ""x"": {
+              ""field"": ""Domestic Consumption"",
+              ""type"": ""quantitative"",
+              ""scale"": {""domain"": [0, 10000]}
+            },
+            ""y"": {
+              ""field"": ""Country"",
+              ""type"": ""nominal"",
+              ""sort"": ""-x""
+            }
+          }
+        }
+      ],
+      ""resolve"": {""scale"": {""x"": ""independent""}}
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"

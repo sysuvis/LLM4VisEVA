@@ -1,0 +1,1146 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Agricultural Production Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .chart-container {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .chart {
+            width: 45%;
+            height: 500px;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class=""chart-container"">
+        <div class=""chart"" id=""scatterplot""></div>
+        <div class=""chart"" id=""bar-chart""></div>
+    </div>
+    
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        // Load data
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+        .then(data => {
+            // Convert data types
+            data.forEach(d => {
+                d['Units Produced'] = +d['Units Produced'];
+                d['Revenue'] = +d['Revenue'];
+                d['Production Cost'] = +d['Production Cost'];
+                d['Profit'] = +d['Profit'];
+                d['Yield'] = +d['Yield'];
+                d['Number of Farms'] = +d['Number of Farms'];
+                d['Export Volume'] = +d['Export Volume'];
+            });
+            
+            // Create scatterplot
+            const scatterplot = d3.select('#scatterplot');
+            const scatterplotMargin = { top: 20, right: 20, bottom: 30, left: 40 };
+            const scatterplotWidth = 400 - scatterplotMargin.left - scatterplotMargin.right;
+            const scatterplotHeight = 400 - scatterplotMargin.top - scatterplotMargin.bottom;
+            const scatterplotG = scatterplot.append('g')
+                .attr('transform', `translate(${scatterplotMargin.left}, ${scatterplotMargin.top})`);
+            
+            const scatterplotXScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Units Produced'])])
+                .range([0, scatterplotWidth]);
+            const scatterplotYScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Revenue'])])
+                .range([scatterplotHeight, 0]);
+            
+            scatterplotG.append('g')
+                .attr('transform', `translate(0, ${scatterplotHeight})`)
+                .call(d3.axisBottom(scatterplotXScale).tickFormat(d3.format('d')));
+            scatterplotG.append('g')
+                .call(d3.axisLeft(scatterplotYScale).tickFormat(d3.format('d')));
+            
+            scatterplotG.selectAll('circle')
+                .data(data)
+                .enter()
+                .append('circle')
+                .attr('cx', d => scatterplotXScale(d['Units Produced']))
+                .attr('cy', d => scatterplotYScale(d['Revenue']))
+                .attr('r', 5);
+            
+            // Create bar chart
+            const barChart = d3.select('#bar-chart');
+            const barChartMargin = { top: 20, right: 20, bottom: 30, left: 40 };
+            const barChartWidth = 400 - barChartMargin.left - barChartMargin.right;
+            const barChartHeight = 400 - barChartMargin.top - barChartMargin.bottom;
+            const barChartG = barChart.append('g')
+                .attr('transform', `translate(${barChartMargin.left}, ${barChartMargin.top})`);
+            
+            const barChartXScale = d3.scaleBand()
+                .domain(data.map(d => d['Crop Type']))
+                .range([0, barChartWidth])
+                .padding(0.2);
+            const barChartYScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Profit'])])
+                .range([barChartHeight, 0]);
+            
+            barChartG.append('g')
+                .attr('transform', `translate(0, ${barChartHeight})`)
+                .call(d3.axisBottom(barChartXScale));
+            barChartG.append('g')
+                .call(d3.axisLeft(barChartYScale).tickFormat(d3.format('d')));
+            
+            barChartG.selectAll('rect')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('x', d => barChartXScale(d['Crop Type']))
+                .attr('y', d => barChartYScale(d['Profit']))
+                .attr('width', barChartXScale.bandwidth())
+                .attr('height', d => barChartHeight - barChartYScale(d['Profit']));
+        })
+        .catch(error => console.error(error));
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Agricultural Production Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .chart {
+            width: 45%;
+            margin: 20px;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+        
+        .brush {
+            stroke: #666;
+            stroke-width: 2;
+            fill: #ddd;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class=""container"">
+        <div class=""chart"" id=""scatterplot""></div>
+        <div class=""chart"" id=""bar-chart""></div>
+    </div>
+    
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        // Load data
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+        .then(data => {
+            data.forEach(d => {
+                d['Units Produced'] = +d['Units Produced'];
+                d['Revenue'] = +d['Revenue'];
+                d['Production Cost'] = +d['Production Cost'];
+                d['Profit'] = +d['Profit'];
+                d['Yield'] = +d['Yield'];
+                d['Number of Farms'] = +d['Number of Farms'];
+                d['Export Volume'] = +d['Export Volume'];
+            });
+            
+            // Create scatterplot
+            const scatterplot = d3.select('#scatterplot');
+            const scatterplotMargin = { top: 20, right: 20, bottom: 30, left: 40 };
+            const scatterplotWidth = 400 - scatterplotMargin.left - scatterplotMargin.right;
+            const scatterplotHeight = 400 - scatterplotMargin.top - scatterplotMargin.bottom;
+            const scatterplotG = scatterplot.append('g')
+                .attr('transform', `translate(${scatterplotMargin.left}, ${scatterplotMargin.top})`);
+            
+            const scatterplotXScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Units Produced'])])
+                .range([0, scatterplotWidth]);
+            const scatterplotYScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Revenue'])])
+                .range([scatterplotHeight, 0]);
+            
+            scatterplotG.append('g')
+                .attr('transform', `translate(0, ${scatterplotHeight})`)
+                .call(d3.axisBottom(scatterplotXScale).tickFormat(d3.format('.2s')));
+            scatterplotG.append('g')
+                .call(d3.axisLeft(scatterplotYScale).tickFormat(d3.format('.2s')));
+            
+            const scatterplotCircles = scatterplotG.selectAll('circle')
+                .data(data)
+                .enter()
+                .append('circle')
+                .attr('cx', d => scatterplotXScale(d['Units Produced']))
+                .attr('cy', d => scatterplotYScale(d['Revenue']))
+                .attr('r', 5)
+                .attr('fill', 'steelblue')
+                .attr('opacity', 0.5);
+            
+            // Add brushing functionality
+            const brush = d3.brush()
+                .extent([[0, 0], [scatterplotWidth, scatterplotHeight]])
+                .on('brush', brushed)
+                .on('end', brushended);
+            
+            scatterplotG.append('g')
+                .attr('class', 'brush')
+                .call(brush);
+            
+            let selectedData = [];
+            
+            function brushed(event) {
+                const selection = event.selection;
+                if (selection) {
+                    const x0 = selection[0][0];
+                    const y0 = selection[0][1];
+                    const x1 = selection[1][0];
+                    const y1 = selection[1][1];
+                    selectedData = data.filter(d => {
+                        const x = scatterplotXScale(d['Units Produced']);
+                        const y = scatterplotYScale(d['Revenue']);
+                        return x0 <= x && x <= x1 && y0 <= y && y <= y1;
+                    });
+                    updateBarChart(selectedData);
+                }
+            }
+            
+            function brushended(event) {
+                if (!event.selection) {
+                    selectedData = [];
+                    updateBarChart(data);
+                }
+            }
+            
+            // Create bar chart
+            const barChart = d3.select('#bar-chart');
+            const barChartMargin = { top: 20, right: 20, bottom: 30, left: 40 };
+            const barChartWidth = 400 - barChartMargin.left - barChartMargin.right;
+            const barChartHeight = 400 - barChartMargin.top - barChartMargin.bottom;
+            const barChartG = barChart.append('g')
+                .attr('transform', `translate(${barChartMargin.left}, ${barChartMargin.top})`);
+            
+            const barChartXScale = d3.scaleBand()
+                .domain(data.map(d => d['Crop Type']))
+                .range([0, barChartWidth])
+                .padding(0.2);
+            const barChartYScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Profit'])])
+                .range([barChartHeight, 0]);
+            
+            barChartG.append('g')
+                .attr('transform', `translate(0, ${barChartHeight})`)
+                .call(d3.axisBottom(barChartXScale));
+            barChartG.append('g')
+                .call(d3.axisLeft(barChartYScale).tickFormat(d3.format('.2s')));
+            
+            const barChartBars = barChartG.selectAll('rect')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('x', d => barChartXScale(d['Crop Type']))
+                .attr('y', d => barChartYScale(d['Profit']))
+                .attr('width', barChartXScale.bandwidth())
+                .attr('height', d => barChartHeight - barChartYScale(d['Profit']))
+                .attr('fill', 'steelblue')
+                .attr('opacity', 0.5);
+            
+            function updateBarChart(data) {
+                barChartBars.data(data)
+                    .transition()
+                    .duration(500)
+                    .attr('y', d => barChartYScale(d['Profit']))
+                    .attr('height', d => barChartHeight - barChartYScale(d['Profit']));
+                
+                barChartBars.exit()
+                    .transition()
+                    .duration(500)
+                    .attr('height', 0)
+                    .remove();
+            }
+        });
+    </script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Units Produced , while the pie chart represents the distribution of Revenue.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Agricultural Production Visualization</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .chart-container {
+      width: 800px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    
+    .line-chart {
+      width: 100%;
+      height: 60%;
+      border-bottom: 1px solid #ccc;
+    }
+    
+    .pie-chart {
+      width: 100%;
+      height: 40%;
+    }
+    
+     /* Add CSS styles for the line chart */
+     .line-chart path {
+       stroke-width:2; 
+       fill:none; 
+     }
+
+     /* Add CSS styles for the pie chart */
+     .pie-chart text{
+        font-size :12px
+     }
+
+     
+     
+     
+     
+   </style>
+
+</head>
+
+<body>
+
+<div class=""chart-container"">
+<svg class=""line-chart""></svg>  
+<svg class=""pie-chart""></svg>  
+</div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+<script>
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+.then(data => {
+
+data.forEach(d => { 
+ d['Units Produced'] = +d['Units Produced'];
+ d['Revenue'] = +d['Revenue'];
+});
+
+// Line Chart
+
+const marginLineChart = { top :20, right :30, bottom :30, left :40};
+const widthLineChart=800-marginLineChart.left-marginLineChart.right,
+heightLineChart=360-marginLineChart.top-marginLineChart.bottom;
+
+const svgL = d3.select('.line-chart')
+.attr(""width"",widthLineChart+marginLineChart.left+marginLineChart.right)
+.attr(""height"",heightLineChart+marginLineChart.top+marginLeft.bottom)
+.append(""g"")
+.attr(""transform"",""translate(""+margin.lineLeft+"",""+MarginTop+"")"");
+
+const xScaleL=d3.scaleBand()
+.domain(data.map(d=>d.Year))
+.range([0,width])
+.padding(0.2);
+
+svgL.append('g')
+.call(d3.axisBottom(xScale).tickSizeOuter(0))
+.selectAll('text')
+.style('text-anchor','middle');
+
+const yScaleL=d3.scaleLinear()
+.domain([0,d3.max(data,d=>[d[""Units Produced""]])])
+.range([height,0]);
+
+svgL.append('g').call(d3.axisLeft(yScale));
+
+ svg.selectAll("".bar"")
+.data(data)
+.enter().append(""rect"")
+.attr(""class"",""bar"")
+.attr(""x"",function (data){return xScale(data.year);})
+.attr (""y"",function (data){return yscale(data.value);})
+.atrr (""width"",xscale.bandwidth())
+.atrr (""height"" , function (data) { return heigth -yscale (date.value);})
+
+
+
+// Pie Chart
+
+ const marginPie={top:-200,right:-200,bottom:-200,left:-200},
+ widthPie=400-marginPie.left-marginPie.right,
+ heightPie=400-marginPie.top-marginPie.bottom;
+
+ const svgP=d3.select('.pie-char')
+   .attr ('witdh',witdh+margen.left+margen.rigth)
+   .attr ('heigth',heigth+margen.top+margen.bottom)
+   .append ('g')
+
+ const pie=d.pie ()
+   value(function (date) { return date.Revenue;})
+
+
+ const dataReady=pie(date)
+
+ var g=svg.selectAll("".arc"")
+
+ g.enter()
+
+ g.exit()
+
+ var color=d.scaleOrdinal()
+ domain([""Crop Type""])
+ range(['#98abc5','#ff8c00'])
+
+ var arcGenerator=d.arc()
+ innerRadius(60)
+
+ g.append ('path')
+
+ attr (""fill"" , function(date,i){
+ return color(i);
+ })
+
+ attr (""transform"" ,""translate(""+wight/2+"",""+heitht/2+"")"")
+
+ transition ()
+
+ delay(function(date,i){
+ return i*500
+ })
+
+ duration(500)
+
+ attrTween ('s' , function(date){
+ var i-d.interpolate(this._current,data);
+ this._current=i(0);
+ return function(t){
+ retun arcGenerator(i(t));
+ };
+ })
+
+ // Update existing arcs
+ g.transition().duration(duration).attrTween(""s"",arcTween);
+
+ // Enter new arcs.
+ g.enter().append(path"").attr(fill,function(date,i){retun color(i)})
+.on(mousenter,function(event,date){
+
+this.parentNode.appendChild(this);
+
+tooltip.style(visiblity,""visible"");
+tooltip.html(`Crop Type:${date.data.CropType}<br> Revenue:${date.data.Revenue}`);
+
+var tooltipX=event.pageX-10,
+tooltipY=event.pageY-25;
+
+tooltip.style(left `${tooitpX}px`);
+tootip.styel(top `${tooitpY}px`);
+
+})
+
+.on(mouseleave,function(event,date){
+
+toolitp.stye(visiblity,""hidden"");
+
+})
+
+.merge(g).transition().duration(duration).atttrTween(s,aecTweetn);
+
+exi.exit.remove();
+
+function arcTweetn(a){
+
+var i-d.interpolate(this.current,a);
+this.current=i(o);
+
+retun t=>arcGeneator(i(t));
+
+}
+
+});
+
+</script></body></html>"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Units Produced , while the pie chart represents the distribution of Revenue. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Revenue for the selected group.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,multiple view,"<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Agricultural Production Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .chart-container {
+            width: 800px;
+            height: 600px;
+            margin: 50px auto;
+        }
+        
+        .line-chart {
+            width: 100%;
+            height: 60%;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .pie-chart {
+            width: 100%;
+            height: 40%;
+        }
+        
+        /* Style the brush */
+        .brush rect.selection {
+          fill-opacity: .3;
+          stroke-opacity :1; 
+          stroke-dasharray : none; 
+          stroke-dashoffset :0; 
+          stroke-linecap : square;  
+          stroke-linejoin :miter ;  
+         -webkit-tap-highlight-color : rgba(0,0,0,0);   
+         -webkit-touch-callout:none ;
+         cursor:pointer
+       }    
+       /* Style the brush handle */
+       .brush-handle{
+           fill-opacity:.5
+       }    
+     </style>   
+</head>   
+<body>   
+<div class = ""chart-container"">     
+<svg class = ""line-chart""></svg >     
+<svg class = ""pie-chart""></svg >     
+</div >      
+<script src = ""https://d3js.org/d3.v7.min.js ""></script >      
+<script>       
+// Load data from CSV file       
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')         
+.then(data => {             
+// Convert data types             
+data.forEach(d => {                 
+d['Units Produced'] = +d['Units Produced'];                 
+});             
+// Create line chart             
+const lineChartWidth = document.querySelector('.line-chart').clientWidth;             
+const lineChartHeight = document.querySelector('.line-chart').clientHeight;             
+const marginLineChart={topLineChart=20,rightLineChart=20,bottomLineChart=30,leftLineChart=40};            
+ const innerWidthLineChart=lineChartWidth-margin.left-margin.right            
+ const innerHeightLine Chart=line Chart Height-margin.top-margin.bottom            
+ const xScale=d3.scaleTime()                
+.domain(d3.extent(data,d=>+ d.Year))                
+.range([margin.left,line Chart Width-margin.right])            
+ const yScale=d3.scaleLinear()                
+.domain([o,d3.max(data,d=>+ d['Units Produced'])])                
+.range([inner Height Line Chart,o]);            
+ const g=d3.select('.line-chart')                
+.append('g')                
+.attr('transform',`translate(${margin.left},${margin.top})`)            
+ g.selectAll('circle')                
+.data(data)               
+.enter()               
+.append('circle')               
+.attr(""cx"",function(d){return xScale(+ d.Year)})               
+.attr(""cy"",function(d){return yScale(+ d[""Units Produced""])})              
+ attr(""r"",2)           
+ // Add brushing functionality to the line chart           
+ var brush=d3.brushX().extent([[o,o],[inner Width Line Chart,inner Height Line Chart]])           
+.on(""start brush end"",brushed);          
+ g.call(brush);          
+ function brushed(event){              
+ if(event.selection){                  
+ var selection=event.selection.map(xScale.invert,xScale);                  
+ console.log(selection)// Update pie chart with selected data here              
+            
+ // Create pie chart and update it based on selected data from brushing in the line chart above this comment block. You can use D's built-in functions like `arc()` and `pie()` to create a pie chart. Also make sure to update your code so that it handles cases where no points are selected (i.e., when `selection` is empty). Here is an example of how you might do this:
+var filteredData=data.filter(function(d){
+return (+ d.Year>=selection[o]&&+ d.Year<=selection[1])
+})
+var pieChartData=[{label:""Revenue"",value:d31.sum(filteredData,function(d){
+return + d.Revenue
+})
+}]
+drawPie(pieChartData)
+}
+}
+function drawPie(pieChartData){
+var pieSvg=d31.select("".pie-chart"")
+pieSvg.selectAll(""*"").remove()
+var arcGenerator=d31.arc()
+.innerRadius(60)
+.outerRadius(120)
+var angleScale=d31.pie()
+.value(function (d){
+return d.value
+})
+.sort(null);
+arcGenerator.outerRadius(Math.min(inner Width Pie Chart,
+inner Height Pie Char)/2-10);
+arc Generator.inner Radius(inner Radius Pie Char);
+g.selectAll("".slice"")
+.data(angle Scale(pie Char Data))
+.enter()
+.append(""path"")
+.attr (""transform"",""translate(""+[x Center,y Center]+"")"")
+.style (""fill"",(function (t,n,i){
+if(i==filtered Data.length-1)return""rgb(""+Math.floor(Math.random()*256)+"",""+Math.floor(Math.random()*256)+"",""+Math.floor(Math.random()*256)+"")"";
+else return""rgb(""+Math.floor(Math.random()*256)+"",""+Math.floor(Math.random()*256)+"",""+Math.floor(Math.random)*256+"")"";
+}))
+.transition().duration(o).attrTween (""D"",(function(t,n,i,a,c,s,e,u,f,h,g,y,r,p,q,v,w,z,x,k,j,A,B,C,D,E,F,G,I,H,K,J,L,M,N,O,P,Q,R,S,T,U,V,W,X,Y,Z,$,$$,$$$,$$$$,b,b$,c,c$,e,e$,l,l$ll,m,m$m$n,n$n$o,p$p$q$r$r$s$t$t$u$v$v$w$x$x$y,z,z$a$b$c$d$d$f$f$h$i$i$j$k$l$m$n$o$p$q$r$s$t$v$x$y$a$b$c$d$f$h$i$j$k$l$m$n$o$p$q$r$s$t$v$x$a$b$c$d$f$h$i$j$k$l$m$n$o$p$q$r$s$t$v$x$a$b$c$d$f$h$i$j$k$l$m$n$o$p$q$r$s$t$v$x$a$b$c$d$f$h$i$j$k$l$m$n$o$p$q$r$s$t$v$x$a$b$c$d$f$h$i$j$k$l$m$n{o}$p$q$r{s}$t{v{x}x{$}y{$}z{$}{|}}}})(n));
+});
+});
+});
+</script></body></html>
+
+Note that I've used ES6 syntax and arrow functions throughout the code. If you need to support older browsers that don't support these features, you may need to transpile the code using a tool like Babel.
+
+Also note that I've assumed that you want to display only one type of crop at a time in your visualization. If you want to display multiple crops simultaneously then we will have some changes in our code accordingly.
+
+Please let me know if there's anything else I can help with!"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Units Produced, Revenue, Profit, Production Cost, Yield, and Export Volume. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Scatterplot Matrix</title>
+    <style>
+        .matrix {
+            stroke: #000;
+            stroke-opacity: 0.3;
+        }
+        
+        .matrix .cell {
+            stroke: #fff;
+        }
+        
+        .matrix .cell rect {
+            fill: #fff;
+            stroke: #fff;
+        }
+        
+        .matrix .cell circle {
+            fill: #000;
+            stroke: #fff;
+        }
+        
+        .matrix .cell text {
+            font-size: 10px;
+            fill: #000;
+        }
+        
+        .brush .selection {
+            fill: #666;
+            fill-opacity: 0.3;
+        }
+        
+        .brush .handle {
+            fill: #fff;
+            stroke: #000;
+            stroke-width: 2;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""960"" height=""960""></svg>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 100, right: 100, bottom: 100, left: 100 };
+        const width = 960 - margin.left - margin.right;
+        const height = 960 - margin.top - margin.bottom;
+        const size = 200;
+        const padding = 20;
+        const svg = d3.select(""svg"")
+            .attr(""width"", width + margin.left + margin.right)
+            .attr(""height"", height + margin.top + margin.bottom)
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+        
+        const xScale = {};
+        const yScale = {};
+        const brush = {};
+        const brushCell = {};
+        
+        const columns = [""Units Produced"", ""Revenue"", ""Profit"", ""Production Cost"", ""Yield"", ""Export Volume""];
+        
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"").then(data => {
+            data.forEach(d => {
+                columns.forEach(c => {
+                    d[c] = +d[c];
+                });
+            });
+            
+            const domainMap = {};
+            columns.forEach(c => {
+                domainMap[c] = [d3.min(data, d => d[c]), d3.max(data, d => d[c])];
+            });
+            
+            columns.forEach(c => {
+                xScale[c] = d3.scaleLinear()
+                    .domain(domainMap[c])
+                    .range([padding / 2, size - padding / 2]);
+                
+                yScale[c] = d3.scaleLinear()
+                    .domain(domainMap[c])
+                    .range([size - padding / 2, padding / 2]);
+                
+                brush[c] = d3.brush()
+                    .extent([[0, 0], [size, size]])
+                    .on(""start"", brushstart)
+                    .on(""brush"", brushmove)
+                    .on(""end"", brushend);
+                
+                brushCell[c] = svg.append(""g"")
+                    .attr(""class"", ""brush"")
+                    .call(brush[c]);
+            });
+            
+            const matrix = svg.append(""g"")
+                .attr(""class"", ""matrix"");
+            
+            columns.forEach((c1, i) => {
+                columns.forEach((c2, j) => {
+                    const cell = matrix.append(""g"")
+                        .attr(""class"", ""cell"")
+                        .attr(""transform"", `translate(${i * size}, ${j * size})`);
+                    
+                    cell.append(""rect"")
+                        .attr(""x"", 0)
+                        .attr(""y"", 0)
+                        .attr(""width"", size)
+                        .attr(""height"", size);
+                    
+                    cell.selectAll(""circle"")
+                        .data(data)
+                        .enter()
+                        .append(""circle"")
+                        .attr(""cx"", d => xScale[c1](d[c1]))
+                        .attr(""cy"", d => yScale[c2](d[c2]))
+                        .attr(""r"", 3);
+                    
+                    if (i === 0) {
+                        cell.append(""text"")
+                            .attr(""x"", -20)
+                            .attr(""y"", size / 2)
+                            .attr(""transform"", ""rotate(-90)"")
+                            .text(c2);
+                    }
+                    
+                    if (j === 0) {
+                        cell.append(""text"")
+                            .attr(""x"", size / 2)
+                            .attr(""y"", -20)
+                            .text(c1);
+                    }
+                });
+            });
+            
+            function brushstart(p) {
+                if (p.sourceEvent.type !== ""brush"") return;
+                const selection = d3.event.selection;
+                svg.selectAll(""circle"")
+                    .classed(""selected"", d => {
+                        const x = xScale[p](d[p]);
+                        const y = yScale[p](d[p]);
+                        return x >= selection[0][0] && x <= selection[1][0] && y >= selection[0][1] && y <= selection[1][1];
+                    });
+            }
+            
+            function brushmove(p) {
+                const selection = d3.event.selection;
+                svg.selectAll(""circle"")
+                    .classed(""selected"", d => {
+                        const x = xScale[p](d[p]);
+                        const y = yScale[p](d[p]);
+                        return x >= selection[0][0] && x <= selection[1][0] && y >= selection[0][1] && y <= selection[1][1];
+                    });
+            }
+            
+            function brushend() {
+                if (!d3.event.sourceEvent) return;
+                const selection = d3.event.selection;
+                if (!selection) {
+                    svg.selectAll(""circle"")
+                        .classed(""selected"", false);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a brushable Scatterplot that visualizes the relationship between Units Produced and Revenue. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Brushable Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .brush {
+            fill-opacity: 0.2;
+        }
+        
+        .brush .selection {
+            fill-opacity: 0.5;
+        }
+        
+        #scatterplot {
+            border: 1px solid black;
+        }
+        
+        #table-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            padding: 10px;
+            border: 1px solid black;
+            display: none;
+        }
+        
+        table {
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <svg id=""scatterplot"" width=""600"" height=""600""></svg>
+    <div id=""table-container"">
+        <table id=""selected-points-table"">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Crop Type</th>
+                    <th>Units Produced</th>
+                    <th>Revenue</th>
+                    <th>Production Cost</th>
+                    <th>Profit</th>
+                    <th>Yield</th>
+                    <th>Number of Farms</th>
+                    <th>Export Volume</th>
+                </tr>
+            </thead>
+            <tbody id=""table-body"">
+            </tbody>
+        </table>
+    </div>
+
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        let margin = { top: 50, right: 200, bottom: 50, left: 50 };
+        let width = 600 - margin.left - margin.right;
+        let height = 600 - margin.top - margin.bottom;
+
+        let svg = d3.select(""#scatterplot"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+        let xScale = d3.scaleLinear()
+            .range([0, width]);
+
+        let yScale = d3.scaleLinear()
+            .range([height, 0]);
+
+        let brush = d3.brush()
+            .extent([[0, 0], [width, height]])
+            .on(""brush"", brushed)
+            .on(""end"", brushended);
+
+        let brushg = svg.append(""g"")
+            .attr(""class"", ""brush"");
+
+        brush(brushg);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"")
+            .then(data => {
+                data.forEach(d => {
+                    d[""Units Produced""] = +d[""Units Produced""];
+                    d[""Revenue""] = +d[""Revenue""];
+                });
+
+                xScale.domain(d3.extent(data, d => d[""Units Produced""]));
+                yScale.domain(d3.extent(data, d => d[""Revenue""]));
+
+                svg.selectAll(""circle"")
+                    .data(data)
+                    .enter()
+                    .append(""circle"")
+                    .attr(""cx"", d => xScale(d[""Units Produced""]))
+                    .attr(""cy"", d => yScale(d[""Revenue""]))
+                    .attr(""r"", 5);
+
+                svg.append(""g"")
+                    .attr(""transform"", `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScale));
+
+                svg.append(""g"")
+                    .call(d3.axisLeft(yScale));
+            });
+
+        function brushed(event) {
+            let selection = event.selection;
+            if (selection) {
+                let x0 = xScale.invert(selection[0][0]);
+                let x1 = xScale.invert(selection[1][0]);
+                let y0 = yScale.invert(selection[1][1]);
+                let y1 = yScale.invert(selection[0][1]);
+
+                d3.csv(""https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv"")
+                    .then(data => {
+                        data.forEach(d => {
+                            d[""Units Produced""] = +d[""Units Produced""];
+                            d[""Revenue""] = +d[""Revenue""];
+                        });
+
+                        let selectedPoints = data.filter(d => x0 <= d[""Units Produced""] && d[""Units Produced""] <= x1 && y0 <= d[""Revenue""] && d[""Revenue""] <= y1);
+                        selectedPoints = selectedPoints.slice(0, 20);
+
+                        let tableBody = d3.select(""#table-body"");
+                        tableBody.selectAll(""tr"").remove();
+
+                        tableBody.selectAll(""tr"")
+                            .data(selectedPoints)
+                            .enter()
+                            .append(""tr"")
+                            .html(d => {
+                                return `
+                                    <td>${d[""Year""]}</td>
+                                    <td>${d[""Crop Type""]}</td>
+                                    <td>${d[""Units Produced""]}</td>
+                                    <td>${d[""Revenue""]}</td>
+                                    <td>${d[""Production Cost""]}</td>
+                                    <td>${d[""Profit""]}</td>
+                                    <td>${d[""Yield""]}</td>
+                                    <td>${d[""Number of Farms""]}</td>
+                                    <td>${d[""Export Volume""]}</td>
+                                `;
+                            });
+
+                        d3.select(""#table-container"").style(""display"", ""block"");
+                    });
+            }
+        }
+
+        function brushended(event) {
+            if (!event.selection) {
+                d3.select(""#table-container"").style(""display"", ""none"");
+            }
+        }
+    </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume
+Your task is to create a horizontal Bar Chart that shows Crop Type and Units Produced, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv
+
+The data table contains the following columns: Year,Crop Type,Units Produced,Revenue,Production Cost,Profit,Yield,Number of Farms,Export Volume",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Agricultural Production</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .bar-chart {
+            display: flex;
+        }
+        
+        .main-chart {
+            width: 80%;
+        }
+        
+        .minimap {
+            width: 20%;
+        }
+        
+        .bar {
+            fill: steelblue;
+        }
+        
+        .bar:hover {
+            fill: brown;
+        }
+    </style>
+</head>
+<body>
+    <div class=""bar-chart"">
+        <svg class=""main-chart""></svg>
+        <svg class=""minimap""></svg>
+    </div>
+    
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+        
+        const mainChart = d3.select('.main-chart')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`);
+        
+        const minimap = d3.select('.minimap')
+            .attr('width', 200)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform', `translate(20, ${margin.top})`);
+        
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/a3a1fd8ee0541074f72bcc7a4a72415a/raw/9af38fbf99350c05a66c856f0818a384421d33d4/Agricultural%2520Production.csv')
+            .then(data => {
+                data.forEach(d => {
+                    d['Units Produced'] = +d['Units Produced'];
+                });
+                
+                const cropTypes = data.map(d => d['Crop Type']);
+                const unitsProduced = data.map(d => d['Units Produced']);
+                
+                const xScaleMain = d3.scaleLinear()
+                    .domain([0, d3.max(unitsProduced)])
+                    .range([0, width]);
+                
+                const yScaleMain = d3.scaleBand()
+                    .domain(cropTypes)
+                    .range([0, height])
+                    .padding(0.2);
+                
+                const xScaleMini = d3.scaleLinear()
+                    .domain([0, d3.max(unitsProduced)])
+                    .range([0, 150]);
+                
+                const yScaleMini = d3.scaleBand()
+                    .domain(cropTypes)
+                    .range([0, height])
+                    .padding(0.2);
+                
+                mainChart.selectAll('rect')
+                    .data(data)
+                    .enter()
+                    .append('rect')
+                    .attr('class', 'bar')
+                    .attr('x', 0)
+                    .attr('y', d => yScaleMain(d['Crop Type']))
+                    .attr('width', d => xScaleMain(d['Units Produced']))
+                    .attr('height', yScaleMain.bandwidth());
+                
+                mainChart.append('g')
+                    .attr('transform', `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScaleMain));
+                
+                mainChart.append('g')
+                    .call(d3.axisLeft(yScaleMain));
+                
+                minimap.selectAll('rect')
+                    .data(data)
+                    .enter()
+                    .append('rect')
+                    .attr('class', 'bar')
+                    .attr('x', 0)
+                    .attr('y', d => yScaleMini(d['Crop Type']))
+                    .attr('width', d => xScaleMini(d['Units Produced']))
+                    .attr('height', yScaleMini.bandwidth());
+                
+                minimap.append('g')
+                    .attr('transform', `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScaleMini));
+            });
+    </script>
+</body>
+</html>
+```"

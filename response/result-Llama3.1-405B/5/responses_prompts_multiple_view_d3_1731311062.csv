@@ -1,0 +1,1070 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Employee Performance Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .chart {
+            width: 45%;
+            margin: 20px;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class=""container"">
+        <div class=""chart"" id=""scatterplot""></div>
+        <div class=""chart"" id=""bar-chart""></div>
+    </div>
+    
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        // Load data
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+        .then(data => {
+            // Convert data types
+            data.forEach(d => {
+                d['Year'] = +d['Year'];
+                d['Sales Figures'] = +d['Sales Figures'];
+                d['Hours Worked'] = +d['Hours Worked'];
+                d['Revenue'] = +d['Revenue'];
+                d['Profit'] = +d['Profit'];
+                d['Employee Satisfaction Score'] = +d['Employee Satisfaction Score'];
+                d['Number of Employees'] = +d['Number of Employees'];
+            });
+            
+            // Scatterplot
+            const scatterplotWidth = 500;
+            const scatterplotHeight = 400;
+            const scatterplotMargin = { top: 20, right: 20, bottom: 30, left: 40 };
+            
+            const scatterplotSvg = d3.select('#scatterplot')
+                .append('svg')
+                .attr('width', scatterplotWidth + scatterplotMargin.left + scatterplotMargin.right)
+                .attr('height', scatterplotHeight + scatterplotMargin.top + scatterplotMargin.bottom)
+                .append('g')
+                .attr('transform', `translate(${scatterplotMargin.left}, ${scatterplotMargin.top})`);
+            
+            const scatterplotXScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Hours Worked'])])
+                .range([0, scatterplotWidth]);
+            
+            const scatterplotYScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Sales Figures'])])
+                .range([scatterplotHeight, 0]);
+            
+            scatterplotSvg.append('g')
+                .attr('transform', `translate(0, ${scatterplotHeight})`)
+                .call(d3.axisBottom(scatterplotXScale).tickFormat(d3.format('d')));
+            
+            scatterplotSvg.append('g')
+                .call(d3.axisLeft(scatterplotYScale).tickFormat(d3.format('d')));
+            
+            scatterplotSvg.selectAll('circle')
+                .data(data)
+                .enter()
+                .append('circle')
+                .attr('cx', d => scatterplotXScale(d['Hours Worked']))
+                .attr('cy', d => scatterplotYScale(d['Sales Figures']))
+                .attr('r', 5);
+            
+            // Bar chart
+            const barChartWidth = 500;
+            const barChartHeight = 400;
+            const barChartMargin = { top: 20, right: 20, bottom: 30, left: 40 };
+            
+            const barChartSvg = d3.select('#bar-chart')
+                .append('svg')
+                .attr('width', barChartWidth + barChartMargin.left + barChartMargin.right)
+                .attr('height', barChartHeight + barChartMargin.top + barChartMargin.bottom)
+                .append('g')
+                .attr('transform', `translate(${barChartMargin.left}, ${barChartMargin.top})`);
+            
+            const barChartXScale = d3.scaleBand()
+                .domain(data.map(d => d['Department']))
+                .range([0, barChartWidth])
+                .padding(0.2);
+            
+            const barChartYScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Revenue'])])
+                .range([barChartHeight, 0]);
+            
+            barChartSvg.append('g')
+                .attr('transform', `translate(0, ${barChartHeight})`)
+                .call(d3.axisBottom(barChartXScale));
+            
+            barChartSvg.append('g')
+                .call(d3.axisLeft(barChartYScale).tickFormat(d3.format('d')));
+            
+            barChartSvg.selectAll('rect')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('x', d => barChartXScale(d['Department']))
+                .attr('y', d => barChartYScale(d['Revenue']))
+                .attr('width', barChartXScale.bandwidth())
+                .attr('height', d => barChartHeight - barChartYScale(d['Revenue']));
+        });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Employee Performance Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .chart {
+            width: 45%;
+            margin: 20px;
+            border: 1px solid #ddd;
+            padding: 20px;
+        }
+        
+        .brush {
+            fill: #ccc;
+            stroke: #666;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class=""container"">
+        <div class=""chart"" id=""scatterplot""></div>
+        <div class=""chart"" id=""bar-chart""></div>
+    </div>
+    
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        // Load data
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+        .then(data => {
+            data.forEach(d => {
+                d['Sales Figures'] = +d['Sales Figures'];
+                d['Hours Worked'] = +d['Hours Worked'];
+                d['Revenue'] = +d['Revenue'];
+                d['Profit'] = +d['Profit'];
+                d['Employee Satisfaction Score'] = +d['Employee Satisfaction Score'];
+                d['Number of Employees'] = +d['Number of Employees'];
+            });
+            
+            // Create scatterplot
+            const scatterplot = d3.select('#scatterplot');
+            const scatterplotMargin = { top: 20, right: 20, bottom: 30, left: 40 };
+            const scatterplotWidth = 400 - scatterplotMargin.left - scatterplotMargin.right;
+            const scatterplotHeight = 400 - scatterplotMargin.top - scatterplotMargin.bottom;
+            const scatterplotG = scatterplot.append('g')
+                .attr('transform', `translate(${scatterplotMargin.left}, ${scatterplotMargin.top})`);
+            
+            const xScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Hours Worked'])])
+                .range([0, scatterplotWidth]);
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Sales Figures'])])
+                .range([scatterplotHeight, 0]);
+            
+            scatterplotG.append('g')
+                .attr('transform', `translate(0, ${scatterplotHeight})`)
+                .call(d3.axisBottom(xScale));
+            scatterplotG.append('g')
+                .call(d3.axisLeft(yScale));
+            
+            const brush = d3.brush()
+                .extent([[0, 0], [scatterplotWidth, scatterplotHeight]])
+                .on('brush', brushed)
+                .on('end', brushended);
+            
+            scatterplotG.append('g')
+                .attr('class', 'brush')
+                .call(brush);
+            
+            const dots = scatterplotG.selectAll('circle')
+                .data(data)
+                .enter()
+                .append('circle')
+                .attr('cx', d => xScale(d['Hours Worked']))
+                .attr('cy', d => yScale(d['Sales Figures']))
+                .attr('r', 5);
+            
+            // Create bar chart
+            const barChart = d3.select('#bar-chart');
+            const barChartMargin = { top: 20, right: 20, bottom: 30, left: 40 };
+            const barChartWidth = 400 - barChartMargin.left - barChartMargin.right;
+            const barChartHeight = 400 - barChartMargin.top - barChartMargin.bottom;
+            const barChartG = barChart.append('g')
+                .attr('transform', `translate(${barChartMargin.left}, ${barChartMargin.top})`);
+            
+            const xScaleBar = d3.scaleBand()
+                .domain(data.map(d => d.Department))
+                .range([0, barChartWidth])
+                .padding(0.2);
+            const yScaleBar = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Revenue'])])
+                .range([barChartHeight, 0]);
+            
+            barChartG.append('g')
+                .attr('transform', `translate(0, ${barChartHeight})`)
+                .call(d3.axisBottom(xScaleBar));
+            barChartG.append('g')
+                .call(d3.axisLeft(yScaleBar));
+            
+            const bars = barChartG.selectAll('rect')
+                .data(data)
+                .enter()
+                .append('rect')
+                .attr('x', d => xScaleBar(d.Department))
+                .attr('y', d => yScaleBar(d['Revenue']))
+                .attr('width', xScaleBar.bandwidth())
+                .attr('height', d => barChartHeight - yScaleBar(d['Revenue']));
+            
+            // Brushing and linking functionality
+            function brushed(event) {
+                const selection = event.selection;
+                if (selection) {
+                    const x0 = xScale.invert(selection[0][0]);
+                    const x1 = xScale.invert(selection[1][0]);
+                    const y0 = yScale.invert(selection[1][1]);
+                    const y1 = yScale.invert(selection[0][1]);
+                    
+                    dots.classed('selected', d => x0 <= d['Hours Worked'] && d['Hours Worked'] <= x1 && y0 <= d['Sales Figures'] && d['Sales Figures'] <= y1);
+                    bars.classed('selected', d => x0 <= d['Hours Worked'] && d['Hours Worked'] <= x1 && y0 <= d['Sales Figures'] && d['Sales Figures'] <= y1);
+                }
+            }
+            
+            function brushended(event) {
+                if (!event.selection) {
+                    dots.classed('selected', false);
+                    bars.classed('selected', false);
+                }
+            }
+        });
+    </script>
+    <style>
+        .selected {
+            fill: red;
+        }
+    </style>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Sales Figures , while the pie chart represents the distribution of Hours Worked.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Employee Performance Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .chart-container {
+            width: 800px;
+            height: 600px;
+            margin: 50px auto;
+        }
+        
+        .line-chart {
+            width: 100%;
+            height: 60%;
+        }
+        
+        .pie-chart {
+            width: 100%;
+            height: 40%;
+        }
+    </style>
+</head>
+<body>
+    <div class=""chart-container"">
+        <svg class=""line-chart""></svg>
+        <svg class=""pie-chart""></svg>
+    </div>
+    
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const lineChartWidth = 800 - margin.left - margin.right;
+        const lineChartHeight = 360 - margin.top - margin.bottom;
+        const pieChartWidth = 800 - margin.left - margin.right;
+        const pieChartHeight = 240 - margin.top - margin.bottom;
+        
+        const lineChartSvg = d3.select('.line-chart')
+            .attr('width', lineChartWidth + margin.left + margin.right)
+            .attr('height', lineChartHeight + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`);
+        
+        const pieChartSvg = d3.select('.pie-chart')
+            .attr('width', pieChartWidth + margin.left + margin.right)
+            .attr('height', pieChartHeight + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`);
+        
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+            .then(data => {
+                data.forEach(d => {
+                    d['Sales Figures'] = +d['Sales Figures'];
+                    d['Hours Worked'] = +d['Hours Worked'];
+                });
+                
+                const years = data.map(d => d.Year);
+                const salesFigures = data.map(d => d['Sales Figures']);
+                
+                const lineChartScaleX = d3.scalePoint()
+                    .domain(years)
+                    .range([0, lineChartWidth]);
+                
+                const lineChartScaleY = d3.scaleLinear()
+                    .domain([0, d3.max(salesFigures)])
+                    .range([lineChartHeight, 0]);
+                
+                const lineChartAxisX = d3.axisBottom(lineChartScaleX);
+                const lineChartAxisY = d3.axisLeft(lineChartScaleY);
+                
+                lineChartSvg.append('g')
+                    .attr('transform', `translate(0, ${lineChartHeight})`)
+                    .call(lineChartAxisX);
+                
+                lineChartSvg.append('g')
+                    .call(lineChartAxisY);
+                
+                const lineChartLine = d3.line()
+                    .x(d => lineChartScaleX(d.Year))
+                    .y(d => lineChartScaleY(d['Sales Figures']));
+                
+                lineChartSvg.append('path')
+                    .datum(data)
+                    .attr('fill', 'none')
+                    .attr('stroke', 'steelblue')
+                    .attr('stroke-width', 1.5)
+                    .attr('d', lineChartLine);
+                
+                const pieChartData = d3.nest()
+                    .key(d => d.Department)
+                    .rollup(v => d3.sum(v, d => d['Hours Worked']))
+                    .entries(data);
+                
+                const pieChartScaleColor = d3.scaleOrdinal()
+                    .domain(pieChartData.map(d => d.key))
+                    .range(d3.schemeCategory10);
+                
+                const pieChartPie = d3.pie()
+                    .value(d => d.value);
+                
+                const pieChartArc = d3.arc()
+                    .outerRadius(Math.min(pieChartWidth, pieChartHeight) / 2)
+                    .innerRadius(0);
+                
+                const pieChartG = pieChartSvg.selectAll('g')
+                    .data(pieChartPie(pieChartData))
+                    .enter()
+                    .append('g')
+                    .attr('transform', `translate(${pieChartWidth / 2}, ${pieChartHeight / 2})`);
+                
+                pieChartG.append('path')
+                    .attr('fill', d => pieChartScaleColor(d.data.key))
+                    .attr('d', pieChartArc);
+                
+                pieChartG.append('text')
+                    .attr('transform', d => `translate(${pieChartArc.centroid(d)})`)
+                    .attr('dy', '0.35em')
+                    .text(d => d.data.key);
+            })
+            .catch(error => console.error(error));
+    </script>
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Sales Figures , while the pie chart represents the distribution of Hours Worked. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Hours Worked for the selected group.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Employee Performance Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .chart {
+            margin: 20px;
+        }
+        
+        .brush {
+            fill-opacity: 0.2;
+        }
+    </style>
+</head>
+<body>
+    <div class=""chart"" id=""line-chart""></div>
+    <div class=""chart"" id=""pie-chart""></div>
+    
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        // Load data
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+        .then(data => {
+            // Convert data types
+            data.forEach(d => {
+                d['Year'] = +d['Year'];
+                d['Sales Figures'] = +d['Sales Figures'];
+                d['Hours Worked'] = +d['Hours Worked'];
+            });
+            
+            // Sort data by year
+            data.sort((a, b) => a['Year'] - b['Year']);
+            
+            // Create line chart
+            const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+            const width = 800 - margin.left - margin.right;
+            const height = 400 - margin.top - margin.bottom;
+            const lineChart = d3.select('#line-chart')
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
+            
+            const xScale = d3.scaleLinear()
+                .domain(d3.extent(data, d => d['Year']))
+                .range([0, width]);
+            const yScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Sales Figures'])])
+                .range([height, 0]);
+            
+            const line = d3.line()
+                .x(d => xScale(d['Year']))
+                .y(d => yScale(d['Sales Figures']));
+            
+            lineChart.append('path')
+                .datum(data)
+                .attr('fill', 'none')
+                .attr('stroke', 'steelblue')
+                .attr('stroke-width', 1.5)
+                .attr('d', line);
+            
+            // Add brush
+            const brush = d3.brushX()
+                .extent([[0, 0], [width, height]])
+                .on('brush', brushed)
+                .on('end', brushended);
+            
+            lineChart.append('g')
+                .attr('class', 'brush')
+                .call(brush)
+                .selectAll('rect')
+                .attr('height', height);
+            
+            // Create pie chart
+            const pieChart = d3.select('#pie-chart')
+                .append('svg')
+                .attr('width', 400)
+                .attr('height', 400);
+            
+            const pieScale = d3.scaleLinear()
+                .domain([0, d3.max(data, d => d['Hours Worked'])])
+                .range([0, 200]);
+            
+            const pie = d3.pie()
+                .value(d => d['Hours Worked']);
+            
+            const arc = d3.arc()
+                .outerRadius(pieScale)
+                .innerRadius(0);
+            
+            let pieData = data;
+            
+            pieChart.selectAll('path')
+                .data(pie(pieData))
+                .enter()
+                .append('path')
+                .attr('fill', (d, i) => d3.schemeCategory10[i])
+                .attr('d', arc);
+            
+            // Brush event handlers
+            function brushed(event) {
+                const selection = event.selection;
+                if (selection) {
+                    const startYear = xScale.invert(selection[0]);
+                    const endYear = xScale.invert(selection[1]);
+                    pieData = data.filter(d => d['Year'] >= startYear && d['Year'] <= endYear);
+                    updatePieChart();
+                }
+            }
+            
+            function brushended(event) {
+                if (!event.selection) {
+                    pieData = data;
+                    updatePieChart();
+                }
+            }
+            
+            // Update pie chart
+            function updatePieChart() {
+                pieChart.selectAll('path')
+                    .data(pie(pieData))
+                    .transition()
+                    .duration(500)
+                    .attr('d', arc);
+            }
+        });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Sales Figures, Revenue, Profit, Hours Worked, and Employee Satisfaction. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Scatterplot Matrix</title>
+    <style>
+        .matrix {
+            stroke: #000;
+            stroke-opacity: 0.3;
+        }
+        
+        .matrix .cell {
+            stroke: #fff;
+        }
+        
+        .matrix .cell rect {
+            fill: #fff;
+            stroke: #fff;
+        }
+        
+        .matrix .cell circle {
+            fill: #000;
+            stroke: #fff;
+        }
+        
+        .matrix .cell text {
+            font-size: 10px;
+            text-anchor: middle;
+        }
+        
+        .brush .selection {
+            fill: #666;
+            fill-opacity: 0.3;
+        }
+        
+        .brush .handle {
+            fill: #fff;
+            stroke: #666;
+            stroke-width: 2;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 100, right: 100, bottom: 100, left: 100 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+        const size = 150;
+        const padding = 20;
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+        
+        const xScale = {};
+        const yScale = {};
+        const brush = {};
+        const brushCell = {};
+        
+        const columns = [""Sales Figures"", ""Revenue"", ""Profit"", ""Hours Worked"", ""Employee Satisfaction Score""];
+        
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv"", d => {
+            columns.forEach(c => {
+                d[c] = +d[c];
+            });
+            return d;
+        }).then(data => {
+            const domainMap = {};
+            columns.forEach(c => {
+                domainMap[c] = [d3.min(data, d => d[c]), d3.max(data, d => d[c])];
+            });
+            
+            columns.forEach(c => {
+                xScale[c] = d3.scaleLinear()
+                    .domain(domainMap[c])
+                    .range([padding / 2, size - padding / 2]);
+                
+                yScale[c] = d3.scaleLinear()
+                    .domain(domainMap[c])
+                    .range([size - padding / 2, padding / 2]);
+                
+                brush[c] = d3.brush()
+                    .extent([[0, 0], [size, size]])
+                    .on(""start"", brushstart)
+                    .on(""brush"", brushmove)
+                    .on(""end"", brushend);
+                
+                brushCell[c] = svg.append(""g"")
+                    .attr(""class"", ""brush"")
+                    .call(brush[c]);
+            });
+            
+            const matrix = svg.append(""g"")
+                .attr(""class"", ""matrix"");
+            
+            columns.forEach((c1, i) => {
+                columns.forEach((c2, j) => {
+                    const cell = matrix.append(""g"")
+                        .attr(""class"", ""cell"")
+                        .attr(""transform"", `translate(${i * size}, ${j * size})`);
+                    
+                    cell.append(""rect"")
+                        .attr(""width"", size)
+                        .attr(""height"", size)
+                        .attr(""fill"", ""none"")
+                        .attr(""stroke"", ""#fff"");
+                    
+                    cell.selectAll(""circle"")
+                        .data(data)
+                        .enter()
+                        .append(""circle"")
+                        .attr(""cx"", d => xScale[c1](d[c1]))
+                        .attr(""cy"", d => yScale[c2](d[c2]))
+                        .attr(""r"", 3);
+                    
+                    if (i === 0) {
+                        cell.append(""text"")
+                            .attr(""x"", -20)
+                            .attr(""y"", size / 2)
+                            .attr(""text-anchor"", ""middle"")
+                            .attr(""transform"", ""rotate(-90)"")
+                            .text(c2);
+                    }
+                    
+                    if (j === 0) {
+                        cell.append(""text"")
+                            .attr(""x"", size / 2)
+                            .attr(""y"", -20)
+                            .attr(""text-anchor"", ""middle"")
+                            .text(c1);
+                    }
+                });
+            });
+            
+            function brushstart(p) {
+                if (p.sourceEvent.type !== ""brush"") return;
+                const selection = d3.event.selection;
+                svg.selectAll(""circle"")
+                    .classed(""selected"", d => {
+                        const x = xScale[p.target.__data__](d[p.target.__data__]);
+                        const y = yScale[p.target.__data__](d[p.target.__data__]);
+                        return x >= selection[0][0] && x <= selection[1][0] && y >= selection[0][1] && y <= selection[1][1];
+                    });
+            }
+            
+            function brushmove(p) {
+                if (p.sourceEvent.type !== ""brush"") return;
+                const selection = d3.event.selection;
+                svg.selectAll(""circle"")
+                    .classed(""selected"", d => {
+                        const x = xScale[p.target.__data__](d[p.target.__data__]);
+                        const y = yScale[p.target.__data__](d[p.target.__data__]);
+                        return x >= selection[0][0] && x <= selection[1][0] && y >= selection[0][1] && y <= selection[1][1];
+                    });
+            }
+            
+            function brushend() {
+                if (!d3.event.sourceEvent) return;
+                const selection = d3.event.selection;
+                if (!selection) {
+                    svg.selectAll(""circle"")
+                        .classed(""selected"", false);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a brushable Scatterplot that visualizes the relationship between Sales Figures and Hours Worked. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Brushable Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .brush {
+            fill-opacity: 0.2;
+        }
+        
+        .brush .selection {
+            fill-opacity: 0.5;
+        }
+        
+        #scatterplot {
+            border: 1px solid black;
+        }
+        
+        #table-container {
+            float: right;
+            width: 40%;
+            height: 500px;
+            overflow-y: auto;
+            border: 1px solid black;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div id=""scatterplot"" style=""width: 60%; height: 500px; float: left;""></div>
+    <div id=""table-container"">
+        <table id=""selected-points-table"">
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Department</th>
+                    <th>Sales Figures</th>
+                    <th>Hours Worked</th>
+                    <th>Revenue</th>
+                    <th>Profit</th>
+                    <th>Employee Satisfaction Score</th>
+                    <th>Number of Employees</th>
+                </tr>
+            </thead>
+            <tbody id=""table-body"">
+            </tbody>
+        </table>
+    </div>
+
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        // Load data
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+            .then(data => {
+                data.forEach(d => {
+                    d['Sales Figures'] = parseFloat(d['Sales Figures']);
+                    d['Hours Worked'] = parseFloat(d['Hours Worked']);
+                    d['Revenue'] = parseFloat(d['Revenue']);
+                    d['Profit'] = parseFloat(d['Profit']);
+                    d['Employee Satisfaction Score'] = parseFloat(d['Employee Satisfaction Score']);
+                    d['Number of Employees'] = parseFloat(d['Number of Employees']);
+                });
+
+                // Create SVG
+                const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+                const width = 500 - margin.left - margin.right;
+                const height = 500 - margin.top - margin.bottom;
+                const svg = d3.select('#scatterplot')
+                    .append('svg')
+                    .attr('width', width + margin.left + margin.right)
+                    .attr('height', height + margin.top + margin.bottom)
+                    .append('g')
+                    .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+                // Create scales
+                const xScale = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d['Hours Worked'])])
+                    .range([0, width]);
+                const yScale = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d['Sales Figures'])])
+                    .range([height, 0]);
+
+                // Create axes
+                const xAxis = d3.axisBottom(xScale);
+                const yAxis = d3.axisLeft(yScale);
+                svg.append('g')
+                    .attr('transform', `translate(0, ${height})`)
+                    .call(xAxis);
+                svg.append('g')
+                    .call(yAxis);
+
+                // Create brush
+                const brush = d3.brush()
+                    .extent([[0, 0], [width, height]])
+                    .on('brush', brushed)
+                    .on('end', brushended);
+                svg.append('g')
+                    .call(brush);
+
+                // Create points
+                const points = svg.selectAll('circle')
+                    .data(data)
+                    .enter()
+                    .append('circle')
+                    .attr('cx', d => xScale(d['Hours Worked']))
+                    .attr('cy', d => yScale(d['Sales Figures']))
+                    .attr('r', 5);
+
+                // Brush event handlers
+                function brushed(event) {
+                    const selection = event.selection;
+                    if (selection) {
+                        const x0 = xScale.invert(selection[0][0]);
+                        const x1 = xScale.invert(selection[1][0]);
+                        const y0 = yScale.invert(selection[1][1]);
+                        const y1 = yScale.invert(selection[0][1]);
+                        const selectedPoints = data.filter(d => x0 <= d['Hours Worked'] && d['Hours Worked'] <= x1 && y0 <= d['Sales Figures'] && d['Sales Figures'] <= y1);
+                        updateTable(selectedPoints.slice(0, 20));
+                    }
+                }
+
+                function brushended(event) {
+                    if (!event.selection) {
+                        updateTable([]);
+                    }
+                }
+
+                // Update table
+                function updateTable(points) {
+                    const tableBody = d3.select('#table-body');
+                    tableBody.selectAll('tr').remove();
+                    const rows = tableBody.selectAll('tr')
+                        .data(points)
+                        .enter()
+                        .append('tr');
+                    rows.append('td')
+                        .text(d => d['Year']);
+                    rows.append('td')
+                        .text(d => d['Department']);
+                    rows.append('td')
+                        .text(d => d['Sales Figures']);
+                    rows.append('td')
+                        .text(d => d['Hours Worked']);
+                    rows.append('td')
+                        .text(d => d['Revenue']);
+                    rows.append('td')
+                        .text(d => d['Profit']);
+                    rows.append('td')
+                        .text(d => d['Employee Satisfaction Score']);
+                    rows.append('td')
+                        .text(d => d['Number of Employees']);
+                }
+            })
+            .catch(error => console.error(error));
+    </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a horizontal Bar Chart that shows Department and Sales Figures, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",D3,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Department Sales Figures</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .bar-chart {
+            display: flex;
+        }
+        
+        .main-chart {
+            width: 80%;
+        }
+        
+        .minimap {
+            width: 20%;
+        }
+        
+        .bar {
+            fill: steelblue;
+        }
+        
+        .bar:hover {
+            fill: brown;
+        }
+    </style>
+</head>
+<body>
+    <div class=""bar-chart"">
+        <svg class=""main-chart""></svg>
+        <svg class=""minimap""></svg>
+    </div>
+    
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+        
+        const mainChart = d3.select('.main-chart')
+            .attr('width', width + margin.left + margin.right)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`);
+        
+        const minimap = d3.select('.minimap')
+            .attr('width', 200)
+            .attr('height', height + margin.top + margin.bottom)
+            .append('g')
+            .attr('transform', `translate(20, ${margin.top})`);
+        
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+            .then(data => {
+                data.forEach(d => {
+                    d['Sales Figures'] = +d['Sales Figures'];
+                });
+                
+                const departments = data.map(d => d.Department);
+                const salesFigures = data.map(d => d['Sales Figures']);
+                
+                const xScaleMain = d3.scaleLinear()
+                    .domain([0, d3.max(salesFigures)])
+                    .range([0, width]);
+                
+                const yScaleMain = d3.scaleBand()
+                    .domain(departments)
+                    .range([0, height])
+                    .padding(0.2);
+                
+                const xScaleMini = d3.scaleLinear()
+                    .domain([0, d3.max(salesFigures)])
+                    .range([0, 150]);
+                
+                const yScaleMini = d3.scaleBand()
+                    .domain(departments)
+                    .range([0, height])
+                    .padding(0.2);
+                
+                mainChart.selectAll('rect')
+                    .data(data)
+                    .enter()
+                    .append('rect')
+                    .attr('class', 'bar')
+                    .attr('x', 0)
+                    .attr('y', d => yScaleMain(d.Department))
+                    .attr('width', d => xScaleMain(d['Sales Figures']))
+                    .attr('height', yScaleMain.bandwidth());
+                
+                mainChart.append('g')
+                    .attr('transform', `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScaleMain));
+                
+                mainChart.append('g')
+                    .call(d3.axisLeft(yScaleMain));
+                
+                minimap.selectAll('rect')
+                    .data(data)
+                    .enter()
+                    .append('rect')
+                    .attr('class', 'bar')
+                    .attr('x', 0)
+                    .attr('y', d => yScaleMini(d.Department))
+                    .attr('width', d => xScaleMini(d['Sales Figures']))
+                    .attr('height', yScaleMini.bandwidth());
+                
+                minimap.append('g')
+                    .attr('transform', `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScaleMini));
+            });
+    </script>
+</body>
+</html>
+```"

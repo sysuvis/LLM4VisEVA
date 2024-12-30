@@ -1,0 +1,560 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Energy Consumed and Cost, and a Bar Chart on the right that displays Energy Sector versus Energy Consumed.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Energy Consumption Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    .chart-container {
+      display: flex;
+      justify-content: space-between;
+    }
+  </style>
+</head>
+<body>
+  <div class=""chart-container"">
+    <div id=""scatterplot""></div>
+    <div id=""bar-chart""></div>
+  </div>
+
+  <script>
+    const specScatterplot = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv""
+      },
+      ""mark"": ""point"",
+      ""encoding"": {
+        ""x"": {
+          ""field"": ""Energy Consumed"",
+          ""type"": ""quantitative""
+        },
+        ""y"": {
+          ""field"": ""Cost"",
+          ""type"": ""quantitative""
+        }
+      },
+      ""width"": 400,
+      ""height"": 400
+    };
+
+    const specBarChart = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv""
+      },
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {
+          ""field"": ""Energy Sector"",
+          ""type"": ""nominal""
+        },
+        ""y"": {
+          ""field"": ""Energy Consumed"",
+          ""type"": ""quantitative"",
+          ""aggregate"": ""sum""
+        }
+      },
+      ""width"": 400,
+      ""height"": 400
+    };
+
+    vegaEmbed('#scatterplot', specScatterplot);
+    vegaEmbed('#bar-chart', specBarChart);
+  </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Energy Consumed and Cost, and a Bar Chart on the right that displays Energy Sector versus Energy Consumed. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Energy Consumption Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    .chart {
+      display: inline-block;
+      width: 49%;
+      height: 500px;
+    }
+  </style>
+</head>
+<body>
+  <div class=""chart"" id=""scatterplot""></div>
+  <div class=""chart"" id=""barChart""></div>
+
+  <script>
+    const specScatterplot = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv""
+      },
+      ""mark"": ""point"",
+      ""selection"": {
+        ""brush"": {
+          ""type"": ""interval"",
+          ""encodings"": [""x""]
+        }
+      },
+      ""encoding"": {
+        ""x"": {
+          ""field"": ""Energy Consumed"",
+          ""type"": ""quantitative""
+        },
+        ""y"": {
+          ""field"": ""Cost"",
+          ""type"": ""quantitative""
+        },
+        ""color"": {
+          ""condition"": {
+            ""selection"": ""brush"",
+            ""value"": ""steelblue""
+          },
+          ""value"": ""lightgray""
+        }
+      },
+      ""width"": 400,
+      ""height"": 400
+    };
+
+    const specBarChart = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv""
+      },
+      ""mark"": ""bar"",
+      ""encoding"": {
+        ""x"": {
+          ""field"": ""Energy Sector"",
+          ""type"": ""nominal""
+        },
+        ""y"": {
+          ""field"": ""Energy Consumed"",
+          ""type"": ""quantitative""
+        },
+        ""color"": {
+          ""condition"": {
+            ""param"": ""brush"",
+            ""field"": ""Energy Sector"",
+            ""type"": ""nominal"",
+            ""value"": ""steelblue""
+          },
+          ""value"": ""lightgray""
+        }
+      },
+      ""width"": 400,
+      ""height"": 400,
+      ""params"": [
+        {
+          ""name"": ""brush"",
+          ""select"": ""point.x"",
+          ""value"": []
+        }
+      ]
+    };
+
+    vegaEmbed(""#scatterplot"", specScatterplot).then(function(result) {
+      const view = result.view;
+      const scatterplot = view.data(""source_0"");
+
+      vegaEmbed(""#barChart"", specBarChart).then(function(result) {
+        const barChartView = result.view;
+        const barChart = barChartView.data(""source_0"");
+
+        view.addSignalListener(""brush_x"", function(signalName, signalValue) {
+          const filteredData = scatterplot.filter((d) => {
+            return signalValue[0] <= d[""Energy Consumed""] && d[""Energy Consumed""] <= signalValue[1];
+          });
+
+          const energySectors = filteredData.map((d) => d[""Energy Sector""]);
+
+          barChartView.signal(""brush"", energySectors).run();
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Energy Consumed , while the pie chart represents the distribution of Cost.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Energy Consumption</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""vconcat"": [
+        {
+          ""width"": 800,
+          ""height"": 300,
+          ""mark"": ""line"",
+          ""encoding"": {
+            ""x"": {""field"": ""Month"", ""type"": ""nominal""},
+            ""y"": {""field"": ""Energy Consumed"", ""type"": ""quantitative""}
+          }
+        },
+        {
+          ""width"": 800,
+          ""height"": 300,
+          ""mark"": ""arc"",
+          ""encoding"": {
+            ""theta"": {""field"": ""Cost"", ""type"": ""quantitative""},
+            ""color"": {""field"": ""Energy Sector"", ""type"": ""nominal""}
+          }
+        }
+      ],
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv""
+      }
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Energy Consumed , while the pie chart represents the distribution of Cost. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Cost for the selected group.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Energy Consumption Visualization</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""vconcat"": [
+        {
+          ""width"": 800,
+          ""height"": 300,
+          ""mark"": ""line"",
+          ""selection"": {
+            ""brush"": {""type"": ""interval"", ""encodings"": [""x""]}
+          },
+          ""encoding"": {
+            ""x"": {""field"": ""Month"", ""type"": ""nominal""},
+            ""y"": {""field"": ""Energy Consumed"", ""type"": ""quantitative""}
+          },
+          ""data"": {
+            ""url"": ""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv""
+          }
+        },
+        {
+          ""width"": 800,
+          ""height"": 300,
+          ""mark"": ""arc"",
+          ""encoding"": {
+            ""theta"": {""field"": ""Cost"", ""type"": ""quantitative""},
+            ""color"": {""field"": ""Energy Sector"", ""type"": ""nominal""}
+          },
+          ""transform"": [
+            {
+              ""filter"": {""selection"": ""brush""}
+            }
+          ],
+          ""data"": {
+            ""url"": ""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv""
+          }
+        }
+      ]
+    };
+
+    vegaEmbed('#vis', spec);
+  </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Energy Consumed, Revenue, Cost, Emissions, and Renewable. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Scatterplot Matrix</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    vegaEmbed('#vis', {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv""
+      },
+      ""repeat"": {
+        ""row"": [""Energy Consumed"", ""Revenue"", ""Cost"", ""Emissions"", ""Renewable""],
+        ""column"": [""Energy Consumed"", ""Revenue"", ""Cost"", ""Emissions"", ""Renewable""]
+      },
+      ""spec"": {
+        ""mark"": ""point"",
+        ""selection"": {
+          ""brush"": {
+            ""type"": ""interval"",
+            ""resolve"": ""union""
+          }
+        },
+        ""encoding"": {
+          ""x"": {
+            ""field"": {""repeat"": ""column""},
+            ""type"": ""quantitative""
+          },
+          ""y"": {
+            ""field"": {""repeat"": ""row""},
+            ""type"": ""quantitative""
+          },
+          ""color"": {
+            ""condition"": {
+              ""selection"": ""brush"",
+              ""value"": ""steelblue""
+            },
+            ""value"": ""lightgray""
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a brushable Scatterplot that visualizes the relationship between Energy Consumed and Cost. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Brushable Scatterplot</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+  <style>
+    #vis {
+      width: 800px;
+      height: 600px;
+      border: 1px solid black;
+    }
+    #selected-data {
+      float: right;
+      width: 400px;
+      height: 600px;
+      overflow-y: auto;
+      border: 1px solid black;
+    }
+  </style>
+</head>
+<body>
+  <div id=""vis""></div>
+  <div id=""selected-data""></div>
+
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv""
+      },
+      ""vconcat"": [
+        {
+          ""width"": 600,
+          ""height"": 600,
+          ""mark"": ""point"",
+          ""encoding"": {
+            ""x"": {""field"": ""Energy Consumed"", ""type"": ""quantitative""},
+            ""y"": {""field"": ""Cost"", ""type"": ""quantitative""},
+            ""tooltip"": [
+              {""field"": ""Month"", ""type"": ""nominal""},
+              {""field"": ""Energy Sector"", ""type"": ""nominal""},
+              {""field"": ""Energy Consumed"", ""type"": ""quantitative""},
+              {""field"": ""Cost"", ""type"": ""quantitative""}
+            ]
+          },
+          ""selection"": {
+            ""brush"": {""type"": ""interval"", ""encodings"": [""x""]}
+          }
+        },
+        {
+          ""width"": 600,
+          ""height"": 0,
+          ""mark"": ""text"",
+          ""encoding"": {
+            ""text"": {""value"": ""Selected Data:""}
+          }
+        }
+      ]
+    };
+
+    const opt = {
+      ""actions"": false
+    };
+
+    const embedding = vegaEmbed(""#vis"", spec, opt);
+    const selectedDataDiv = document.getElementById(""selected-data"");
+
+    embedding.then(function(result) {
+      const view = result.view;
+      view.addEventListener(""Signal"", function(name, value) {
+        if (name === ""brush"") {
+          const selectedData = view.data(""source_0"", ""table"").filter(function(d) {
+            return d[""Energy Consumed""] >= value[0][0] && d[""Energy Consumed""] <= value[1][0];
+          }).slice(0, 20);
+
+          const tableHtml = selectedData.reduce(function(html, row) {
+            return html + ""<tr><td>"" + Object.values(row).join(""</td><td>"") + ""</td></tr>"";
+          }, ""<table border='1'><tr><th>"" + Object.keys(selectedData[0]).join(""</th><th>"") + ""</th></tr>"") + ""</table>"";
+
+          selectedDataDiv.innerHTML = tableHtml;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a horizontal Bar Chart that shows all the data concerning Energy Consumed, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: Vega-Lite.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+You can use ""data"": { ""url"": } format to load data. Ensure that all libraries (e.g., Vega, Vega-Lite, Vega-Embed) are compatible versions to prevent runtime issues. ","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",Vega-Lite,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Energy Consumption Bar Chart</title>
+  <script src=""https://cdn.jsdelivr.net/npm/vega@5.22.1""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-lite@5.6.0""></script>
+  <script src=""https://cdn.jsdelivr.net/npm/vega-embed@6.21.0""></script>
+</head>
+<body>
+  <div id=""vis""></div>
+  <script>
+    const spec = {
+      ""$schema"": ""https://vega.github.io/schema/vega-lite/v5.json"",
+      ""data"": {
+        ""url"": ""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv""
+      },
+      ""vconcat"": [
+        {
+          ""width"": 600,
+          ""height"": 400,
+          ""mark"": ""bar"",
+          ""encoding"": {
+            ""x"": {
+              ""field"": ""Energy Consumed"",
+              ""type"": ""quantitative""
+            },
+            ""y"": {
+              ""field"": ""Month"",
+              ""type"": ""nominal""
+            },
+            ""color"": {
+              ""field"": ""Energy Sector"",
+              ""type"": ""nominal""
+            }
+          }
+        },
+        {
+          ""width"": 200,
+          ""height"": 200,
+          ""mark"": ""bar"",
+          ""encoding"": {
+            ""x"": {
+              ""field"": ""Energy Consumed"",
+              ""type"": ""quantitative"",
+              ""scale"": {""domain"": [0, 10000]}
+            },
+            ""y"": {
+              ""field"": ""Month"",
+              ""type"": ""nominal""
+            },
+            ""color"": {
+              ""field"": ""Energy Sector"",
+              ""type"": ""nominal""
+            }
+          }
+        }
+      ],
+      ""resolve"": {""scale"": {""x"": ""independent""}}
+    };
+
+    vegaEmbed(""#vis"", spec);
+  </script>
+</body>
+</html>
+```"

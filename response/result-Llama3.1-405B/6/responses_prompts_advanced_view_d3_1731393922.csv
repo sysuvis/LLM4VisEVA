@@ -1,0 +1,1474 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Scatterplot that visualizes the relationship between Energy Consumed and Cost. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Energy Consumption Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .tooltip {
+            position: absolute;
+            font-size: 12px;
+            padding: 2px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+        
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+        
+        const xScale = d3.scaleLinear()
+            .range([0, width]);
+        
+        const yScale = d3.scaleLinear()
+            .range([height, 0]);
+        
+        const xAxis = d3.axisBottom(xScale);
+        const yAxis = d3.axisLeft(yScale);
+        
+        svg.append(""g"")
+            .attr(""transform"", `translate(0, ${height})`)
+            .attr(""class"", ""x-axis"");
+        
+        svg.append(""g"")
+            .attr(""class"", ""y-axis"");
+        
+        const tooltip = d3.select(""body"")
+            .append(""div"")
+            .attr(""class"", ""tooltip"")
+            .style(""opacity"", 0);
+        
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv"")
+            .then(data => {
+                data.forEach(d => {
+                    d[""Energy Consumed""] = +d[""Energy Consumed""];
+                    d[""Cost""] = +d[""Cost""];
+                });
+                
+                xScale.domain([0, d3.max(data, d => d[""Energy Consumed""]) * 1.1]);
+                yScale.domain([0, d3.max(data, d => d[""Cost""]) * 1.1]);
+                
+                svg.select("".x-axis"")
+                    .call(xAxis)
+                    .selectAll(""text"")
+                    .style(""text-anchor"", ""middle"")
+                    .attr(""transform"", ""rotate(-90)"");
+                
+                svg.select("".y-axis"")
+                    .call(yAxis);
+                
+                svg.selectAll(""circle"")
+                    .data(data)
+                    .enter()
+                    .append(""circle"")
+                    .attr(""cx"", d => xScale(d[""Energy Consumed""]))
+                    .attr(""cy"", d => yScale(d[""Cost""]))
+                    .attr(""r"", 5)
+                    .on(""mouseover"", (event, d) => {
+                        tooltip.transition()
+                            .duration(200)
+                            .style(""opacity"", 0.9);
+                        
+                        tooltip.html(`Energy Consumed: ${d[""Energy Consumed""]}<br>Cost: ${d[""Cost""]}`)
+                            .style(""left"", (event.pageX + 5) + ""px"")
+                            .style(""top"", (event.pageY - 28) + ""px"");
+                        
+                        svg.append(""line"")
+                            .attr(""class"", ""hover-line"")
+                            .attr(""x1"", 0)
+                            .attr(""y1"", yScale(d[""Cost""]))
+                            .attr(""x2"", width)
+                            .attr(""y2"", yScale(d[""Cost""]))
+                            .style(""stroke"", ""gray"")
+                            .style(""stroke-dasharray"", ""3,3"");
+                        
+                        svg.append(""line"")
+                            .attr(""class"", ""hover-line"")
+                            .attr(""x1"", xScale(d[""Energy Consumed""]))
+                            .attr(""y1"", 0)
+                            .attr(""x2"", xScale(d[""Energy Consumed""]))
+                            .attr(""y2"", height)
+                            .style(""stroke"", ""gray"")
+                            .style(""stroke-dasharray"", ""3,3"");
+                    })
+                    .on(""mouseout"", () => {
+                        tooltip.transition()
+                            .duration(500)
+                            .style(""opacity"", 0);
+                        
+                        svg.selectAll("".hover-line"")
+                            .remove();
+                    });
+            });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Scatterplot that visualizes the relationship between Energy Consumed and Cost. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Energy Consumption Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .brush {
+            fill-opacity: 0.2;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600"" margin=""50""></svg>
+    <div id=""selected-data""></div>
+
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+        const brush = d3.brush()
+            .extent([[0, 0], [width, height]])
+            .on(""brush"", brushed)
+            .on(""end"", brushended);
+
+        const brushg = svg.append(""g"")
+            .attr(""class"", ""brush"")
+            .call(brush);
+
+        brushg.selectAll(""rect"")
+            .attr(""height"", height);
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv"")
+            .then(data => {
+                data.forEach(d => {
+                    d[""Energy Consumed""] = +d[""Energy Consumed""];
+                    d[""Cost""] = +d[""Cost""];
+                });
+
+                const xScale = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d[""Energy Consumed""])])
+                    .range([0, width]);
+
+                const yScale = d3.scaleLinear()
+                    .domain([0, d3.max(data, d => d[""Cost""])])
+                    .range([height, 0]);
+
+                svg.selectAll(""circle"")
+                    .data(data)
+                    .enter()
+                    .append(""circle"")
+                    .attr(""cx"", d => xScale(d[""Energy Consumed""]))
+                    .attr(""cy"", d => yScale(d[""Cost""]))
+                    .attr(""r"", 5);
+
+                svg.append(""g"")
+                    .attr(""transform"", `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScale).tickFormat(d3.format("".2s"")));
+
+                svg.append(""g"")
+                    .call(d3.axisLeft(yScale).tickFormat(d3.format("".2s"")));
+
+                function brushed(event) {
+                    const selection = event.selection;
+                    if (selection) {
+                        const x0 = xScale.invert(selection[0][0]);
+                        const x1 = xScale.invert(selection[1][0]);
+                        const y0 = yScale.invert(selection[1][1]);
+                        const y1 = yScale.invert(selection[0][1]);
+
+                        const selectedData = data.filter(d => x0 <= d[""Energy Consumed""] && d[""Energy Consumed""] <= x1 && y0 <= d[""Cost""] && d[""Cost""] <= y1);
+
+                        d3.select(""#selected-data"")
+                            .html(selectedData.map(d => `Energy Consumed: ${d[""Energy Consumed""]}, Cost: ${d[""Cost""]}`).join(""<br>""));
+                    }
+                }
+
+                function brushended(event) {
+                    if (!event.selection) {
+                        d3.select(""#selected-data"").html("""");
+                    }
+                }
+            });
+    </script>
+</body>
+</html>
+```"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Scatterplot that visualizes the relationship between Energy Consumed and Cost. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Energy Consumption Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .zoom {
+            cursor: move;
+            fill: none;
+            pointer-events: all;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+        const xScale = d3.scaleLinear()
+            .range([0, width]);
+
+        const yScale = d3.scaleLinear()
+            .range([height, 0]);
+
+        const xAxis = d3.axisBottom(xScale);
+        const yAxis = d3.axisLeft(yScale);
+
+        svg.append(""g"")
+            .attr(""transform"", `translate(0, ${height})`)
+            .attr(""class"", ""x-axis"");
+
+        svg.append(""g"")
+            .attr(""class"", ""y-axis"");
+
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv"")
+            .then(data => {
+                data.forEach(d => {
+                    d[""Energy Consumed""] = +d[""Energy Consumed""];
+                    d[""Cost""] = +d[""Cost""];
+                });
+
+                xScale.domain([0, d3.max(data, d => d[""Energy Consumed""]) * 1.1]);
+                yScale.domain([0, d3.max(data, d => d[""Cost""]) * 1.1]);
+
+                svg.select("".x-axis"")
+                    .call(xAxis)
+                    .append(""text"")
+                    .attr(""x"", width / 2)
+                    .attr(""y"", 30)
+                    .attr(""fill"", ""black"")
+                    .text(""Energy Consumed"");
+
+                svg.select("".y-axis"")
+                    .call(yAxis)
+                    .append(""text"")
+                    .attr(""transform"", ""rotate(-90)"")
+                    .attr(""x"", -height / 2)
+                    .attr(""y"", -30)
+                    .attr(""fill"", ""black"")
+                    .text(""Cost"");
+
+                const points = svg.selectAll(""circle"")
+                    .data(data)
+                    .enter()
+                    .append(""circle"")
+                    .attr(""cx"", d => xScale(d[""Energy Consumed""]))
+                    .attr(""cy"", d => yScale(d[""Cost""]))
+                    .attr(""r"", 5)
+                    .attr(""fill"", ""steelblue"");
+
+                const zoom = d3.zoom()
+                    .scaleExtent([1, 10])
+                    .on(""zoom"", zoomed);
+
+                svg.call(zoom);
+
+                function zoomed(event) {
+                    svg.selectAll(""circle"")
+                        .attr(""transform"", event.transform);
+                    svg.select("".x-axis"")
+                        .call(xAxis.scale(event.transform.rescaleX(xScale)));
+                    svg.select("".y-axis"")
+                        .call(yAxis.scale(event.transform.rescaleY(yScale)));
+                }
+            });
+    </script>
+</body>
+</html>
+```"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Energy Consumed and Cost. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",D3,advanced view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Energy Consumption Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 2px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <svg width=""800"" height=""600""></svg>
+    <script src=""https://d3js.org/d3.v7.min.js""></script>
+    <script>
+        const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+        const width = 800 - margin.left - margin.right;
+        const height = 600 - margin.top - margin.bottom;
+        
+        const svg = d3.select(""svg"")
+            .append(""g"")
+            .attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+        
+        const xScale = d3.scaleLinear()
+            .range([0, width]);
+        
+        const yScale = d3.scaleLinear()
+            .range([height, 0]);
+        
+        const tooltip = d3.select(""body"")
+            .append(""div"")
+            .attr(""class"", ""tooltip"")
+            .style(""opacity"", 0);
+        
+        d3.csv(""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv"")
+            .then(data => {
+                data.forEach(d => {
+                    d[""Energy Consumed""] = +d[""Energy Consumed""];
+                    d[""Cost""] = +d[""Cost""];
+                });
+                
+                xScale.domain([0, d3.max(data, d => d[""Energy Consumed""]) * 1.1]);
+                yScale.domain([0, d3.max(data, d => d[""Cost""]) * 1.1]);
+                
+                svg.append(""g"")
+                    .attr(""transform"", `translate(0, ${height})`)
+                    .call(d3.axisBottom(xScale).tickFormat(d3.format("".2s"")))
+                    .selectAll(""text"")
+                    .style(""text-anchor"", ""middle"");
+                
+                svg.append(""g"")
+                    .call(d3.axisLeft(yScale).tickFormat(d3.format("".2s"")))
+                    .selectAll(""text"")
+                    .style(""text-anchor"", ""middle"");
+                
+                svg.selectAll(""circle"")
+                    .data(data)
+                    .enter()
+                    .append(""circle"")
+                    .attr(""cx"", d => xScale(d[""Energy Consumed""]))
+                    .attr(""cy"", d => yScale(d[""Cost""]))
+                    .attr(""r"", 8)
+                    .style(""fill"", ""steelblue"")
+                    .style(""cursor"", ""pointer"")
+                    .on(""mouseover"", (event, d) => {
+                        tooltip.transition()
+                            .duration(200)
+                            .style(""opacity"", 0.9);
+                        
+                        tooltip.html(`Month: ${d.Month}<br>Energy Consumed: ${d[""Energy Consumed""]}<br>Cost: ${d[""Cost""]}`)
+                            .style(""left"", (event.pageX + 10) + ""px"")
+                            .style(""top"", (event.pageY - 10) + ""px"");
+                    })
+                    .on(""mouseout"", () => {
+                        tooltip.transition()
+                            .duration(500)
+                            .style(""opacity"", 0);
+                    })
+                    .on(""click"", (event, d) => {
+                        const url = `https://www.google.com/search?q=${d[""Energy Sector""]}+${d.Region}`;
+                        window.open(url, ""_blank"");
+                    });
+            })
+            .catch(error => console.error(error));
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Scatterplot with query widgets showing the Energy Consumed and Cost of the given dataset. Add a slider to represent the Month.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Energy Consumption Scatterplot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .scatterplot {
+      width: 800px;
+      height: 600px;
+      border: 1px solid #ddd;
+    }
+    
+    .slider-container {
+      margin-top: 20px;
+    }
+    
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+      background-color: #ccc;
+    }
+    
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+     appearance:none; 
+     width :20 px; 
+     height :20 px; 
+     border-radius :50 %; 
+     background-color :#4CAF50 ; 
+     cursor:pointer ;
+   } 
+    
+   . slider ::-moz-range-thumb { /* Firefox */
+       width :20 px; /* Set a specific slider handle width */
+       height :20 px; /* Slider handle height */
+       border-radius :50 %;/ * Rounded corners for the slider handle */
+       background-color:#4CAF50 ;/ * Green background color for the slider handle */
+       cursor:pointer ;/ * Cursor on hover effect to the slider button */  
+   } 
+    
+   /* Add some space between the scatterplot and query widgets */ 
+    
+   #query-widgets {margin-top :30 px;}
+   
+ </style> 
+  
+</head > 
+  
+<body > 
+  
+<div class=""scatterplot"" id=""scatterplot""></div> 
+  
+<div class=""slider-container""> 
+<input type=""range"" min=1 max=12 value=6 id=""month-slider"" class=""slider""> 
+ 
+<label for = ""month-slider"" > Month :</label > 
+ 
+<span id = ""month-value"" ></span > 
+ 
+</div> 
+ 
+<div id = ""query-widgets"" ></div> 
+ 
+<script src = ""https://d3js.org/d3.v7.min.js""></script> 
+
+<script>
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+.then(data => {
+
+data.forEach(d => {
+
+// Convert data types
+d['Energy Consumed'] = +d['Energy Consumed'];
+ d['Cost'] = +d['Cost'];
+
+});
+
+// Create SVG element
+const svgWidth = document.getElementById('scatterplot').offsetWidth;
+
+const svgHeight=document.getElementById('scatterplot').offsetHeight;
+
+const margin={top:
+40,right:
+40,bottom:
+60,left:
+60};
+
+const chartWidth=svgWidth-margin.left-margin.right;
+
+const chartHeight=svgHeight-margin.top-margin.bottom;
+
+ const svg=d3.select('#scatterplot')
+
+.append('svg')
+
+.attr(""width"",svgWidth)
+
+.attr(""height"",svgHeight);
+
+ const chartGroup=svg.append(""g"")
+
+.attr(""transform"",`translate(${margin.left},${margin.top})`);
+
+ // Create scales
+
+ const xScale=d3.scaleLinear()
+
+.domain([0,d3.max(data,d=>+d[""Energy Consumed""])])
+
+.range([0,chartWidth]);
+
+ const yScale=d3.scaleLinear()
+
+.domain([0,d3.max(data,d=>+d[""Cost""])])
+
+.range([chartHeight,0]);
+
+ // Create axes
+
+ const xAxis=d3.axisBottom(xScale).ticks(10);
+
+ chartGroup.append(""g"")
+
+.call(xAxis)
+
+.selectAll(""text"")
+
+.style(""text-anchor"",""middle"");
+
+ const yAxis=d3.axisLeft(yScale).ticks(10);
+
+chartGroup.append (""g"").call (yAxis );
+
+ // Add scatter plot points
+
+chartGroup.selectAll (""circle "")
+
+.data (data )
+
+.enter ()
+
+.append (""circle "")
+
+.attr (""cx "",( d,i )=>xScale (+ d ["" Energy Consumed ""]))
+
+.attr (""cy "",( d,i )=>yScale (+ d ["" Cost ""]))
+
+.attr (""r "",5)
+
+.on ('mouseover ',function (event , datum ){
+
+console.log ('Mouseover event triggered ');
+
+})
+
+.on ('mouseout ',function (event , datum ){
+
+console.log ('Mouseout event triggered ');
+
+});
+
+ // Add query widgets
+
+document.getElementById ('query-widgets ').innerHTML +=`
+
+<select id =""energy-sector-select ""><option value =""All "">All </option ><option value =""Transportation "">Transportation </option ><option value =""Industrial "">Industrial </option ><option value =""Commercial "">Commercial </option >< /select >
+
+<select id ='region-select'>< option value ='All'> All< / option>< option value ='North '> North< / option>< option value ='South '> South< / option>< option value ='East '> East< / option>< optionvalue='West'> West< / options></ select>
+
+`;
+
+document.getElementById('energy-sector-select').addEventListener('change', function(event) {
+
+filterData();
+
+});
+
+document.getElementById('region-select').addEventListener('change', function(event) {
+
+filterData();
+
+});
+
+// Filter data based on selected values
+
+function filterData() {
+
+let filteredData=data.slice();
+
+if(document.getElementById('energy-sector-select').value!=='All'){
+
+filteredData=filteredData.filter(d=>+d[""Energy Sector""]===document.getElementById(
+
+'energy-sector-select'
+
+).value);
+
+}
+
+if(document.getElementById(
+'region-select'
+).value!=='All'){
+
+filteredData=
+filteredData.filter(
+'d'=>+[
+'Region'
+]==
+'document'.getElementById(
+'region-select'
+)value);
+}
+
+updateScatterPlot(filtered Data);
+}
+
+// Update scatter plot with filtered data
+
+function updateScatterPlot(filtered Data){
+
+chart Group.selectAll (
+'circle')
+.remove ();
+
+char t Group.selectAll (
+'circle ')
+.data (
+filtered Data)
+.enter ()
+.app end (
+'circl e ')
+.att r (
+'cx ',
+'( '
+'d ',
+'i '
+)= >
+x Scale(+[
+'Energ y '
+'C o n s u m e d ']))
+.att r (
+'cy ',
+'( '
+'d ',
+'i '
+)= >
+y Scale(+[
+'C o s t ']))
+.att r (
+'r',
+5)
+.on(
+'mouseover',
+'(event,
+datum) =>
+{ console.log(Mouseover event triggered);}')
+.on(
+'mouseout',
+'(event,
+datum) =>
+{ console.log(Mouseout event triggered);}')
+
+}
+})
+.catch(error => console.error(error));
+
+</script>
+
+</body>
+
+</html>
+
+Note that this code assumes that you have already included the D3 library in your HTML file. If not, you can add it by including the following script tag in your HTML file:
+
+```html
+<script src=""https://cdnjs.cloudflare.com/ajax/libs/d2/7.2.1/d2.min.js""></script>
+```
+
+Also note that this code uses a simple linear scale for both axes. You may want to adjust this depending on your specific needs.
+
+Please let me know if you have any questions or need further assistance!"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Scatterplot showing the Energy Consumed of Industrial. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Energy Consumption Scatterplot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .scatterplot {
+      width: 800px;
+      height: 600px;
+      border: 1px solid lightgray;
+    }
+    
+    .axis path, .axis line {
+      fill: none;
+      stroke: #777;
+      shape-rendering: crispEdges;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .dot {
+      stroke-width: 1.5px;
+    }
+    
+     /* Add styles for the lines connecting the points */
+     .line {
+       stroke-width :2 px ;
+       stroke :# fff ;
+       fill :none ;
+     } 
+     
+   </style >
+</head >
+<body >
+   <!-- Create an SVG element to render the scatterplot -->
+   <svg class =""scatterplot ""></svg >
+   
+   <!-- Load D3.js library -->
+   <script src =""https://d3js.org/d3.v7.min.js ""></script >
+   
+   <!-- Write D3 code to create the scatterplot -->
+   <script > 
+     // Set up margins and dimensions for the scatterplot
+     const margin = { top :20 , right :20 , bottom :30 , left :40 };
+     const width =800 - margin.left - margin.right ;
+     const height =600 - margin.top - margin.bottom ; 
+     
+     
+     
+     
+     
+     
+      
+        // Load data from CSV file
+        d3.csv('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+          .then(data => {  
+            // Convert data types as needed (numeric columns)
+            data.forEach(d => {  
+              d['Energy Consumed'] = +d['Energy Consumed'];
+              d['Number of Plants'] = +d['Number of Plants'];
+            });
+            
+            // Filter data for Industrial sector
+            const industrialData = data.filter(d => d['Energy Sector'] === 'Industrial');
+            
+             // Set up scales for x and y axes
+             const xScale = d3.scaleLinear()
+               .domain([0, d3.max(industrialData, d => d['Number of Plants'])])
+               .range([0, width]);
+             
+             const yScale = d3.scaleLinear()
+               .domain([0, d3.max(industrialData, d => Math.abs(d['Energy Consumed']))])// Use Math.abs() to ensure correct scaling with negative values
+               .range([height, 0]);
+             
+             
+             
+             
+             
+             
+              
+                // Select SVG element and append a group for the scatterplot
+                const svgGroup= svg.append(""g"")
+                  svgGroup.attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+                
+                // Add x-axis and y-axis to the group
+                
+                
+                 svgGroup.append(""g"")
+                   svgGroup.attr(""class"", ""x axis"")
+                   svgGroup.attr(""transform"", `translate(0, ${height})`)
+                   svgGroup.call(d3.axisBottom(xScale));
+                
+                 svgGroup.append(""g"")
+                   svgGroup.attr(""class"", ""y axis"")
+                   call(d3.axisLeft(yScale));
+                
+                 /* Add title */
+                 g.selectAll("".y.axis"").append('text')
+                    g.text('Title')
+                    g.style('fill', '#000')
+                    g.style('font-size', '16pt')
+                    g.style('font-weight', 'bold');
+                    
+                  /* Add labels */
+                  g.selectAll("".x.axis"").append('text')// X-axis label
+                     text ('X Axis Label ')
+                     style ('fill ', '#000 ')
+                     style ('font-size ','14 pt ')
+                     attr (""transform "",""rotate (-90) "")
+                     attr (""dy "",""-4 em "");
+                     
+                  g.selectAll("".y.axis"").append('text')// Y-axis label 
+                      text ('Y Axis Label ')
+                      style ('fill ', '#000 ')
+                      style ('font-size ','14 pt ');
+                      
+                      
+                
+                
+                
+                
+                
+                
+                
+                  
+                    
+                     
+                
+                
+               
+            
+            
+          
+        
+        
+        
+        
+        
+        
+        
+        
+         
+        
+        
+        
+        
+        
+        
+         });"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Energy Consumed of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Energy Consumption Line Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .line-chart {
+      width: 800px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    
+    .line {
+      fill: none;
+      stroke-width: 2px;
+    }
+    
+    .highlighted-line {
+      stroke-width: 4px;
+    }
+    
+    .axis path, .axis line {
+      fill: none;
+      stroke-width: 1px;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+   </style>
+
+</head>
+
+<body>
+
+<div class=""line-chart""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+  
+const margin = { top:20, right :30, bottom :30 ,left :40 };
+const width =800 -margin.left-margin.right,
+height=600-margin.top-margin.bottom;
+
+const svg=d3.select('.line-chart')
+.append('svg')
+.attr('width',width+margin.left+margin.right)
+.attr('height',height+margin.top+margin.bottom)
+.append(""g"")
+.attr(""transform"",`translate(${margin.left},${margin.top})`);
+
+let data=[];
+
+d3.csv(""https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv"").then((loadedData)=>{
+data=loadedData.map((item) => ({
+Month:item.Month,
+EnergySector:item['Energy Sector'],
+EnergyConsumed:Number(item['Energy Consumed']),
+Cost:Number(item.Cost),
+Emissions:Number(item.Emissions),
+NumberOfPlants:Number(item['Number of Plants']),
+Revenue:Number(item.Revenue),
+Renewable:item.Renewable,
+Region:item.Region
+}));
+
+const energySectors=[...new Set(data.map((item) => item.EnergySector))];
+const colors=d3.scaleOrdinal(d3.schemeCategory10).domain(energySectors);
+
+const xScale=d3.scalePoint()
+.domain([...new Set(data.map((item) => item.Month))])
+.range([0,width]);
+
+svg.append(""g"")
+.attr(""transform"",`translate(0,${height})`)
+.call(d3.axisBottom(xScale));
+
+ const yScale=d3.scaleLinear()
+.domain([0,d3.max(data,(item) => item.EnergyConsumed)])
+.range([height,0]);
+
+svg.append(""g"")
+.call(d3.axisLeft(yScale));
+
+energySectors.forEach((sector,index)=>{
+ const sectorData=data.filter((item) => item.EnergySector===sector);
+ const lineGenerator=d3.line()
+.x((item) => xScale(item.Month))
+.y((item) => yScale(item.EnergyConsumed));
+ 
+ svg.datum(sectorData)
+.append('path')
+.classed('line',true)
+.style('stroke',colors(sector))
+.style(`stroke-dasharray`,(`${index*2},${index*2}`))
+.on(`mouseover`,function(){
+ d3.select(this).classed(`highlighted-line`,true);
+})
+.on(`mouseout`,function(){
+ d3.select(this).classed(`highlighted-line`,false);
+})
+.transition()
+.duration(1000)
+.delay(index*500)
+.attrTween(`d`,function(){
+ return function(t){
+ return lineGenerator(sectorData.slice(0,t*sectorData.length));
+};
+});
+});
+
+});
+
+</script></body></html>"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Bar Chart that visualizes the Energy Consumed for each Energy Sector in January. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Energy Consumption Bar Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .bar {
+      fill: steelblue;
+    }
+    
+    .bar:hover {
+      fill: brown;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+    }
+  </style>
+</head>
+
+<body>
+<svg width=""800"" height=""600""></svg>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+width = +document.querySelector('svg').getAttribute('width') - margin.left - margin.right,
+height = +document.querySelector('svg').getAttribute('height') - margin.top - margin.bottom;
+
+var svg = d3.select(""svg"")
+.append(""g"")
+.attr(""transform"", ""translate("" + margin.left + "","" + margin.top + "")"");
+
+var xScale = d3.scaleBand()
+.range([0, width])
+.padding(0.1);
+
+var yScale = d3.scaleLinear()
+.range([height,0]);
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+.then(data => {
+
+data.forEach(d => {
+d['Energy Consumed'] = parseInt(d['Energy Consumed']);
+});
+
+data.sort((a,b) => a['Energy Consumed']-b['Energy Consumed']);
+
+xScale.domain(data.map(d => d['Energy Sector']));
+yScale.domain([0,d3.max(data,d=>d['Energy Consumed'])]);
+
+const bars= svg.selectAll("".bar"")
+.data(data.filter(function (d) { return d.Month === 'January'; }))
+.enter().append(""rect"")
+.attr(""class"", ""bar"")
+.attr(""x"", function (d) { return xScale(d[""Energy Sector""]); })
+.attr(""y"", function (d) { return yScale(d[""Energy Consumed""]); })
+.attr(""width"", xScale.bandwidth())
+.attr(""height"", function (d) { return height-yScale(d[""Energy Consumed""]); });
+
+const gX= svg.append('g')
+.call(d3.axisBottom(xScale))
+.selectAll('.tick text')
+.call(wrap,xScale.bandwidth());
+
+gX.selectAll('.tick line').remove();
+
+const gY= svg.append('g')
+.call(
+        d3.axisLeft(yScale)
+        );
+
+function wrap(text,width){
+text.each(function(){
+let text=d3.select(this),
+words=text.text().split(/\s+/).reverse(),
+word,
+line=[],
+linenumber=0,
+lineHeight=1.2,
+dy=.32,x=text.attr('x'),y=text.attr(y),dx=-.5
+tspan=text.text(null).append(tspan).attr(x,x).attr(y,y);
+while(word=words.pop()){
+line.push(word);
+tspan.text(line.join('\s'));
+if(tspan.node().getComputedTextLength()>width){
+line.pop();
+tspan.text(line.join('\s'));
+line=[word];
+tspan=document.createElementNS(SVG_NS,'tspan');
+linenumber++;
+}
+});
+}
+
+function zoom(svg){
+const extent=[[margin.left,margin.top],[w-margin.right,h-margin.bottom]];
+
+let zooming=false;
+
+function zoomIn(){
+zooming=true; 
+}
+
+function zoomOut(){
+zooming=false; 
+}
+
+return Object.assign(svg
+.on(mousewheel.zoomIn)
+.on(mousedown.zoomOut),{
+dispatch(event,...args){
+dispach.call(event,...args);
+event.type=='zoom' && this.__zoom?.call(this,event.transform);
+}
+})
+.transition(750)
+.duration(750)
+.ease(easeCubicInOut)
+
+}
+
+</script></body></html>"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Bar Chart that visualizes the Energy Consumed for each Energy Sector in January. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Energy Consumption Bar Chart</title>
+  <style>
+    /* add some basic styling to make the chart look decent */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .bar {
+      fill: steelblue;
+    }
+    
+    .bar:hover {
+      fill: brown;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+    }
+  </style>
+</head>
+
+<body>
+
+<svg width=""800"" height=""600""></svg>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+// Set up SVG
+const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+const width = +svg.attr(""width"") - margin.left - margin.right;
+const height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv')
+.then(data => {
+
+data.forEach(d => d['Energy Consumed'] = +d['Energy Consumed']);
+
+// Filter data for January
+const januaryData = data.filter(d => d.Month === 'January');
+
+// Sort by Energy Consumed in descending order initially
+januaryData.sort((a,b) => b['Energy Consumed']-a['Energy Consumed']);
+
+// Scales and axes
+const xScale = d3.scaleBand()
+.domain(januaryData.map(d => d['Energy Sector']))
+.range([0, width])
+.padding(0.2);
+
+const yScale = d3.scaleLinear()
+.domain([0,d3.max(januaryData,d=>d['Energy Consumed'])])
+.range([height,0]);
+
+g.append(""g"")
+.attr(""transform"", `translate(0, ${height})`)
+.call(d3.axisBottom(xScale));
+
+g.append(""g"")
+.call(d3.axisLeft(yScale).ticks(null,""s""));
+
+
+
+});
+
+</script></body></html>"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region
+Your task is to create a Bar Chart that visualizes the Energy Consumed for each Energy Sector in January. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Energy Consumed.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv
+
+The data table contains the following columns: Month,Energy Sector,Energy Consumed,Cost,Emissions,Number of Plants,Revenue,Renewable,Region",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Energy Consumption Bar Chart</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .bar {
+      fill: steelblue;
+    }
+    
+    .bar:hover {
+      fill: brown;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+    }
+    
+     select{
+        position:relative; 
+        top:-30px; 
+        left:-200px
+     }  
+     
+     svg{
+         margin-top:-50px
+     }   
+     
+   </style>
+
+</head>
+
+<body>
+
+<select id=""sort-select"">
+<option value=""ascending"">Ascending</option>
+<option value=""descending"">Descending</option>  
+</select>  
+
+<svg width=""500"" height=""300""></svg>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+let margin = {top: 20, right: 20, bottom: 30, left: 40};
+let width =500-margin.left-margin.right
+let height=300-margin.top-margin.bottom
+
+const svg = d3.select(""svg"")
+.attr(""width"", width + margin.left + margin.right)
+.attr(""height"", height + margin.top + margin.bottom)
+.append(""g"")
+.attr(""transform"", `translate(${margin.left}, ${margin.top})`);
+
+const xScale = d3.scaleBand()
+.range([0, width])
+.padding(0.2);
+
+const yScale = d3.scaleLinear()
+.range([height,0]);
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/3e34a80e89af1e76f63395c9291c4ee0/raw/a06c868ec717470254ddc4dd9f950414d50d82e9/Energy%2520Consumption.csv').then(data => {
+
+data.forEach(d => {
+
+d['Energy Consumed'] = parseFloat(d['Energy Consumed']);
+
+});
+
+data=data.filter(function (d) { return d.Month == ""January""})
+
+xScale.domain(data.map(d => d['Energy Sector']));
+yScale.domain([0,d3.max(data,d=>d['Energy Consumed'])])
+
+svg.selectAll("".bar"")
+.data(data)
+.enter()
+.append('rect')
+.classed('bar', true)
+.transition().duration(100).delay((_,i)=>i*100)
+
+.attr('x', function (d) { return xScale(d['Energy Sector']); })
+.attr('y', function (d) { return yScale(d['Energy Consumed']); })
+.attr('width', xScale.bandwidth())
+.attr('height', function (d) { return height - yScale(parseFloat(d[""Energy Consumed""])); })
+
+svg.append(""g"")
+.classed('x-axis', true)
+.call(g => g.call(axisBottom(xScale)));
+
+svg.append(""g"").classed(
+'axis',
+true,
+).call(axisLeft(yAxis));
+
+function axisLeft(scale){
+
+return g =>
+g
+.call(
+scale(yAxis),
+.tickFormat((tickValue,index,ticksArray)=>
+index==ticksArray.length-1?tickValue.toFixed(2):tickValue.toLocaleString()),
+.tickSize(-innerWidth),
+.tickPadding(10),
+
+);
+}
+
+function axisBottom(scale){
+
+return g =>
+g
+
+.call(scale(xAxis))
+.selectAll('.domain,.tick line')
+.remove();
+
+}
+
+document.getElementById(
+'sort-select',
+).addEventListener(
+'change',
+function(event){
+if(event.target.value=='ascending'){
+data.sort(function(a,b){return a[""Cost""]-b[""Cost""]})
+}else if(event.target.value=='descending'){
+data.sort(function(a,b){return b[""Cost""]-a[""Cost""]})
+}
+update();
+},
+false,
+);
+
+function update(){
+bars=svg.selectAll('.bar').data(data)
+
+bars.exit().remove()
+
+bars.enter().append(rect).classed(bars,true)
+
+.merge(bars)
+
+.transition()
+
+.duration(100)
+
+.delay((_,i)=>i*100)
+
+.attrs({
+x:d=>xscale(d[energy sector]),
+y:d=>yscale(parseFloat(d[energy consumed])),
+width:xscale.bandwith(),
+height:d=>innerHeight-yscale(parseFloat[d[energy consumed]])
+})
+
+}
+
+})
+
+</script></body></html>"

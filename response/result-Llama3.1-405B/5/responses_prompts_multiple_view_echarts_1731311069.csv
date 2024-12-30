@@ -1,0 +1,764 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Employee Performance Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #charts {
+            display: flex;
+            justify-content: space-between;
+        }
+        #scatterplot, #barChart {
+            width: 45%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""charts"">
+        <div id=""scatterplot""></div>
+        <div id=""barChart""></div>
+    </div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1).map(row => row.split(','));
+            const scatterData = rows.map(row => [parseFloat(row[2]), parseFloat(row[5])]);
+            const barData = {};
+            rows.forEach(row => {
+                const department = row[1];
+                if (!barData[department]) {
+                    barData[department] = 0;
+                }
+                barData[department] += parseFloat(row[5]);
+            });
+            const barSeriesData = Object.keys(barData).map(department => ({ name: department, value: barData[department] }));
+
+            const scatterChart = echarts.init(document.getElementById('scatterplot'));
+            scatterChart.setOption({
+                title: {
+                    text: 'Profit vs Sales Figures'
+                },
+                xAxis: {
+                    name: 'Sales Figures'
+                },
+                yAxis: {
+                    name: 'Profit'
+                },
+                series: [{
+                    type: 'scatter',
+                    data: scatterData
+                }]
+            });
+
+            const barChart = echarts.init(document.getElementById('barChart'));
+            barChart.setOption({
+                title: {
+                    text: 'Total Profit by Department'
+                },
+                xAxis: {
+                    type: 'category',
+                    data: Object.keys(barData)
+                },
+                yAxis: {
+                    name: 'Total Profit'
+                },
+                series: [{
+                    type: 'bar',
+                    data: barSeriesData
+                }]
+            });
+        });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left and a Bar Chart on the right, showing the given data. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Employee Performance Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #scatterplot, #barChart {
+            width: 600px;
+            height: 400px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div id=""scatterplot""></div>
+    <div id=""barChart""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const scatterData = rows.map(row => [parseFloat(row[2]), parseFloat(row[5])]);
+                const barData = rows.map(row => [row[1], parseFloat(row[5])]);
+                const barDataMap = {};
+                barData.forEach(([dept, profit]) => {
+                    if (!barDataMap[dept]) {
+                        barDataMap[dept] = 0;
+                    }
+                    barDataMap[dept] += profit;
+                });
+                const barDataProcessed = Object.keys(barDataMap).map(dept => [dept, barDataMap[dept]]);
+
+                const scatterChart = echarts.init(document.getElementById('scatterplot'));
+                const barChart = echarts.init(document.getElementById('barChart'));
+
+                const scatterOption = {
+                    title: {
+                        text: 'Scatterplot of Sales Figures vs Profit'
+                    },
+                    xAxis: {
+                        name: 'Sales Figures'
+                    },
+                    yAxis: {
+                        name: 'Profit'
+                    },
+                    brush: {
+                        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                        xAxisIndex: 0,
+                        yAxisIndex: 0,
+                        brushLink: 'all',
+                        brushStyle: {
+                            borderWidth: 1,
+                            color: 'rgba(120,140,180,0.3)',
+                            borderColor: 'rgba(120,140,180,0.8)'
+                        },
+                        throttleType: 'debounce',
+                        throttleDelay: 300,
+                        geoIndex: 0
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: scatterData,
+                        itemStyle: {
+                            opacity: 0.8
+                        }
+                    }]
+                };
+
+                const barOption = {
+                    title: {
+                        text: 'Bar Chart of Department vs Profit'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: barDataProcessed.map(([dept]) => dept)
+                    },
+                    yAxis: {
+                        name: 'Profit'
+                    },
+                    series: [{
+                        type: 'bar',
+                        data: barDataProcessed.map(([, profit]) => profit),
+                        itemStyle: {
+                            opacity: 0.8
+                        }
+                    }]
+                };
+
+                scatterChart.setOption(scatterOption);
+                barChart.setOption(barOption);
+
+                scatterChart.on('brushSelected', params => {
+                    const selectedData = params.batch[0].selected[0].dataIndex;
+                    const selectedBarData = barData.filter((_, index) => selectedData.includes(index));
+                    const selectedBarDataMap = {};
+                    selectedBarData.forEach(([dept, profit]) => {
+                        if (!selectedBarDataMap[dept]) {
+                            selectedBarDataMap[dept] = 0;
+                        }
+                        selectedBarDataMap[dept] += profit;
+                    });
+                    const selectedBarDataProcessed = Object.keys(selectedBarDataMap).map(dept => [dept, selectedBarDataMap[dept]]);
+                    barChart.setOption({
+                        series: [{
+                            data: barDataProcessed.map(([dept, profit]) => {
+                                if (selectedBarDataMap[dept]) {
+                                    return {
+                                        value: profit,
+                                        itemStyle: {
+                                            color: 'red'
+                                        }
+                                    };
+                                } else {
+                                    return profit;
+                                }
+                            })
+                        }]
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Sales Figures , while the pie chart represents the distribution of Hours Worked.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Employee Performance Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""charts"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const salesFigures = rows.map(row => [row[0], parseFloat(row[2])]);
+                const hoursWorked = rows.reduce((acc, row) => {
+                    const department = row[1];
+                    const hours = parseFloat(row[3]);
+                    acc[department] = (acc[department] || 0) + hours;
+                    return acc;
+                }, {});
+
+                const lineChartOption = {
+                    title: {
+                        text: 'Sales Figures Trend'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: salesFigures.map(item => item[0])
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            data: salesFigures.map(item => item[1]),
+                            type: 'line'
+                        }
+                    ]
+                };
+
+                const pieChartOption = {
+                    title: {
+                        text: 'Hours Worked Distribution'
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            data: Object.keys(hoursWorked).map(department => ({
+                                name: department,
+                                value: hoursWorked[department]
+                            }))
+                        }
+                    ]
+                };
+
+                const chart = echarts.init(document.getElementById('charts'));
+                chart.setOption({
+                    grid: [
+                        { left: '10%', top: '10%', width: '80%', height: '40%' },
+                        { left: '10%', top: '60%', width: '80%', height: '30%' }
+                    ],
+                    xAxis: [
+                        lineChartOption.xAxis,
+                        { show: false }
+                    ],
+                    yAxis: [
+                        lineChartOption.yAxis,
+                        { show: false }
+                    ],
+                    series: [
+                        { ...lineChartOption.series[0], xAxisIndex: 0, yAxisIndex: 0 },
+                        { ...pieChartOption.series[0], xAxisIndex: 1, yAxisIndex: 1, center: ['50%', '75%'], radius: '30%' }
+                    ]
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Sales Figures , while the pie chart represents the distribution of Hours Worked. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Hours Worked for the selected group.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Employee Performance Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const years = rows.map(row => row[0]);
+                const salesFigures = rows.map(row => parseFloat(row[2]));
+                const hoursWorked = rows.map(row => parseFloat(row[3]));
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const lineChartOption = {
+                    title: {
+                        text: 'Sales Figures Trend'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: years
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            type: 'line',
+                            data: salesFigures,
+                            brush: {
+                                inBrush: {
+                                    opacity: 1
+                                }
+                            }
+                        }
+                    ],
+                    brush: {
+                        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                        xAxisIndex: 0,
+                        yAxisIndex: 0,
+                        brushLink: 'all',
+                        throttleType: 'debounce',
+                        throttleDelay: 300,
+                        geoIndex: 0
+                    }
+                };
+
+                const pieChartOption = {
+                    title: {
+                        text: 'Hours Worked Distribution'
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            data: []
+                        }
+                    ]
+                };
+
+                chart.setOption({
+                    grid: [
+                        {left: '10%', top: '10%', width: '80%', height: '40%'},
+                        {left: '10%', bottom: '10%', width: '80%', height: '40%'}
+                    ],
+                    tooltip: {
+                        formatter: '{a} <br/>{b} : {c} ({d}%)'
+                    },
+                    series: [
+                        {
+                            type: 'line',
+                            data: salesFigures,
+                            brush: {
+                                inBrush: {
+                                    opacity: 1
+                                }
+                            },
+                            xAxisIndex: 0,
+                            yAxisIndex: 0
+                        },
+                        {
+                            type: 'pie',
+                            data: [],
+                            center: ['50%', '75%'],
+                            radius: '30%',
+                            xAxisIndex: 1,
+                            yAxisIndex: 1
+                        }
+                    ],
+                    brush: {
+                        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                        xAxisIndex: 0,
+                        yAxisIndex: 0,
+                        brushLink: 'all',
+                        throttleType: 'debounce',
+                        throttleDelay: 300,
+                        geoIndex: 0,
+                        brushChange: params => {
+                            const selectedData = [];
+                            for (let i = 0; i < params.batch[0].areas.length; i++) {
+                                const area = params.batch[0].areas[i];
+                                for (let j = 0; j < area.dataIndex.length; j++) {
+                                    selectedData.push(hoursWorked[area.dataIndex[j]]);
+                                }
+                            }
+                            const pieChartData = [];
+                            const hoursWorkedSet = [...new Set(selectedData)];
+                            for (let i = 0; i < hoursWorkedSet.length; i++) {
+                                const count = selectedData.filter(value => value === hoursWorkedSet[i]).length;
+                                pieChartData.push({
+                                    name: hoursWorkedSet[i],
+                                    value: count
+                                });
+                            }
+                            chart.setOption({
+                                series: [
+                                    {
+                                        type: 'line',
+                                        data: salesFigures,
+                                        brush: {
+                                            inBrush: {
+                                                opacity: 1
+                                            }
+                                        },
+                                        xAxisIndex: 0,
+                                        yAxisIndex: 0
+                                    },
+                                    {
+                                        type: 'pie',
+                                        data: pieChartData,
+                                        center: ['50%', '75%'],
+                                        radius: '30%',
+                                        xAxisIndex: 1,
+                                        yAxisIndex: 1
+                                    }
+                                ]
+                            });
+                        }
+                    }
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Sales Figures, Revenue, Profit, Hours Worked, and Employee Satisfaction. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Scatterplot Matrix</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #chart {
+            width: 800px;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const dataset = [];
+                rows.forEach(row => {
+                    dataset.push({
+                        'Sales Figures': parseFloat(row[2]),
+                        'Hours Worked': parseFloat(row[3]),
+                        'Revenue': parseFloat(row[4]),
+                        'Profit': parseFloat(row[5]),
+                        'Employee Satisfaction Score': parseFloat(row[6])
+                    });
+                });
+
+                const dimensions = ['Sales Figures', 'Hours Worked', 'Revenue', 'Profit', 'Employee Satisfaction Score'];
+                const series = dimensions.map((dimension, index) => {
+                    return {
+                        type: 'scatter',
+                        xAxisIndex: index,
+                        yAxisIndex: index,
+                        datasetIndex: 0,
+                        encode: {
+                            x: dimension,
+                            y: dimensions[(index + 1) % dimensions.length]
+                        },
+                        brushType: 'rect',
+                        brushStyle: {
+                            borderWidth: 1,
+                            borderColor: 'rgba(0,0,0,0.5)',
+                            opacity: 0.5
+                        }
+                    };
+                });
+
+                const option = {
+                    dataset: [
+                        {
+                            source: dataset
+                        }
+                    ],
+                    grid: [
+                        { left: '10%', top: '10%', width: '30%', height: '30%' },
+                        { left: '50%', top: '10%', width: '30%', height: '30%' },
+                        { left: '10%', top: '50%', width: '30%', height: '30%' },
+                        { left: '50%', top: '50%', width: '30%', height: '30%' },
+                        { left: '30%', top: '80%', width: '30%', height: '10%' }
+                    ],
+                    xAxis: dimensions.map((dimension, index) => {
+                        return {
+                            gridIndex: index,
+                            type: 'value',
+                            name: dimension
+                        };
+                    }),
+                    yAxis: dimensions.map((dimension, index) => {
+                        return {
+                            gridIndex: index,
+                            type: 'value',
+                            name: dimensions[(index + 1) % dimensions.length]
+                        };
+                    }),
+                    brush: {
+                        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                        xAxisIndex: 'all',
+                        yAxisIndex: 'all',
+                        brushLink: 'all',
+                        throttleType: 'debounce',
+                        throttleDelay: 300,
+                        geoIndex: 'all'
+                    },
+                    series: series
+                };
+
+                const chart = echarts.init(document.getElementById('chart'));
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a brushable Scatterplot that visualizes the relationship between Sales Figures and Hours Worked. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Brushable Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #chart {
+            width: 800px;
+            height: 600px;
+            float: left;
+        }
+        #table {
+            float: left;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart""></div>
+    <div id=""table""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const scatterData = rows.map(row => [parseFloat(row[2]), parseFloat(row[3])]);
+                const tableData = rows.map(row => ({
+                    Year: row[0],
+                    Department: row[1],
+                    'Sales Figures': row[2],
+                    'Hours Worked': row[3],
+                    Revenue: row[4],
+                    Profit: row[5],
+                    'Employee Satisfaction Score': row[6],
+                    'Number of Employees': row[7]
+                }));
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const option = {
+                    brush: {
+                        toolbox: ['rect'],
+                        inBrush: {
+                            opacity: 1
+                        }
+                    },
+                    toolbox: {
+                        feature: {
+                            brush: {
+                                type: ['rect']
+                            }
+                        }
+                    },
+                    xAxis: {
+                        type: 'value',
+                        name: 'Sales Figures'
+                    },
+                    yAxis: {
+                        type: 'value',
+                        name: 'Hours Worked'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: scatterData,
+                        brush: {
+                            itemStyle: {
+                                color: 'rgba(255, 0, 0, 0.5)'
+                            }
+                        }
+                    }]
+                };
+                chart.setOption(option);
+
+                chart.on('brushSelected', params => {
+                    const selectedData = [];
+                    for (let i = 0; i < params.batch[0].selected[0].dataIndex.length; i++) {
+                        selectedData.push(tableData[params.batch[0].selected[0].dataIndex[i]]);
+                    }
+                    const tableHtml = selectedData.slice(0, 20).map(row => `
+                        <tr>
+                            <td>${row.Year}</td>
+                            <td>${row.Department}</td>
+                            <td>${row['Sales Figures']}</td>
+                            <td>${row['Hours Worked']}</td>
+                            <td>${row.Revenue}</td>
+                            <td>${row.Profit}</td>
+                            <td>${row['Employee Satisfaction Score']}</td>
+                            <td>${row['Number of Employees']}</td>
+                        </tr>
+                    `).join('');
+                    document.getElementById('table').innerHTML = `
+                        <table border=""1"">
+                            <tr>
+                                <th>Year</th>
+                                <th>Department</th>
+                                <th>Sales Figures</th>
+                                <th>Hours Worked</th>
+                                <th>Revenue</th>
+                                <th>Profit</th>
+                                <th>Employee Satisfaction Score</th>
+                                <th>Number of Employees</th>
+                            </tr>
+                            ${tableHtml}
+                        </table>
+                    `;
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees
+Your task is to create a horizontal Bar Chart that shows Department and Sales Figures, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv
+
+The data table contains the following columns: Year,Department,Sales Figures,Hours Worked,Revenue,Profit,Employee Satisfaction Score,Number of Employees",ECharts,multiple view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Department Sales Figures</title>
+  <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+  <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+  <script>
+
+fetch('https://gist.githubusercontent.com/FFFFFancy/12da6a6d9f28ee754e96e4f7af8906dc/raw/a024625ad34783f72456f7440dd4b3a1f67a4aaf/Employee%2520Performance.csv')
+.then(response => response.text())
+.then(data => {
+const rows = data.split('\n').slice(1).map(row => row.split(','));
+const departments = rows.map(row => row[1]);
+const salesFigures = rows.map(row => +row[2]);
+
+var chartDom = document.getElementById('chart');
+var myChart = echarts.init(chartDom);
+var option;
+
+option = {
+xAxis: {
+type: 'value'
+},
+yAxis: {
+type: 'category',
+data: departments
+},
+series: [
+{
+data:salesFigures,
+type:'bar'
+}
+]
+};
+
+option && myChart.setOption(option);
+
+})
+.catch(error => console.error('Error:', error));
+
+</script>
+
+</body>
+
+</html>"

@@ -1,0 +1,1754 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive function: when the mouse hovers over a specific data point, the value of the data point will be highlighted on the axis.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Scatterplot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      shape-rendering: crispEdges;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .tooltip {
+      position: absolute;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      padding: 2px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id=""scatterplot""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+// Set the dimensions and margins of the graph
+var margin = {top: 20, right: 20, bottom: 30, left:40},
+width = document.body.clientWidth - margin.left - margin.right,
+height = document.body.clientHeight - margin.top - margin.bottom;
+
+// Append the svg object to the body of the page
+var svg = d3.select(""#scatterplot"")
+.append(""svg"")
+.attr(""width"", width + margin.left + margin.right)
+.attr(""height"", height + margin.top +margin.bottom)
+.append(""g"")
+.attr(""transform"",
+""translate(""+margin.left+"",""+margin.top+"")"");
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv').then(function(data) {
+
+data.forEach(function(d) {
+   d['Units Sold'] = parseInt(d['Units Sold']);
+   d['Revenue'] = parseFloat(d['Revenue']);
+});
+
+// Add X axis
+var xScale=d3.scaleLinear()
+.domain([0,d3.max(data,function(d){return d[""Units Sold""]})])
+.range([0,width]);
+svg.append('g')
+.attr('transform','translate(0,'+height+')')
+.call(d3.axisBottom(xScale));
+
+// Add Y axis
+var yScale=d3.scaleLinear()
+.domain([0,d3.max(data,function(d){return d[""Revenue""]})])
+.range([height,0]);
+svg.append('g')
+.call(d3.axisLeft(yScale));
+
+
+
+ // Add dots
+
+ var dots=svg.selectAll('circle')
+
+.data(data)
+
+.enter()
+
+.append('circle')
+
+.attrs({
+
+cx:function (d) { return xScale( d[""Units Sold""]); },
+
+cy:function (d) { return yScale( d[""Revenue""]); },
+
+r :6,
+
+fill:'#69b39'
+
+})
+
+.on(""mouseover"", function(event,d){
+
+console.log(event);
+
+console.log(this);
+
+console.log(event.target.__data__);
+
+const[x,y]=event.target.getAttributeNS(null,""cx"")+"",""+event.target.getAttributeNS(null,""cy"").split("","");
+
+const[unitsSold,revenue]=[x,y];
+
+const tooltip=dots.filter((dt,i)=>dt===event.target.__data__);
+
+tooltip.style.fill=""#FF69B4"";
+
+})
+
+.on(""mouseout"",(event,d)=>{
+
+dots.style.fill=""#69b39"";
+
+})
+
+});
+
+</script></body></html>"
+2,scatterplot+brush,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: Brushing this Scatterplot will show the selected data points.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Scatterplot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .brush {
+      fill-opacity: .125;
+      stroke: #fff;
+    }
+    
+    .brush .selection {
+      fill-opacity: .125;
+      stroke: #fff;
+    }
+    
+    /* Style the dots */
+    circle {
+      fill-opacity: 0.5;
+    }
+    
+  </style>
+</head>
+
+<body>
+
+<div id=""scatterplot""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+// Set up margins and dimensions for the SVG
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+width = window.innerWidth - margin.left - margin.right,
+height = window.innerHeight - margin.top - margin.bottom;
+
+// Create the SVG
+var svg = d3.select(""#scatterplot"")
+.append(""svg"")
+.attr(""width"", width + margin.left + margin.right)
+.attr(""height"", height + margin.top + margin.bottom)
+.append(""g"")
+.attr(""transform"", ""translate("" + margin.left + "","" +margin.top+ "")"");
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv')
+.then(function(data) {
+
+data.forEach(function(d) {
+        d['Units Sold'] = parseInt(d['Units Sold']);
+        d['Revenue'] = parseFloat(d['Revenue']);
+});
+
+// Define scales for x and y axes
+var xScale = d3.scaleLinear()
+.domain([0,d3.max(data,function(d){return d[""Units Sold""];})])
+.range([0,width]);
+
+var yScale=d3.scaleLinear()
+.domain([0,d3.max(data,function (d){return d[""Revenue""];})])
+.range([height,0]);
+
+// Add x-axis to the SVG
+svg.append('g')
+.attr('transform','translate(0,'+height+')')
+.call(d3.axisBottom(xScale));
+
+// Add y-axis to the SVG
+svg.append('g')
+.call(d3.axisLeft(yScale));
+
+
+
+ // Create a brush object with an extent of [[x1,y1],[x2,y2]]
+ var brush=d3.brush().extent([[margin.left,margin.top],[width-margin.right,height-margin.bottom]]).on('end',updateChart);
+
+ // Append a group element to hold the brush rectangle.
+ var gBrush=svg.selectAll('.brush').data([null]).join('g').attr('class','brush');
+
+ // Call brush on this group element.
+ gBrush.call(brush);
+
+ function updateChart(event){
+   const selection=event.selection;
+
+   if(selection===null){
+     svg.selectAll('.dot').classed('selected',false);
+   }else{
+     const [[x1,y1],[x2,y2]]=selection;
+
+     svg.selectAll('.dot').classed(
+       'selected',
+       (p)=>
+         p[0]>=Math.min(x1,x2)&&p[0]<=Math.max(x1,x2)&&p[1]>=Math.min(y1,y2)&&p[1]<=Math.max(y1,y2)
+     );
+   }
+
+ }
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+
+
+
+});
+
+</script> 
+</body> 
+</html>"
+3,scatterplot+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: the Scatterplot can be zoomed via the mouse wheel.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Scatterplot</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .scatterplot {
+      width: 800px;
+      height: 600px;
+      border: 1px solid lightgray;
+    }
+    
+    .axis path, .axis line {
+      fill: none;
+      stroke: #777;
+      shape-rendering: crispEdges;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .dot {
+      stroke-opacity: .5;
+    }
+    
+     /* Add styles for zooming */
+     rect.zoom-overlay { 
+       fill:none; 
+       pointer-events=all; 
+     } 
+    
+     /* Add styles for the brush */
+     g.brush rect.extent { 
+       fill-opacity:.125; 
+       shape-rendering crispEdges; 
+     } 
+    
+     g.brush { cursor move } 
+    
+   </style> 
+  
+</head>
+
+<body>
+
+<div class=""scatterplot"" id=""scatterplot""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+// Set up margins and dimensions
+const margin = { top: 20, right: 20, bottom: 30, left:40 };
+const width = document.getElementById('scatterplot').clientWidth - margin.left - margin.right,
+height = document.getElementById('scatterplot').clientHeight - margin.top - margin.bottom;
+
+// Create SVG
+const svg = d3.select('#scatterplot')
+.append('svg')
+.attr(""width"", width + margin.left + margin.right)
+.attr(""height"", height +margin.top+margin.bottom)
+.append(""g"")
+.attr(""transform"",""translate(""+margin.left+"",""+margin.top+"")"");
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv', function(data) {
+
+data.forEach(function(d) {
+
+// Convert data types
+
+ d['Units Sold'] = parseInt(d['Units Sold']);
+ d['Revenue'] = parseFloat(d['Revenue']);
+
+});
+
+ // Define scales
+
+ const xScale=d3.scaleLinear()
+.domain([0,d3.max(data,function(d){return d['Units Sold'];})])
+.range([0,width]);
+
+ const yScale=d3.scaleLinear()
+.domain([0,d3.max(data,function(d){return d.Revenue})])
+.range([height,0]);
+
+ // Create axes
+
+ const xAxis=d3.axisBottom(xScale);
+ const yAxis=d3.axisLeft(yScale);
+
+ svg.append(""g"")
+.attr(""class"",""x axis"")
+.attr(""transform"",""translate(0,""+height+"")"")
+.call(xAxis);
+
+ svg.append(""g"")
+.attr(""class"",""y axis"")
+
+.call(yAxis)
+
+.selectAll("".tick text"")
+
+.style (""text-anchor"", ""middle"")
+
+.text(function (data){
+ return ""$""+data.toFixed(2);
+})
+
+ // Add a title to the y-axis
+
+svg.select("".y.axis"")
+
+.append (""text"")
+
+.style (""text-anchor"", ""middle"") 
+
+.text (""Revenue ($)"") 
+
+.transition ()
+
+.duration (100)
+
+.transform (`rotate (-90 ${-40} ${120})`);
+
+ // Create scatter plot
+
+ svg.selectAll('.dot')
+
+.data(data)
+
+.enter()
+
+.append('circle')
+
+.classed ('dot', true)
+
+.style ('fill','lightblue')
+
+.style ('stroke','black')
+
+.style ('stroke-width','1.5')
+
+.style ('opacity','.6') 
+
+.on (""mouseover "",function (){
+
+ tooltip.transition ()
+
+.duration (200)
+
+.style (""opacity "",.9);
+
+ tooltip.html (`<strong> Units Sold:</strong>${this.__data__ [""Units Sold""]}<br><strong> Revenue:</strong>$${this.__data__.Revenue.toFixed(2)}` )
+
+.style (""left"",(event.clientX)+""px "")
+
+.style (""top"",(event.clientY)+""px "");
+
+ })
+
+.on (“mouseout ” ,function (){
+
+tooltip.transition ()
+
+.duration (500 )
+
+.delay (100 )
+
+.fadeOut ();
+
+})
+
+.tooltip-event(event=>{
+
+if(event.type ==='mouseover'){
+
+tooltip.transition()
+
+.duration(200)
+
+.fadeIn();
+
+}
+
+else if(event.type==='mouseout'){
+
+tooltip.transition()
+
+.delay(100).duration(500).fadeOut();
+
+}
+
+})
+
+.tooltip-content((event,data)=>`<strong> UnitsSold:</strong>${data[""Unitssold “]}<br>< strong > Revenue :</ strong >$${ data.Revenue.toFixed (2)} ` );
+
+transition()
+
+.delay((_,i)=>i*10)
+
+.duration(500) 
+
+.ease(easeBounceOut )  
+
+.translate ([xScale(this.__data__[""Unitssold""]),yScale(this.__data__.Revenue)])
+
+.rattr ((_,i )=>Math.sqrt(i)*1.5 );
+
+ });
+
+});
+
+</script></body></html>"
+4,scatterplot+tooltip,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot with external links and tooltips that visualizes the relationship between Units Sold and Revenue. And add the following interactive functions: opening a Google search for the point that you click on.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Scatterplot with External Links and Tooltips</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .tooltip {
+      position: absolute;
+      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      padding: 2px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+<svg width=""800"" height=""600""></svg>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+// Set the dimensions and margins of the graph
+var margin = {top: 20, right: 20, bottom: 30, left:40},
+width = +svg.attr(""width"") - margin.left - margin.right,
+height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+// Append a 'group' element to 'svg'
+// Moves the 'group' element to the top left margin
+var g = svg.append(""g"")
+.attr(""transform"", ""translate(""+margin.left+"",""+margin.top+"")"");
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv').then(function(data) {
+
+data.forEach(function(d) {
+ d['Units Sold'] = +d['Units Sold'];
+ d['Revenue'] = +d['Revenue'];
+});
+
+var xScale = d3.scaleLinear()
+.domain([0,d3.max(data,function(d){return d[""Units Sold""];})])
+.range([0,width]);
+
+var yScale=d3.scaleLinear()
+.domain([0,d3.max(data,function(d){return d[""Revenue""];})])
+.range([height,0]);
+
+g.append('g')
+.call(d3.axisBottom(xScale))
+.attr('transform','translate(0,'+height+')');
+
+g.append('g')
+.call(d3.axisLeft(yScale));
+
+var dots=g.selectAll('.dot')
+.data(data)
+.enter()
+.append('circle')
+.attr('cx',function (data){
+ return xScale(data[""Units Sold""]);
+})
+.attr('cy',function (data){
+ return yScale(data[""Revenue""]);
+})
+.on(""click"", function(event,data){
+ window.open(`https://www.google.com/search?q=${data.Date}+${data.Store Location}`, '_blank');
+})
+.on(""mouseover"", function(event,data) {
+ var tooltip=dots.select("".tooltip"");
+ if(tooltip.empty()){
+ tooltip=g.append(""div"")
+ .attr(""class"",""tooltip"");
+}
+ tooltip.style (""left"",(event.clientX)+""px"")
+ .style (""top"",(event.clientY)+""px"")
+ .html(`Date:${data.Date}<br>Store Location:${data.Store Location}`);
+ })
+.on (""mouseout"",function(){
+dots.select("".tooltip"").remove();
+});
+
+});
+
+</script></body></html>"
+5,scatterplot+query widgets,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot with query widgets showing the Units Sold and Revenue of the given dataset. Add a slider to represent the Date.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Scatterplot with Query Widgets</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .scatterplot {
+      width: 800px;
+      height: 600px;
+      border: 1px solid #ddd;
+    }
+    
+    .query-widgets {
+      margin-top: 20px;
+    }
+    
+    .slider-container {
+      width: 300px;
+      margin-bottom: 20px;
+    }
+    
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: 5px;
+     background-color:#ccc; 
+     outline:none; 
+     opacity:.7; 
+     -webkit-transition:.2s; 
+     transition : opacity.2s
+   }
+
+.slider:hover{
+opacity :1 ;
+}
+
+.slider::-webkit-slider-thumb{
+-webkit-appearance:none ;
+appearance :none ; 
+width :23 px ; 
+height :24 px ;  
+border-radius :50% ;
+background-color:#4CAF50 ;
+cursor:pointer ;
+
+}
+
+.slider::-moz-range-thumb{
+width :23 px ;  
+height :24 px ;  
+border-radius :50% ;
+background-color:#4CAF50 ;
+cursor:pointer ;
+
+}
+</style>
+
+</head>
+
+<body>
+
+<div class=""scatterplot"" id=""scatterplot""></div>
+
+<div class=""query-widgets"">
+
+<div class=""slider-container"">
+<input type=""range"" min="""" max="""" value="""" id=""date-slider"" class= "" slider"">
+<label for = "" date-slider""> Date :</label >
+<span id =""date-value""></span >
+</div >
+
+<select id= ""store-location-select "">
+<option value="""">Select Store Location </option >
+</select >
+
+<select id= ""product-category-select "">
+<option value="""">Select Product Category </option >
+</select >
+
+<button onclick = ""updateScatterplot()"">Update Scatterplot </button >
+</div >
+
+
+<script src = ""//d3js.org/d3.v7.min.js ""></script >
+
+
+
+<script >
+
+
+
+let data;
+
+const margin = { top:20 , right :20 , bottom30 , left40 };
+const width =800 -margin.left-margin.right,
+height=600-margin.top-margin.bottom;
+
+const svg=d3.select(""#scatterplot"")
+.append(""svg"")
+.attr(""width"",width+margin.left+margin.right)
+.attr(""height"",height+margin.top+margin.bottom)
+.append(""g"")
+.attr(""transform"",`translate(${margin.left},${margin.top})`);
+
+const xScale=d3.scaleLinear()
+.range([0,width]);
+
+const yScale=d3.scaleLinear()
+.range([height,0]);
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv')
+.then(csvData=>{
+
+data=csvData.map(row=>({
+...row,
+'Units Sold': +row['Units Sold'],
+Revenue:+row.Revenue,
+Date:new Date(row.Date),
+}));
+
+data.sort((a,b)=>a.Date-b.Date);
+
+xScale.domain(d3.extent(data,d=> d['Units Sold']));
+yScale.domain(d3.extent(data,d=> d.Revenue));
+
+svg.selectAll('circle')
+.data(data)
+.enter()
+.append('circle')
+.attr('cx', d => xScale(d['Units Sold']))
+.attr('cy', d => yScale(d.Revenue))
+.attr('r',6);
+
+svg.append ('g ')
+.call ( d3.axisBottom(xScale))
+.attr ('transform ', `translate(0,${ height })`)
+.selectAll ('text ')
+.style ('text-anchor ','middle ');
+
+svg.append ('g ')
+.call ( d3.axisLeft(yScale));
+
+
+
+// Add event listener to the slider
+document.getElementById( 'date-slider ').addEventListener( 'input ', updateSliderValue );
+
+// Initialize the slider values
+initSliderValues ();
+
+});
+
+function updateScatterPlot () {
+
+// Get the selected store location and product category
+ const storeLocation=document.getElementById( 'store-location-select ').value.trim ();
+ const productCategory=document.getElementById( 'product-category-select ').value.trim ();
+
+ // Filter the data based on the selected store location and product category
+ const filteredData=data.filter ( row => {
+
+if(storeLocation && row[ 'Store Location '] !== storeLocation) return false ;
+
+if(productCategory && row[ 'Product Category '] !== productCategory) return false ;
+
+return true ;
+
+});
+
+ // Update the scatter plot with the filtered data
+
+ svg.selectAll (' circle ')
+.remove ();
+
+ svg.selectAll (' circle ')
+.data(filteredData )
+.enter ()
+.append ("" circle "")
+. attr ("" cx "", d => xScale ( d [ ' Units Sold' ]))
+. attr ("" cy "", d => yscale ( D.revenue ))
+. attr ("" r "",6);
+}
+
+
+function initSliderValues () {
+
+// Get unique dates from dataset 
+
+ const uniqueDates=[... new Set(data.map(row=>row.Date.getTime()))];
+
+uniqueDates.sort (( a,b ) => a-b );
+
+ // Set minimum and maximum values for date slider 
+
+ document.getElementById( 'date-slider ').min=Math.min (...uniqueDates );
+ document.getElementById( 'date-slider ').max=Math.max (...uniqueDates );
+ document.getElementById( 'date-slider ').value=Math.min (...uniqueDates );
+
+updateSliderValue ();
+}
+
+
+function updateSliderValue () {
+
+// Get current date from slider 
+
+ let currentDate=new Date(parseInt(document.getElementById( ‘date-slider’).value));
+
+document.getElementById (“#” “ate-value”).textContent=currentDate.toLocaleDateString();
+
+}
+
+initStoreLocationOptions ();
+initProductCategoryOptions ();
+
+ function initStoreLocationOptions (){
+
+ // Get unique store locations from dataset 
+
+ const uniqueLocations=[... new Set(data.map(row=>row[‘Store Location’]))];
+
+uniqueLocations.sort (( a,b ) => a.localeCompare(b ));
+
+ // Populate select dropdown with options
+
+ let selectElement=document.getelementById (“store-location-select”);
+
+for(const location of uniqueLocations){
+
+let optionElement=document.createElement (“option”);
+optionElement.value=location;
+
+let textNode=document.createTextNode(location);
+optionElement.appendChild(textNode);
+
+selectElement.appendChild(optionElement);
+}
+}
+
+
+ function initProductCategoryOptions(){
+
+ // Get unique product categories from dataset 
+
+ const UniqueCategories=[... new Set(data.map(row=>row[‘Product Category’]))];
+
+UniqueCategories.sort (( a,b ) => a.localeCompare(b ));
+
+ // Populate select dropdown with options
+
+ let selectElement=document.getelementById (“product-category-select”);
+
+for(const category of UniqueCategories){
+
+let optionElement=document.createElement (“option”);
+optionElement.value=category;
+
+let textNode=document.createTextNode(category);
+optionElement.appendChild(textNode);
+
+selectELement.appendChild(optionELement);"
+6,scatterplot+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Scatterplot showing the Units Sold of Phoenix. Add animated transitions that connect these points using lines in order.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",D3,advanced view,"<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Scatterplot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .scatterplot {
+            width: 800px;
+            height: 600px;
+            border: 1px solid #ddd;
+        }
+        
+        .dot {
+            fill-opacity: 0.5;
+        }
+        
+        .line {
+            stroke-opacity: 0.5;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class=""scatterplot""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+// Set the dimensions and margins of the graph
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+width = +svg.attr(""width"") - margin.left - margin.right,
+height = +svg.attr(""height"") - margin.top - margin.bottom;
+
+// Append the svg object to the body of the page
+var svg = d3.select("".scatterplot"")
+.append(""svg"")
+.attr(""width"", width + margin.left + margin.right)
+.attr(""height"", height + margin.top + margin.bottom)
+.append(""g"")
+.attr(""transform"",
+      ""translate("" + margin.left + "","" +margin.top+ "")"");
+
+// Load data
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv').then(function(data) {
+
+data.forEach(function(d) {
+   d['Units Sold'] = parseInt(d['Units Sold']);
+   d['Customer Visits'] = parseInt(d['Customer Visits']);
+});
+
+var filteredData=data.filter(function (el){
+return el[""Store Location""]===""Phoenix"";
+})
+
+// Add X axis
+var xScale=d3.scaleLinear()
+.domain([Math.min(...filteredData.map((x)=>x[""Customer Visits""])),Math.max(...filteredData.map((x)=>x[""Customer Visits""]))])
+.range([0,width]);
+svg.append('g')
+.call(d3.axisBottom(xScale))
+.style('transform',`translateY(${height}px)`);
+
+// Add Y axis
+var yScale=d3.scaleLinear()
+.domain([Math.min(...filteredData.map((y)=>y[""Units Sold""])),Math.max(...filteredData.map((y)=>y[""Units Sold""]))])
+.range([height,0]);
+svg.append('g')
+.call(d3.axisLeft(yScale));
+
+
+
+const lineGenerator=d3.line()
+.x(function (p){return xScale(p[1])})
+.y(function (p){return yScale(p[2])})
+
+const points=filteredData.sort((a,b)=>{
+if(a.Date<b.Date){
+return-1}
+else if(a.Date>b.Date){
+return+1}
+else{
+return a.CustomerVisits-b.CustomerVisits}}).map(
+function (point,i,arr){
+if(i<arr.length-1){
+let nextPoint=arr[i+1];
+let interpolatedPoints=getInterpolatedPoints(point,nextPoint);
+interpolatedPoints.forEach(p=>points.push(p));
+}
+return [point.StoreLocation,+point.CustomerVisits,+point.UnitsSold]
+})
+
+function getInterpolatedPoints(pointA, pointB) {
+
+const numIntermediatePoints=Math.abs(+new Date(pointB.Date)-+new Date(pointA.Date))/86400000;
+
+let interpolatedXs=[],interpolatedYs=[];
+
+for(let i=0;i<numIntermediatePoints;i++){
+interpolatedXs.push(xScale(+pointA.CustomerVisits+i*(+pointB.CustomerVisits-pointA.CustomerVisits)/numIntermediatePoints));
+interpolatedYs.push(yScale(+pointA.Unitssold+i*(+pointB.Unitssold-pointA.Unitssold)/numIntermediatePoints));
+}
+
+let intermediateLine=lineGenerator([
+...Array(numIntermediatePoints).fill(0).map(
+(e,i,a)=>[i,...a]
+),
+[numIntermediatePoints,xScale(+pointB.CustomerVisists),ySCale(+poitnB.UnistSold)]
+])
+
+const pathLength=intermediateLine.getTotalLength();
+
+for(let i=0;i<numIntermediatepoints;i++){
+let posOnPath=pathLength*i/numIntermeditePoitns,
+pathPoint=path.getPointAtLenght(posOnPath);
+points.push([""Phoenix"",pathPoitn.x,pathPoitn.y])
+}
+
+}
+
+console.log(points)
+
+draw(points);
+
+function draw(data){
+
+clear();
+  
+svg.selectAll('.dot')
+.data(data)
+.enter().append('circle')
+.classed('dot',true)
+.style('cx',function (p){ return p[1]})
+.style ('cy', function (p){ return p[2]})
+.style ('r','4px');
+
+  
+drawLines(data);
+}
+
+function clear(){
+  
+document.querySelectorAll('.dot').forEach(dot=>dot.remove());
+document.querySelectorAll('.line').forEach(line=>line.remove());
+}
+
+function drawLines(points){
+
+clear();
+
+points.forEach(
+(e,i,a)=>{
+if(i<a.length-2&&i>=2&&e[2]!==undefined&&a[i][2]!==undefined&&a[i][2]!==undefined){
+
+const line=lineGenerator([
+[a[i-2],...a[i]],
+[a[i],...a[i]],
+[a[i],...a[[i]]],
+]);
+
+console.log(line)
+
+svg.selectAll(`#id${i}`)
+.data([[line]])
+.enter().append('path')
+.classed(`#id${i}`,true)
+.classed(`line`,true)
+.style (`stroke`,`black`)
+.style (`stroke-width`,`thin`)
+.transition()
+.duration(10000/(i))
+.delay(100*i)
+.ease(d => d * d * d )
+.on (""start"", function() { 
+this._value=i; 
+})
+.on (""interrupt"", function() { 
+this._value=i; 
+})
+.on (""end"", function() { 
+
+draw(points.slice(i))
+
+});
+} else if(i===(points.length)){
+clear();
+draw([]);
+}
+});
+}
+});
+
+</script></body></html>"
+7,line chart+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a multi-series Line Chart with an interactive line highlight showing the Units Sold of the given dataset. Add the following interaction function: when the mouse is hovered over a line, the line will be highlighted.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Multi-Series Line Chart with Interactive Highlight</title>
+  <style>
+    /* Add some basic styling to make the chart look decent */
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .chart {
+      width: 800px;
+      height: 600px;
+      margin: 50px auto;
+    }
+    
+    .axis path, .axis line {
+      fill: none;
+      stroke: #777;
+      shape-rendering: crispEdges;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .line {
+      fill: none;
+      stroke-width: 2.5px;
+      
+     /* Define different colors for each product category */
+     stroke-opacity:.7
+     }
+
+.line1{
+stroke:#FF69B4
+}
+.line2{
+stroke:#33CC33
+}
+.line3{
+stroke:#6666CC
+}
+
+/* Style the hover line */
+.hover-line {
+fill:none; 
+stroke:red; 
+pointer-events:none; 
+}
+
+/* Style the hover text */
+.hover-text { 
+font-size :12pt;  
+font-weight :bold;  
+fill :#000000 ;  
+} 
+
+</style>
+
+</head>
+
+<body>
+
+<div class=""chart"" id=""chart""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script> 
+
+// Set up margins and dimensions for the chart
+
+var margin = {top:20,right :80,bottom :30,left :50},
+width =700-margin.left-margin.right,
+height=500-margin.top-margin.bottom;
+
+// Parse date and convert data types
+
+var parseDate=d3.timeParse(""%m/%d/%Y"");
+
+function convertData(d){
+return{
+date   :parseDate(d['Date']),
+storeLocation:d['Store Location'],
+unitsSold:+d['Units Sold'],
+revenue:+d['Revenue'],
+profit:+d['Profit'],
+operatingHours:+d[""Operating Hours""],
+customerVisits:+d[""Customer Visits""],
+productCategory:d[""Product Category""]
+};
+}
+
+// Load data from CSV file
+
+ d3.csv(""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"",convertData).then(function(data){
+
+ // Group data by product category
+
+ var categories=d3.groups(data,d=> d.productCategory);
+
+ // Create SVG element
+
+ var svg=d3.select(""#chart"")
+.append(""svg"")
+.attr(""width"",width+margin.left+margin.right)
+.attr(""height"",height+margin.top+margin.bottom)
+.append(""g"")
+.attr(""transform"",""translate(""+margin.left+"",""+margin.top+"")"");
+
+ // Set up scales for x and y axes
+
+ var xScale=d3.scaleTime()
+.domain(d3.extent(data,d=> d.date))
+.range([0,width]);
+
+var yScale=d3.scaleLinear()
+.domain([0,d3.max(data,d=> d.unitsSold)])
+.range([height,0]);
+
+// Add x and y axes to the chart 
+
+svg.append (""g"")
+.attr (""transform"",""translate(0,"" + height + "")"")   
+.call ( d3.axisBottom(xScale));
+
+svg.append (""g"")   
+.call ( d34.axisLeft(yScale));
+
+// Create a line generator function  
+
+var line = d34.line()   
+.x(function ( d) { return xScale( d.date);})   
+.y(function ( d) { return yScale( d.unitsSold);});
+
+// Add lines to the chart  
+
+categories.forEach ((category,i ) =>{   
+
+   svg.datum(category[1])     
+   .append (""path"")     
+   .attr (""class"",""line""+(i+l))     
+   .attr (""id"",category[O])     
+   .attr ('' ,line);
+
+});
+
+/ /Add interaction functionality   
+
+categories.forEach ((category,i ) =>{   
+
+svg.selectAll (''path#'+category[O])      
+.on(''mouseover'',function (){       
+this.parentNode.appendChild(this);       
+focus.style(''display '',''none '');       
+focus.select (''.hover-line '')         
+.style(''display '','')         
+.style(''y l '',y Scale(category[l][O].unitsSold)+'' px '')         
+.style(''x l '',x Scale(category[l][O].date)+'' px '')         
+.transition ()          
+.duration (200)          
+.ease(d34.easeExpInOut)          
+.style(''opacity '',l );       
+
+focus.select (''.hover-text '')        
+.text(category [ O ]+'': '' + category [ l ] [ O ] units Sold);       
+
+})
+
+.on ('mouseout',function (){       
+focus.transition ()        
+.duration (200)        
+.ease(d34.easeExpInOut)        
+.style ('opacity',0);      
+
+})
+
+.on ('mousemove ',function (){       
+
+if (!isNaN(this.getTotalLength())){         
+        
+        focus.select('.hover-line')            
+        style('xl',xscale(invertXscale(event.clientX))+ ""px"");          
+        
+       focus.select('.hover-text')            
+       style('transform','translate('+event.clientX+""px,""+(event.clientY-10)+""pX""));         
+        
+       }else{         
+        
+         console.log(this.getTotalLength());         
+        
+         }      
+      
+});    
+
+});    
+
+/ /Create focus group for hover effect   
+
+var focus=svg.append(""g"")      
+.classed("".over-group "",true )      
+.style(""""display "",'none');      
+
+focus.append(""""line """")      
+.classed("".hover-line "",true )      
+.attr(""""x1 """",10)      
+.atrTc2 """",10);      
+
+focus. append(""""text """")      
+.classed("".hover-text "",true );      
+
+});    
+
+</script>    
+
+</body>    
+
+</html >"
+8,bar chart+zoom,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Bar Chart that visualizes the Units Sold for each Store Location in 2021-01-01. And add the following interactive functions: scroll the mouse wheel to zoom the Bar Chart, click the left mouse button and drag to pan the Bar Chart.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",D3,advanced view,"<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>Bar Chart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        
+        .bar-chart {
+            width: 800px;
+            height: 600px;
+            margin: 50px auto;
+        }
+        
+        .bar {
+            fill: steelblue;
+        }
+        
+        .axis text {
+            font-size: 12px;
+        }
+        
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #777;
+            stroke-width: 1;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class=""bar-chart""></div>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+let margin = {top: 20, right: 20, bottom: 30, left: 40};
+let width = document.querySelector('.bar-chart').clientWidth - margin.left - margin.right,
+height = document.querySelector('.bar-chart').clientHeight - margin.top - margin.bottom;
+
+let svg = d3.select("".bar-chart"")
+.append(""svg"")
+.attr(""width"", width + margin.left + margin.right)
+.attr(""height"", height + margin.top + margin.bottom)
+.append(""g"")
+.attr(""transform"", ""translate("" +margin.left+ "",""+margin.top+"")"");
+
+let xScale = d3.scaleBand()
+.range([0,width])
+.padding(0.2);
+
+let yScale = d3.scaleLinear()
+.range([height,0]);
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv')
+.then(data => {
+
+data.forEach(d => {
+
+if (new Date(d['Date']).getFullYear() ===2021 && new Date(d['Date']).getMonth() ===0 && new Date(d['Date']).getDate() ===1) {
+
+xScale.domain(data.map(function (d) { return d[""Store Location""]; }));
+yScale.domain([0,d3.max(data,function (dd){return parseInt(dd[""Units Sold""]);})]);
+
+svg.selectAll("".rectangles"").remove();
+
+svg.selectAll("".rectangles"")
+.data(data)
+.enter()
+.append('rect')
+.classed('rectangles',true)
+.attr('x',function (dd){return xScale(dd[""Store Location""]);})
+.attr('y',function (dd){return yScale(parseInt(dd[""Units Sold""]));})
+.attr('width',xScale.bandwidth())
+.transition().duration(100).delay(function(d,i){return i*50;})
+.styleTween(""fill"",""red"");
+
+}
+
+});
+
+});
+
+</script></body></html>"
+9,bar chart+drag,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Bar Chart that visualizes the Units Sold for each Store Location in 2021-01-01. Add the following interactive functions: allows users to drag and drop bars to reorder them, enabling a customized arrangement based on user preferences.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Units Sold by Store Location</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .bar {
+      fill: steelblue;
+    }
+    
+    .bar:hover {
+      fill: brown;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+    }
+  </style>
+</head>
+
+<body>
+<svg width=""800"" height=""600""></svg>
+
+<script src=""https://d3js.org/d3.v7.min.js""></script>
+
+<script>
+
+let margin = {top: 20, right: 20, bottom: 30, left: 40};
+let width = document.body.clientWidth - margin.left - margin.right,
+height = document.body.clientHeight - margin.top - margin.bottom;
+
+let svg = d3.select(""svg"")
+.attr(""width"", width + margin.left + margin.right)
+.attr(""height"", height + margin.top + margin.bottom)
+.append(""g"")
+.attr(""transform"", ""translate("" + margin.left + "","" + (margin.top) + "")"");
+
+d3.csv('https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv')
+.then(data => {
+
+data.forEach(d => {
+
+if (new Date(d['Date']).getFullYear() === new Date('2021-01-01').getFullYear()
+&& new Date(d['Date']).getMonth() === new Date('2021-01-01').getMonth()
+&& new Date(d['Date']).getDate() === new Date('2021-01-01').getDate()){
+
+}
+
+});
+
+data.sort((a,b) => b['Units Sold'] - a['Units Sold']);
+
+const xScale = d3.scaleBand()
+.domain(data.map(function(d){return d[""Store Location""]}))
+.range([0,width])
+.padding(0.2);
+
+const yScale = d3.scaleLinear()
+.domain([0,d3.max(data,function(d){return parseInt(d[""Units Sold""])})])
+.range([height,0]);
+
+const gXAxis= svg.append('g')
+.attr('transform', `translate(0,${height})`)
+.call(
+        d3.axisBottom(xScale)
+        );
+
+const gYAxis= svg.append('g')
+.call(
+        d3.axisLeft(yScale).ticks(10)
+        );
+
+var bars=svg.selectAll("".bar"")
+.data(data.filter(function (el){
+            return el != null && el != """";
+          }))
+.enter().append(""rect"")
+.classed (""bar"", true)
+
+.style (""fill"",""steelblue"")
+
+.on ('mouseover', function (){
+
+})
+
+.on ('mouseout', function (){
+
+})
+
+.on ('click',function(){
+
+})
+
+.merge(bars)
+
+.transition()
+
+.duration(100)
+
+.delay(function (el,i){
+
+return i*100
+
+})
+
+.attr (""x"",function(el){
+
+return xScale(el[""Store Location""])
+
+})
+.attr (""y"",function(el){
+
+return yScale(parseInt(el[""Units Sold""]))
+
+})
+.attr (""width"",xScale.bandwidth())
+.attr (""height"",(el)=>{ return height-yScale(parseInt(el[""Units Sold""]))});
+
+bars.exit().remove();
+
+var dragHandler = d3.drag()
+
+.on('start', function(event,d){
+bars.sort((a,b) => b['Units Sold'] - a['Units Sold']);
+bars.transition().duration(500).attr ('y',(el)=>{ return yScale(parseInt(el[""Units Sold""]))}).attr ('height',(el)=>{ return height-yScale(parseInt(el[""Units Sold""]))});
+});
+
+bars.call(dragHandler);
+
+});
+</script></body></html>"
+10,bar chart+animated,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category
+Your task is to create a Bar Chart that visualizes the Units Sold for each Store Location in 2021-01-01. Add animated transitions and use the drop-down menu to change the sorting order to ascending or descending based on the Units Sold.
+Use the following visualization library: D3.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the `d3.csv()` function to load data; when iterating over the data and converting data types, be sure to use square brackets to access property names that contain special characters (such as spaces or symbols).","https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv
+
+The data table contains the following columns: Date,Store Location,Units Sold,Revenue,Profit,Operating Hours,Customer Visits,Product Category",D3,advanced view,"<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=""UTF-8"">
+  <title>Units Sold by Store Location</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    .bar {
+      fill: steelblue;
+    }
+    
+    .bar:hover {
+      fill: brown;
+    }
+    
+    .axis text {
+      font-size: 12px;
+    }
+    
+    .axis path,
+    .axis line {
+      fill: none;
+      stroke: #777;
+      stroke-width: 1;
+      shape-rendering: crispEdges;
+    }
+    
+     select{
+        position:relative; 
+        top:-600px; 
+        left:-200px
+     }  
+     
+     /* Add some space between the bars */
+.bar rect {  
+   rx :10px
+}
+/* Style the text on top of each bar */
+.bar text {  
+   font-size :18px ; 
+   color :#fff ; 
+   position:relative ;
+   top:-20px ;
+}
+
+/* Style the dropdown menu */
+select {  
+   padding :10px ; 
+   border-radius :5px ; 
+   border-color:#ccc
+}
+
+/* Style the title of the chart */
+.title {  
+font-size :24px ; 
+font-weight:bold
+}
+</style>
+
+<body>
+
+<select id=""sort-select"">
+<option value=""ascending"">Ascending</option>
+<option value=""descending"">Descending</option> </select>
+
+<svg width=""800"" height=""600""></svg>
+
+<script src=""//d3js.org/d3.v7.min.js""></script>
+
+<script> 
+
+let margin = {top: 100, right: 20, bottom: 30, left:40};
+let width =800-margin.left-margin.right ,height=600-margin.top-margin.bottom;
+
+let svg=d3.select(""svg"")
+.append(""g"")
+.attr(""transform"",`translate(${margin.left},${margin.top})`);
+
+// Add a title to your chart
+
+svg.append('text')
+.text('Units Sold by Store Location')
+.attr('x',width/2)
+.attr('y',-50)
+.classed ('title',true)
+
+// Load data and filter for date '2021-01-01'
+
+d3.csv (""https://gist.githubusercontent.com/FFFFFancy/f31f77b8b8aa4d1898e5bd00dba3959f/raw/a79d3da79d62a68bdd96d94b4e985d67c336fd2c/Daily%2520Sales.csv"").then(data=>{
+
+data=data.filter(d=> d.Date ==='2021-01-01');
+
+data.forEach(d => {
+
+ d['Units Sold']=+ d['Units Sold'];
+
+});
+
+// Sort data in descending order initially
+
+data.sort((a,b)=> b['Units Sold'] - a ['Units Sold']);
+
+// Create x and y scales
+
+let xScale=d3.scaleBand()
+.domain(data.map(d=> d ['Store Location']))
+.range([0,width])
+.padding(0.2);
+
+let yScale=d3.scaleLinear()
+.domain([0,d3.max(data,d=> d ['Units Sold'])])
+.range([height,0]);
+
+// Create bars
+
+svg.selectAll('.bar')
+.data(data)
+.enter()
+.append('rect')
+.classed ('bar',true)
+.attr ('x', (d,i) => xScale(d['Store Location']))
+.attr ('y',(d,i) => yScale (d [' Units Sold ']))
+.attr ('width ',xScale.bandwidth())
+.transition ()
+.duration (500)
+.delay ((_,i) => i*50 )
+.attr ('height ',(d,i) => height-yScale ( d [' Units sold ']));
+
+ // Add labels on top of each bar 
+
+ svg.selectAll('.label')   
+.data(data)   
+.enter()   
+.append('text')   
+.classed('label', true)   
+.text((_, i)=> `${data[i]['Store Location']} - ${data[i]['Product Category']}` )      
+.transition()      
+.duration(500).delay((_,i)=> i *50 )      
+.style(""opacity"", ""1"")     
+.style (""fill"",""#000"")     
+.style (""stroke"",""#000"")     
+.style (""stroke-width"","".35 px "")     
+.style (""font-size"",""14 px "")     
+
+ // Update function to handle sorting order change 
+
+function update(sortOrder){   
+
+if(sortOrder ==='ascending'){   
+
+ data.sort ((a,b)=> a ["" Units sold ""] - b ["" Units sold ""]);   
+
+}else if(sortOrder ==='descending'){   
+
+ data.sort ((a,b)=> b ["" Units sold ""] - a ["" Units sold ""]);   
+
+}  
+
+ svg.selectAll('.bar')    
+
+.remove();    
+
+ svg.selectAll('.label').remove();    
+
+ let bars=svg.selectAll('.bar')    
+
+.data(data);    
+
+bars.enter().append(""rect"").classed("".bar"",true);     
+
+bars.exit().remove();     
+
+bars.merge(bars).transition().duration(500).delay((_,i)= > i*50 ).attr(""x"",( _,i)= > xscale(_.store location)).attr(""y"",( _,i)= >yscale(_.unitsold)).attr(width,xscale.bandwith()).attr(height,( _,i)= > height-y scale(_.unitsold));  
+
+ let labels=svg.selectall("".label"").datatext(( _,i)= > `${_[""store location""]} - ${_[""product category""]}` ).classed("".label"",true);labels.exit().remove();labels.merge(labels).transition().duration(500).delay(( _,I)= > I *50 ).style(opacity,""1"");}document.getelementbyid(sort-select "").addeventlistener(change,(event))={update(event.target.value)};</script></body></html>"

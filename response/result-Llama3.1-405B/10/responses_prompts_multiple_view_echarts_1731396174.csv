@@ -1,0 +1,746 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Visitors and Page Views, and a Bar Chart on the right that displays Traffic Source versus Visitors.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Website Traffic Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #charts {
+            display: flex;
+            justify-content: space-between;
+        }
+        #scatterplot, #barChart {
+            width: 45%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""charts"">
+        <div id=""scatterplot""></div>
+        <div id=""barChart""></div>
+    </div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const scatterData = rows.map(row => [Number(row[2]), Number(row[3])]);
+                const barData = {};
+                rows.forEach(row => {
+                    if (!barData[row[1]]) {
+                        barData[row[1]] = 0;
+                    }
+                    barData[row[1]] += Number(row[2]);
+                });
+                const barXAxis = Object.keys(barData);
+                const barSeries = Object.values(barData);
+
+                const scatterChart = echarts.init(document.getElementById('scatterplot'));
+                scatterChart.setOption({
+                    title: {
+                        text: 'Visitors vs Page Views'
+                    },
+                    xAxis: {
+                        name: 'Visitors'
+                    },
+                    yAxis: {
+                        name: 'Page Views'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: scatterData
+                    }]
+                });
+
+                const barChart = echarts.init(document.getElementById('barChart'));
+                barChart.setOption({
+                    title: {
+                        text: 'Traffic Source vs Visitors'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: barXAxis
+                    },
+                    yAxis: {
+                        name: 'Visitors'
+                    },
+                    series: [{
+                        type: 'bar',
+                        data: barSeries
+                    }]
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Visitors and Page Views, and a Bar Chart on the right that displays Traffic Source versus Visitors. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Website Traffic Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #scatterplot, #barChart {
+            width: 600px;
+            height: 400px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div id=""scatterplot""></div>
+    <div id=""barChart""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const scatterData = rows.map(row => [Number(row[2]), Number(row[3])]);
+                const barData = {};
+                rows.forEach(row => {
+                    if (!barData[row[1]]) {
+                        barData[row[1]] = 0;
+                    }
+                    barData[row[1]] += Number(row[2]);
+                });
+                const barDataArray = Object.keys(barData).map(key => ({ name: key, value: barData[key] }));
+
+                const scatterChart = echarts.init(document.getElementById('scatterplot'));
+                const barChart = echarts.init(document.getElementById('barChart'));
+
+                scatterChart.setOption({
+                    title: {
+                        text: 'Visitors vs Page Views'
+                    },
+                    xAxis: {
+                        name: 'Visitors'
+                    },
+                    yAxis: {
+                        name: 'Page Views'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: scatterData,
+                        brush: {
+                            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                            inBrush: {
+                                opacity: 1
+                            }
+                        }
+                    }]
+                });
+
+                barChart.setOption({
+                    title: {
+                        text: 'Traffic Source vs Visitors'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: barDataArray.map(item => item.name)
+                    },
+                    yAxis: {
+                        name: 'Visitors'
+                    },
+                    series: [{
+                        type: 'bar',
+                        data: barDataArray.map(item => item.value)
+                    }]
+                });
+
+                scatterChart.on('brushSelected', params => {
+                    const selectedData = params.batch[0].selected[0].dataIndex;
+                    const selectedTrafficSources = selectedData.map(index => rows[index][1]);
+                    const highlightedData = barDataArray.map(item => {
+                        if (selectedTrafficSources.includes(item.name)) {
+                            return {
+                                ...item,
+                                itemStyle: {
+                                    color: 'red'
+                                }
+                            };
+                        } else {
+                            return item;
+                        }
+                    });
+                    barChart.setOption({
+                        series: [{
+                            data: highlightedData.map(item => item.value),
+                            itemStyle: {
+                                color: params => {
+                                    if (params.dataIndex < highlightedData.length && highlightedData[params.dataIndex].itemStyle) {
+                                        return highlightedData[params.dataIndex].itemStyle.color;
+                                    } else {
+                                        return '#c23531';
+                                    }
+                                }
+                            }
+                        }]
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Visitors , while the pie chart represents the distribution of Page Views.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Website Traffic Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart-container"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const visitors = rows.map(row => [row[0], parseInt(row[2])]);
+                const pageViews = rows.reduce((acc, row) => {
+                    const region = row[7];
+                    acc[region] = (acc[region] || 0) + parseInt(row[3]);
+                    return acc;
+                }, {});
+
+                const chart = echarts.init(document.getElementById('chart-container'));
+                chart.setOption({
+                    grid: [
+                        { top: '10%', height: '40%' },
+                        { top: '60%', height: '30%' }
+                    ],
+                    xAxis: [
+                        {
+                            gridIndex: 0,
+                            type: 'category',
+                            data: visitors.map(item => item[0])
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            gridIndex: 0,
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            type: 'line',
+                            data: visitors.map(item => item[1])
+                        },
+                        {
+                            type: 'pie',
+                            radius: '30%',
+                            center: ['50%', '80%'],
+                            data: Object.keys(pageViews).map(key => ({ name: key, value: pageViews[key] }))
+                        }
+                    ]
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Visitors , while the pie chart represents the distribution of Page Views. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Page Views for the selected group.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Website Traffic Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""chart"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const visitors = rows.map(row => [row[0], parseInt(row[2])]);
+                const pageViews = rows.map(row => [row[3], row[0]]);
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const lineChartOption = {
+                    title: {
+                        text: 'Visitors Trend'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: visitors.map(visitor => visitor[0])
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [
+                        {
+                            type: 'line',
+                            data: visitors.map(visitor => visitor[1])
+                        }
+                    ],
+                    brush: {
+                        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                        xAxisIndex: 0
+                    }
+                };
+
+                const pieChartOption = {
+                    title: {
+                        text: 'Page Views Distribution'
+                    },
+                    series: [
+                        {
+                            type: 'pie',
+                            data: []
+                        }
+                    ]
+                };
+
+                chart.setOption({
+                    grid: [
+                        {left: '10%', top: '10%', width: '80%', height: '40%'},
+                        {left: '10%', top: '60%', width: '80%', height: '30%'}
+                    ],
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    xAxis: [
+                        lineChartOption.xAxis
+                    ],
+                    yAxis: [
+                        lineChartOption.yAxis
+                    ],
+                    series: [
+                        lineChartOption.series[0],
+                        {
+                            type: 'pie',
+                            data: [],
+                            center: ['50%', '75%'],
+                            radius: '30%'
+                        }
+                    ],
+                    brush: lineChartOption.brush
+                });
+
+                chart.on('brushSelected', params => {
+                    const selectedData = [];
+                    const brushComponent = params.batch[0];
+                    for (let sIdx = 0; sIdx < brushComponent.selected.length; sIdx++) {
+                        const dataIndices = brushComponent.selected[sIdx].dataIndex;
+                        for (let i = 0; i < dataIndices.length; i++) {
+                            const dataIndex = dataIndices[i];
+                            selectedData.push(pageViews[dataIndex]);
+                        }
+                    }
+                    const pageViewData = {};
+                    selectedData.forEach(data => {
+                        if (pageViewData[data[0]]) {
+                            pageViewData[data[0]]++;
+                        } else {
+                            pageViewData[data[0]] = 1;
+                        }
+                    });
+                    const pieChartData = Object.keys(pageViewData).map(key => ({name: key, value: pageViewData[key]}));
+                    chart.setOption({
+                        series: [
+                            lineChartOption.series[0],
+                            {
+                                type: 'pie',
+                                data: pieChartData,
+                                center: ['50%', '75%'],
+                                radius: '30%'
+                            }
+                        ]
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Visitors, Page Views, and Bounce Rate. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Scatterplot Matrix</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #chart {
+            width: 800px;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const visitors = rows.map(row => +row[2]);
+                const pageViews = rows.map(row => +row[3]);
+                const bounceRate = rows.map(row => +row[4]);
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const option = {
+                    brush: {
+                        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                        xAxisIndex: 'all',
+                        yAxisIndex: 'all',
+                        brushLink: 'all',
+                        throttleType: 'debounce',
+                        throttleDelay: 300,
+                        geoIndex: 'all'
+                    },
+                    grid: [
+                        { left: '10%', top: '10%', width: '30%', height: '30%' },
+                        { left: '60%', top: '10%', width: '30%', height: '30%' },
+                        { left: '10%', bottom: '10%', width: '30%', height: '30%' },
+                        { left: '60%', bottom: '10%', width: '30%', height: '30%' }
+                    ],
+                    xAxis: [
+                        { gridIndex: 0, type: 'value' },
+                        { gridIndex: 1, type: 'value' },
+                        { gridIndex: 2, type: 'value' },
+                        { gridIndex: 3, type: 'value' }
+                    ],
+                    yAxis: [
+                        { gridIndex: 0, type: 'value' },
+                        { gridIndex: 1, type: 'value' },
+                        { gridIndex: 2, type: 'value' },
+                        { gridIndex: 3, type: 'value' }
+                    ],
+                    series: [
+                        {
+                            type: 'scatter',
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            data: visitors.map((value, index) => [value, pageViews[index]])
+                        },
+                        {
+                            type: 'scatter',
+                            xAxisIndex: 1,
+                            yAxisIndex: 1,
+                            data: visitors.map((value, index) => [value, bounceRate[index]])
+                        },
+                        {
+                            type: 'scatter',
+                            xAxisIndex: 2,
+                            yAxisIndex: 2,
+                            data: pageViews.map((value, index) => [value, bounceRate[index]])
+                        },
+                        {
+                            type: 'scatter',
+                            xAxisIndex: 3,
+                            yAxisIndex: 3,
+                            data: visitors.map((value, index) => [pageViews[index], value])
+                        }
+                    ]
+                };
+
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a brushable Scatterplot that visualizes the relationship between Visitors and Page Views. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Brushable Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #chart {
+            width: 800px;
+            height: 600px;
+            float: left;
+        }
+        #table {
+            float: left;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart""></div>
+    <div id=""table""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const visitors = rows.map(row => +row[2]);
+                const pageViews = rows.map(row => +row[3]);
+                const dataPoints = rows.map((row, index) => ({
+                    value: [visitors[index], pageViews[index]],
+                    Week: row[0],
+                    'Traffic Source': row[1],
+                    Visitors: row[2],
+                    'Page Views': row[3],
+                    'Bounce Rate': row[4],
+                    'Average Session Duration': row[5],
+                    'Conversion Rate': row[6],
+                    Region: row[7],
+                    'Device Type': row[8]
+                }));
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const table = document.getElementById('table');
+
+                const option = {
+                    brush: {
+                        toolbox: ['rect'],
+                        inBrush: {
+                            opacity: 1
+                        }
+                    },
+                    grid: {
+                        left: '10%',
+                        right: '10%',
+                        top: '10%',
+                        bottom: '10%'
+                    },
+                    xAxis: {
+                        name: 'Visitors'
+                    },
+                    yAxis: {
+                        name: 'Page Views'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: dataPoints,
+                        brush: {
+                            itemStyle: {
+                                color: 'rgba(255, 0, 0, 0.5)'
+                            }
+                        }
+                    }]
+                };
+
+                chart.setOption(option);
+
+                chart.on('brushSelected', params => {
+                    const selectedData = params.batch[0].selected[0].data;
+                    const tableHtml = selectedData.slice(0, 20).map(data => `
+                        <tr>
+                            <td>${data.Week}</td>
+                            <td>${data['Traffic Source']}</td>
+                            <td>${data.Visitors}</td>
+                            <td>${data['Page Views']}</td>
+                            <td>${data['Bounce Rate']}</td>
+                            <td>${data['Average Session Duration']}</td>
+                            <td>${data['Conversion Rate']}</td>
+                            <td>${data.Region}</td>
+                            <td>${data['Device Type']}</td>
+                        </tr>
+                    `).join('');
+
+                    table.innerHTML = `
+                        <table border=""1"">
+                            <tr>
+                                <th>Week</th>
+                                <th>Traffic Source</th>
+                                <th>Visitors</th>
+                                <th>Page Views</th>
+                                <th>Bounce Rate</th>
+                                <th>Average Session Duration</th>
+                                <th>Conversion Rate</th>
+                                <th>Region</th>
+                                <th>Device Type</th>
+                            </tr>
+                            ${tableHtml}
+                        </table>
+                    `;
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type
+Your task is to create a horizontal Bar Chart that shows all the data concerning Visitors, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv
+
+The data table contains the following columns: Week,Traffic Source,Visitors,Page Views,Bounce Rate,Average Session Duration,Conversion Rate,Region,Device Type",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Website Traffic</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/08fc4230fd11b6b920476195d9dc9b1d/raw/5c9171e19ff05e1e86204f735d00664814cc46e6/Website%2520Traffic.csv')
+        .then(response => response.text())
+        .then(data => {
+            let rows = data.split('\n').slice(1);
+            let visitors = {};
+            rows.forEach(row => {
+                let columns = row.split(',');
+                let trafficSource = columns[1];
+                let visitor = parseInt(columns[2]);
+                if (visitors[trafficSource]) {
+                    visitors[trafficSource] += visitor;
+                } else {
+                    visitors[trafficSource] = visitor;
+                }
+            });
+            let trafficSources = Object.keys(visitors);
+            let visitorValues = Object.values(visitors);
+            let myChart = echarts.init(document.getElementById('main'));
+            let option = {
+                title: {
+                    text: 'Website Traffic'
+                },
+                grid: [
+                    {
+                        left: '10%',
+                        width: '60%',
+                        containLabel: true
+                    },
+                    {
+                        right: '5%',
+                        width: '20%',
+                        containLabel: true
+                    }
+                ],
+                xAxis: [
+                    {
+                        gridIndex: 0,
+                        type: 'value',
+                        boundaryGap: [0, 0.01]
+                    },
+                    {
+                        gridIndex: 1,
+                        type: 'value',
+                        boundaryGap: [0, 0.01],
+                        axisLabel: {
+                            show: false
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        gridIndex: 0,
+                        type: 'category',
+                        data: trafficSources,
+                        axisLabel: {
+                            rotate: 45
+                        }
+                    },
+                    {
+                        gridIndex: 1,
+                        type: 'category',
+                        data: trafficSources,
+                        axisLabel: {
+                            show: false
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        type: 'bar',
+                        xAxisIndex: 0,
+                        yAxisIndex: 0,
+                        data: visitorValues,
+                        label: {
+                            show: true,
+                            position: 'right'
+                        }
+                    },
+                    {
+                        type: 'bar',
+                        xAxisIndex: 1,
+                        yAxisIndex: 1,
+                        data: visitorValues,
+                        barWidth: 5,
+                        itemStyle: {
+                            opacity: 0.5
+                        }
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"

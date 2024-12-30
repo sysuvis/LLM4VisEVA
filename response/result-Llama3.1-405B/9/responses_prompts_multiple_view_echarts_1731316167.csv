@@ -1,0 +1,741 @@
+Prompt Number,title,Prompt,dataset,library,view_type,response
+1,scatterplot+bar chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Adoption Rate and Investment, and a Bar Chart on the right that displays Technology Type versus Adoption Rate.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Technology Adoption Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div style=""display: flex; justify-content: space-around;"">
+        <div id=""scatterplot"" style=""width: 600px; height: 400px;""></div>
+        <div id=""barChart"" style=""width: 600px; height: 400px;""></div>
+    </div>
+
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const scatterData = rows.map(row => [parseFloat(row[2]), parseFloat(row[3])]);
+                const barData = {};
+                rows.forEach(row => {
+                    if (!barData[row[1]]) {
+                        barData[row[1]] = 0;
+                    }
+                    barData[row[1]] += parseFloat(row[2]);
+                });
+                const barXAxis = Object.keys(barData);
+                const barYAxis = Object.values(barData);
+
+                const scatterChart = echarts.init(document.getElementById('scatterplot'));
+                scatterChart.setOption({
+                    title: {
+                        text: 'Adoption Rate vs Investment'
+                    },
+                    xAxis: {
+                        name: 'Adoption Rate'
+                    },
+                    yAxis: {
+                        name: 'Investment'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: scatterData
+                    }]
+                });
+
+                const barChart = echarts.init(document.getElementById('barChart'));
+                barChart.setOption({
+                    title: {
+                        text: 'Technology Type vs Adoption Rate'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: barXAxis
+                    },
+                    yAxis: {
+                        name: 'Adoption Rate'
+                    },
+                    series: [{
+                        type: 'bar',
+                        data: barYAxis
+                    }]
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+2,scatterplot+bar chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a Scatterplot on the left that visualizes the relationship between Adoption Rate and Investment, and a Bar Chart on the right that displays Technology Type versus Adoption Rate. Enable brushing and linking functionality to enhance interactivity. Add the following interactive features: swipe to select a set of points in the Scatterplot, and the corresponding data in the Bar Chart will be highlighted.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Technology Adoption Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #scatterplot, #barchart {
+            width: 600px;
+            height: 400px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div id=""scatterplot""></div>
+    <div id=""barchart""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const scatterData = rows.map(row => [parseFloat(row[2]), parseFloat(row[3])]);
+                const barData = {};
+                rows.forEach(row => {
+                    if (!barData[row[1]]) {
+                        barData[row[1]] = [];
+                    }
+                    barData[row[1]].push(parseFloat(row[2]));
+                });
+                const barSeriesData = Object.keys(barData).map(key => ({
+                    name: key,
+                    type: 'bar',
+                    data: [barData[key].reduce((a, b) => a + b, 0) / barData[key].length]
+                }));
+
+                const scatterChart = echarts.init(document.getElementById('scatterplot'));
+                const barChart = echarts.init(document.getElementById('barchart'));
+
+                scatterChart.setOption({
+                    title: {
+                        text: 'Adoption Rate vs Investment'
+                    },
+                    xAxis: {
+                        name: 'Adoption Rate'
+                    },
+                    yAxis: {
+                        name: 'Investment'
+                    },
+                    series: [{
+                        type: 'scatter',
+                        data: scatterData,
+                        brush: {
+                            toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                            xAxisIndex: 0,
+                            yAxisIndex: 0,
+                            brushLink: [barChart],
+                            throttleType: 'debounce',
+                            throttleDelay: 300,
+                            geoIndex: 0
+                        }
+                    }]
+                });
+
+                barChart.setOption({
+                    title: {
+                        text: 'Technology Type vs Adoption Rate'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: Object.keys(barData)
+                    },
+                    yAxis: {
+                        name: 'Adoption Rate'
+                    },
+                    series: barSeriesData
+                });
+
+                scatterChart.on('brushSelected', params => {
+                    const selectedData = params.batch[0].selected[0].dataIndex;
+                    const selectedBarData = {};
+                    selectedData.forEach(index => {
+                        const technologyType = rows[index][1];
+                        if (!selectedBarData[technologyType]) {
+                            selectedBarData[technologyType] = [];
+                        }
+                        selectedBarData[technologyType].push(parseFloat(rows[index][2]));
+                    });
+                    const selectedBarSeriesData = Object.keys(selectedBarData).map(key => ({
+                        name: key,
+                        type: 'bar',
+                        data: [selectedBarData[key].reduce((a, b) => a + b, 0) / selectedBarData[key].length]
+                    }));
+                    barChart.setOption({
+                        series: selectedBarSeriesData
+                    });
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+3,line chart+pie chart,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Adoption Rate , while the pie chart represents the distribution of Investment.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""UTF-8"">
+    <title>Technology Adoption</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""container"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1).map(row => row.split(','));
+            const years = rows.map(row => row[0]);
+            const adoptionRates = rows.map(row => parseFloat(row[2]));
+            const investments = rows.map(row => parseFloat(row[3]));
+
+            const chartDom = document.getElementById('container');
+            const myChart = echarts.init(chartDom);
+            const option = {
+                grid: [
+                    { left: '10%', top: '10%', width: '80%', height: '40%' },
+                    { left: '10%', top: '60%', width: '80%', height: '30%' }
+                ],
+                xAxis: [
+                    {
+                        gridIndex: 0,
+                        type: 'category',
+                        data: years
+                    }
+                ],
+                yAxis: [
+                    {
+                        gridIndex: 0,
+                        type: 'value'
+                    }
+                ],
+                series: [
+                    {
+                        xAxisIndex: 0,
+                        yAxisIndex: 0,
+                        type: 'line',
+                        data: adoptionRates
+                    },
+                    {
+                        type: 'pie',
+                        radius: '30%',
+                        center: ['50%', '80%'],
+                        data: Array.from(new Set(investments)).map(investment => ({
+                            value: investments.filter(i => i === investment).length,
+                            name: investment
+                        }))
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
+4,line chart+pie chart+brushing and linking,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a visual interface consisting of two charts, a line chart on the top and a pie chart on the bottom, the line chart positioned above the pie chart. The line chart should display the trend of Adoption Rate , while the pie chart represents the distribution of Investment. Enable brushing and linking functionality to enhance interactivity. Add the following interactive function: select a subset of data points in the line chart, which will dynamically update the pie chart to reflect the distribution of Investment for the selected group.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Technology Adoption Visualization</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #chart-container {
+            width: 800px;
+            height: 600px;
+            margin: 0 auto;
+        }
+        #line-chart {
+            width: 100%;
+            height: 60%;
+        }
+        #pie-chart {
+            width: 100%;
+            height: 40%;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart-container"">
+        <div id=""line-chart""></div>
+        <div id=""pie-chart""></div>
+    </div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').map(row => row.split(','));
+                const headers = rows.shift();
+                const dataset = rows.map(row => {
+                    return headers.reduce((obj, header, index) => {
+                        obj[header] = row[index];
+                        return obj;
+                    }, {});
+                });
+
+                const lineChart = echarts.init(document.getElementById('line-chart'));
+                const pieChart = echarts.init(document.getElementById('pie-chart'));
+
+                const lineOption = {
+                    title: {
+                        text: 'Adoption Rate Trend'
+                    },
+                    xAxis: {
+                        type: 'category',
+                        data: dataset.map(data => data['Year'])
+                    },
+                    yAxis: {
+                        type: 'value'
+                    },
+                    series: [{
+                        type: 'line',
+                        data: dataset.map(data => data['Adoption Rate'])
+                    }],
+                    brush: {
+                        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                        xAxisIndex: 0,
+                        yAxisIndex: 0,
+                        brushLink: 'all',
+                        brushStyle: {
+                            borderWidth: 1,
+                            color: 'rgba(120,140,180,0.3)',
+                            borderColor: 'rgba(120,140,180,0.8)'
+                        },
+                        throttleType: 'debounce',
+                        throttleDelay: 300,
+                        geoIndex: 0
+                    }
+                };
+
+                const pieOption = {
+                    title: {
+                        text: 'Investment Distribution'
+                    },
+                    series: [{
+                        type: 'pie',
+                        data: []
+                    }]
+                };
+
+                lineChart.setOption(lineOption);
+                pieChart.setOption(pieOption);
+
+                lineChart.on('brushSelected', params => {
+                    const selectedData = [];
+                    params.batch[0].selected.forEach((dataIndex, i) => {
+                        if (dataIndex) {
+                            selectedData.push(dataset[i]);
+                        }
+                    });
+
+                    const investmentData = selectedData.map(data => {
+                        return {
+                            name: data['Year'],
+                            value: data['Investment']
+                        };
+                    });
+
+                    pieOption.series[0].data = investmentData;
+                    pieChart.setOption(pieOption);
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+5,scatterplot+matrix+highlight,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to draw a brushable Scatterplot Matrix that visualizes the pairwise relationships between Adoption Rate, Investment, Number of Users, and Market Share. Add the following interactive functions: brush to select data points in one cell and highlight them across all other cells.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Scatterplot Matrix</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #chart {
+            width: 800px;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const dataset = [];
+                rows.forEach(row => {
+                    dataset.push({
+                        'Adoption Rate': parseFloat(row[2]),
+                        'Investment': parseFloat(row[3]),
+                        'Number of Users': parseFloat(row[5]),
+                        'Market Share': parseFloat(row[6])
+                    });
+                });
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const dimensions = ['Adoption Rate', 'Investment', 'Number of Users', 'Market Share'];
+                const series = dimensions.map((dimension, index) => {
+                    return {
+                        type: 'scatter',
+                        xAxisIndex: index % 2,
+                        yAxisIndex: Math.floor(index / 2),
+                        datasetIndex: 0,
+                        dimensions: [dimensions[index % 2], dimensions[Math.floor(index / 2) + (index % 2 === 1 ? 2 : 0)]],
+                        brushType: 'rect',
+                        brushStyle: {
+                            borderWidth: 1,
+                            borderColor: 'rgba(0,0,0,0.5)',
+                            opacity: 0.5
+                        }
+                    };
+                });
+
+                const option = {
+                    dataset: [
+                        {
+                            source: dataset
+                        }
+                    ],
+                    xAxis: [
+                        {
+                            gridIndex: 0,
+                            name: 'Adoption Rate'
+                        },
+                        {
+                            gridIndex: 1,
+                            name: 'Investment'
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            gridIndex: 0,
+                            name: 'Number of Users'
+                        },
+                        {
+                            gridIndex: 1,
+                            name: 'Market Share'
+                        }
+                    ],
+                    grid: [
+                        {
+                            left: '10%',
+                            top: '10%',
+                            width: '40%',
+                            height: '40%'
+                        },
+                        {
+                            left: '55%',
+                            top: '10%',
+                            width: '40%',
+                            height: '40%'
+                        },
+                        {
+                            left: '10%',
+                            top: '55%',
+                            width: '40%',
+                            height: '40%'
+                        },
+                        {
+                            left: '55%',
+                            top: '55%',
+                            width: '40%',
+                            height: '40%'
+                        }
+                    ],
+                    brush: {
+                        toolbox: ['rect', 'polygon', 'lineX', 'lineY', 'keep', 'clear'],
+                        throttleType: 'debounce',
+                        throttleDelay: 300,
+                        geoIndex: 0
+                    },
+                    series: series
+                };
+
+                chart.setOption(option);
+            });
+    </script>
+</body>
+</html>
+```"
+6,scatterplot+table,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a brushable Scatterplot that visualizes the relationship between Adoption Rate and Investment. Add the following interactive functions: Drag the rectangular brush to draw a table on the right side of the Scatterplot that shows the information of the selected points (the first 20).
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Brushable Scatterplot</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+    <style>
+        #chart {
+            width: 800px;
+            height: 600px;
+            float: left;
+        }
+        #table {
+            float: left;
+            margin-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id=""chart""></div>
+    <div id=""table""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+            .then(response => response.text())
+            .then(data => {
+                const rows = data.split('\n').slice(1).map(row => row.split(','));
+                const chartData = rows.map(row => ({
+                    Year: row[0],
+                    'Technology Type': row[1],
+                    'Adoption Rate': parseFloat(row[2]),
+                    Investment: parseFloat(row[3]),
+                    'Return on Investment': parseFloat(row[4]),
+                    'Number of Users': parseFloat(row[5]),
+                    'Market Share': parseFloat(row[6]),
+                    'Customer Satisfaction Score': parseFloat(row[7]),
+                }));
+
+                const chart = echarts.init(document.getElementById('chart'));
+                const table = document.getElementById('table');
+
+                const option = {
+                    brush: {
+                        toolbox: ['rect'],
+                        inBrush: {
+                            opacity: 1,
+                        },
+                    },
+                    grid: {
+                        left: '10%',
+                        right: '10%',
+                        top: '10%',
+                        bottom: '10%',
+                    },
+                    xAxis: {
+                        name: 'Adoption Rate',
+                        type: 'value',
+                    },
+                    yAxis: {
+                        name: 'Investment',
+                        type: 'value',
+                    },
+                    series: [
+                        {
+                            type: 'scatter',
+                            data: chartData.map(item => [item['Adoption Rate'], item.Investment]),
+                            brush: {
+                                itemStyle: {
+                                    normal: {
+                                        opacity: 0.5,
+                                    },
+                                },
+                            },
+                        },
+                    ],
+                };
+
+                chart.setOption(option);
+
+                chart.on('brushSelected', params => {
+                    const selectedData = chartData.filter((item, index) => params.batch[0].selected[index]);
+                    const tableHtml = selectedData.slice(0, 20).map(item => `
+                        <tr>
+                            <td>${item.Year}</td>
+                            <td>${item['Technology Type']}</td>
+                            <td>${item['Adoption Rate']}</td>
+                            <td>${item.Investment}</td>
+                            <td>${item['Return on Investment']}</td>
+                            <td>${item['Number of Users']}</td>
+                            <td>${item['Market Share']}</td>
+                            <td>${item['Customer Satisfaction Score']}</td>
+                        </tr>
+                    `).join('');
+
+                    table.innerHTML = `
+                        <table border=""1"">
+                            <tr>
+                                <th>Year</th>
+                                <th>Technology Type</th>
+                                <th>Adoption Rate</th>
+                                <th>Investment</th>
+                                <th>Return on Investment</th>
+                                <th>Number of Users</th>
+                                <th>Market Share</th>
+                                <th>Customer Satisfaction Score</th>
+                            </tr>
+                            ${tableHtml}
+                        </table>
+                    `;
+                });
+            });
+    </script>
+</body>
+</html>
+```"
+7,bar chart+table+minimap,"Now you have the dataset in CSV format: https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score
+Your task is to create a horizontal Bar Chart that shows Technology Type and Adoption Rate, with a smaller overview representation (called a minimap) displayed on the right.
+Use the following visualization library: ECharts.
+Use the following format:
+code: (The code should be complete. And the HTML structure and code should be merged together.)
+Please provide only the codes written in the specified library with no other words.
+Hint: You can use the fetch() function to load data.","https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv
+
+The data table contains the following columns: Year,Technology Type,Adoption Rate,Investment,Return on Investment,Number of Users,Market Share,Customer Satisfaction Score",ECharts,multiple view,"```html
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset=""utf-8"">
+    <title>Technology Adoption Rate</title>
+    <script src=""https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js""></script>
+</head>
+<body>
+    <div id=""main"" style=""width: 800px; height: 600px;""></div>
+    <script>
+        fetch('https://gist.githubusercontent.com/FFFFFancy/8729038f70c9d0e839a3b65ffafd7cc6/raw/05448a679e012033b12b752057ad475e800f6d77/Technology%2520Adoption.csv')
+        .then(response => response.text())
+        .then(data => {
+            const rows = data.split('\n').slice(1).map(row => row.split(','));
+            const technologyTypes = rows.map(row => row[1]);
+            const adoptionRates = rows.map(row => parseFloat(row[2]));
+
+            const myChart = echarts.init(document.getElementById('main'));
+            const option = {
+                title: {
+                    text: 'Technology Adoption Rate'
+                },
+                grid: {
+                    left: '10%',
+                    right: '20%',
+                    top: '10%',
+                    bottom: '10%'
+                },
+                xAxis: {
+                    type: 'value',
+                    position: 'top',
+                    splitLine: {
+                        lineStyle: {
+                            type: 'dashed'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'category',
+                    data: technologyTypes,
+                    axisLine: {
+                        show: false
+                    },
+                    axisTick: {
+                        show: false
+                    }
+                },
+                series: [
+                    {
+                        type: 'bar',
+                        data: adoptionRates,
+                        barWidth: 20,
+                        itemStyle: {
+                            color: '#409eff'
+                        }
+                    }
+                ],
+                visualMap: {
+                    type: 'continuous',
+                    orient: 'vertical',
+                    right: 0,
+                    top: 0,
+                    itemWidth: 10,
+                    itemHeight: 200,
+                    calculable: true,
+                    precision: 0.1,
+                    text: ['High', 'Low'],
+                    textGap: 5,
+                    dimension: 0,
+                    inRange: {
+                        color: ['#f0f0f0', '#409eff']
+                    },
+                    outOfRange: {
+                        color: ['#f0f0f0']
+                    },
+                    controller: {
+                        inRange: {
+                            color: ['#409eff']
+                        },
+                        outOfRange: {
+                            color: ['#f0f0f0']
+                        }
+                    },
+                    data: [Math.min(...adoptionRates), Math.max(...adoptionRates)]
+                }
+            };
+            myChart.setOption(option);
+        });
+    </script>
+</body>
+</html>
+```"
